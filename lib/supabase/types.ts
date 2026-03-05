@@ -143,17 +143,23 @@ export interface Database {
       workout_plans: {
         Row: {
           id: string;
-          client_id: string;
+          client_id: string | null;
+          trainer_id: string;
           name: string;
+          description: string | null;
           days_per_week: number;
           active: boolean;
+          is_template: boolean;
           created_at: string;
         };
         Insert: {
-          client_id: string;
+          client_id?: string | null;
+          trainer_id: string;
           name: string;
+          description?: string | null;
           days_per_week: number;
-          active: boolean;
+          active?: boolean;
+          is_template?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["workout_plans"]["Insert"]>;
         Relationships: [
@@ -162,6 +168,13 @@ export interface Database {
             columns: ["client_id"];
             isOneToOne: false;
             referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "workout_plans_trainer_id_fkey";
+            columns: ["trainer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           }
         ];
@@ -338,7 +351,42 @@ export interface Database {
       };
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      create_workout_plan_with_structure: {
+        Args: {
+          p_trainer_id: string;
+          p_name: string;
+          p_description: string | null;
+          p_days_per_week: number;
+          p_is_template: boolean;
+          p_client_id: string | null;
+          p_days: Json;
+        };
+        Returns: string;
+      };
+      update_workout_plan_with_structure: {
+        Args: {
+          p_plan_id: string;
+          p_trainer_id: string;
+          p_name: string;
+          p_description: string | null;
+          p_days_per_week: number;
+          p_is_template: boolean;
+          p_client_id: string | null;
+          p_days: Json;
+          p_replace_structure: boolean;
+        };
+        Returns: boolean;
+      };
+      clone_workout_plan_to_client: {
+        Args: {
+          p_plan_id: string;
+          p_trainer_id: string;
+          p_client_id: string;
+        };
+        Returns: string;
+      };
+    };
     Enums: {
       activity_level: ActivityLevel;
       goal: Goal;

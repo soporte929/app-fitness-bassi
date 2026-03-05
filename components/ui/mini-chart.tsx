@@ -48,7 +48,7 @@ export function MiniChart({
           }}
           labelStyle={{ color: "var(--text-secondary)", fontSize: 11 }}
           itemStyle={{ color: "var(--text-primary)", fontSize: 12, fontWeight: 600 }}
-          formatter={(v: any) => [`${v}${unit}`, ""]}
+          formatter={(value: number | string | undefined) => [`${value ?? "—"}${unit}`, ""]}
         />
         {target && (
           <ReferenceLine

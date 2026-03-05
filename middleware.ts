@@ -62,6 +62,7 @@ export async function middleware(request: NextRequest) {
 
   const isTrainerRoute = pathname.startsWith("/dashboard") ||
     pathname.startsWith("/clients") ||
+    pathname.startsWith("/routines-templates") ||
     pathname.startsWith("/exercises") ||
     pathname.startsWith("/reports") ||
     pathname.startsWith("/settings");

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 type Theme = 'light' | 'dark'
 
@@ -13,13 +13,10 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | null>(null)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('light')
-
-  useEffect(() => {
-    // Read from DOM — already set by inline script to avoid FOUC
-    const isDark = document.documentElement.classList.contains('dark')
-    setThemeState(isDark ? 'dark' : 'light')
-  }, [])
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof document === 'undefined') return 'dark'
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  })
 
   function applyTheme(t: Theme) {
     const html = document.documentElement

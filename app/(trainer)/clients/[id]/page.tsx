@@ -11,6 +11,7 @@ import { PageTransition } from '@/components/ui/page-transition'
 import { calculateNutrition } from '@/lib/calculations/nutrition'
 import { computeAlerts } from '@/lib/alerts'
 import { EditClientPanel } from './edit-panel'
+import { AssignRoutineButton } from './assign-routine-button'
 import { ArrowLeft, Flame, ChevronRight } from 'lucide-react'
 
 export default async function ClientDetailPage({
@@ -40,7 +41,7 @@ export default async function ClientDetailPage({
   if (!rawClient) notFound()
 
   // Parallel data fetches
-  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes] = await Promise.all([
+  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, templatesRes] = await Promise.all([
     supabase
       .from('weight_logs')
       .select('weight_kg, logged_at')
@@ -65,14 +66,40 @@ export default async function ClientDetailPage({
       .from('workout_plans')
       .select('id, name, days_per_week, active')
       .eq('client_id', id)
+      .eq('is_template', false)
       .eq('active', true)
       .maybeSingle(),
+    supabase
+      .from('workout_plans')
+      .select(
+        `id, name, description, days_per_week,
+        workout_days (
+          exercises (id)
+        )`
+      )
+      .eq('trainer_id', user.id)
+      .eq('is_template', true)
+      .eq('active', true)
+      .order('created_at', { ascending: false }),
   ])
 
   const weightLogs = weightLogsRes.data ?? []
   const measurements = measurementsRes.data ?? []
   const sessions = sessionsRes.data ?? []
   const activePlan = activePlanRes.data
+  const templates = ((templatesRes.data ?? []) as unknown as Array<{
+    id: string
+    name: string
+    description: string | null
+    days_per_week: number
+    workout_days: Array<{ exercises: Array<{ id: string }> | null }> | null
+  }>).map((plan) => ({
+    id: plan.id,
+    name: plan.name,
+    description: plan.description,
+    days_per_week: plan.days_per_week,
+    total_exercises: (plan.workout_days ?? []).reduce((acc, day) => acc + (day.exercises?.length ?? 0), 0),
+  }))
 
   const now = new Date()
 
@@ -198,9 +225,7 @@ export default async function ClientDetailPage({
             </div>
           </div>
           <div className="flex gap-2 flex-shrink-0">
-            <Button variant="ghost" size="sm">
-              Editar plan
-            </Button>
+            <AssignRoutineButton clientId={rawClient.id} templates={templates} />
           </div>
         </div>
 

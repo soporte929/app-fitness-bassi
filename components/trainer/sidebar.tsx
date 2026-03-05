@@ -13,6 +13,7 @@ import {
   FileText,
   Settings,
   Dumbbell,
+  ClipboardList,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -29,6 +30,7 @@ const navigation = [
   {
     section: "Herramientas",
     items: [
+      { label: "Rutinas", href: "/routines-templates", icon: ClipboardList },
       { label: "Ejercicios", href: "/exercises", icon: Dumbbell },
       { label: "Informes", href: "/reports", icon: FileText },
     ],

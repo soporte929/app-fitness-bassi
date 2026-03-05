@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 export type SetLogWithExercise = {
   id: string
   exercise_id: string
@@ -70,46 +72,49 @@ export function SessionHistoryCard({ session, index }: Props) {
   const volume = calcVolume(session.set_logs)
   const duration = formatDuration(session.started_at, session.finished_at)
   const dateLabel = formatDate(session.finished_at ?? session.started_at)
+  const dayName = session.workout_day?.name ?? 'Entrenamiento'
+  const detailsHref = `/history/${session.id}`
 
   return (
-    <div
-      className="animate-fade-in bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg overflow-hidden transition-all duration-300 hover:border-[var(--border-hover)]"
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
-      {/* Header */}
-      <div className="px-5 pt-4 pb-3">
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-xs font-medium text-[var(--text-secondary)] capitalize">{dateLabel}</p>
-          {duration && <p className="text-xs text-[var(--text-muted)]">{duration}</p>}
+    <div className="animate-fade-in" style={{ animationDelay: `${index * 60}ms` }}>
+      <Link
+        href={detailsHref}
+        aria-label={`Ver detalle de sesión: ${dayName}, ${dateLabel}`}
+        className="block bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg overflow-hidden transition-all duration-300 hover:border-[var(--border-hover)] cursor-pointer"
+      >
+        {/* Header */}
+        <div className="px-5 pt-4 pb-3">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs font-medium text-[var(--text-secondary)] capitalize">{dateLabel}</p>
+            {duration && <p className="text-xs text-[var(--text-muted)]">{duration}</p>}
+          </div>
+          <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight text-lg">{dayName}</h2>
         </div>
-        <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight text-lg">
-          {session.workout_day?.name ?? 'Entrenamiento'}
-        </h2>
-      </div>
 
-      {/* Exercise list */}
-      {exercises.length > 0 && (
-        <div className="px-5 py-3 border-t border-[var(--border)] space-y-1.5">
-          {exercises.map((ex) => (
-            <div key={ex.name} className="flex items-center justify-between">
-              <span className="text-sm text-[var(--text-secondary)] truncate flex-1 mr-3">{ex.name}</span>
-              <span className="text-sm font-medium text-[var(--text-primary)] whitespace-nowrap font-[family-name:var(--font-geist-mono)]">
-                {ex.sets}×{ex.maxWeight === 0 ? 'PC' : `${ex.maxWeight}kg`}
-              </span>
-            </div>
-          ))}
+        {/* Exercise list */}
+        {exercises.length > 0 && (
+          <div className="px-5 py-3 border-t border-[var(--border)] space-y-1.5">
+            {exercises.map((ex) => (
+              <div key={ex.name} className="flex items-center justify-between">
+                <span className="text-sm text-[var(--text-secondary)] truncate flex-1 mr-3">{ex.name}</span>
+                <span className="text-sm font-medium text-[var(--text-primary)] whitespace-nowrap font-[family-name:var(--font-geist-mono)]">
+                  {ex.sets}×{ex.maxWeight === 0 ? 'PC' : `${ex.maxWeight}kg`}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Footer: total volume */}
+        <div className="px-5 py-3 border-t border-[var(--border)] flex items-center justify-between">
+          <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
+            Volumen total
+          </span>
+          <span className="text-sm font-bold text-[var(--accent)] font-[family-name:var(--font-geist-mono)]">
+            {volume.toLocaleString('es-ES')} kg
+          </span>
         </div>
-      )}
-
-      {/* Footer: total volume */}
-      <div className="px-5 py-3 border-t border-[var(--border)] flex items-center justify-between">
-        <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
-          Volumen total
-        </span>
-        <span className="text-sm font-bold text-[var(--accent)] font-[family-name:var(--font-geist-mono)]">
-          {volume.toLocaleString('es-ES')} kg
-        </span>
-      </div>
+      </Link>
     </div>
   )
 }
