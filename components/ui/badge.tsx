@@ -8,22 +8,19 @@ interface BadgeProps {
 
 const config = {
   green: {
-    dot: "bg-[#30d158]",
-    bg: "bg-[#30d158]/10",
-    text: "text-[#248a3d]",
-    label: "Correcto",
+    dot: "bg-green-500",
+    bg: "bg-green-500/10 border border-green-500/20",
+    text: "text-green-600 dark:text-green-400",
   },
   yellow: {
-    dot: "bg-[#ffd60a]",
-    bg: "bg-[#ffd60a]/10",
-    text: "text-[#9d8000]",
-    label: "Revisar",
+    dot: "bg-yellow-500",
+    bg: "bg-yellow-500/10 border border-yellow-500/20",
+    text: "text-yellow-600 dark:text-yellow-400",
   },
   red: {
-    dot: "bg-[#ff375f]",
-    bg: "bg-[#ff375f]/10",
-    text: "text-[#c0001a]",
-    label: "Intervención",
+    dot: "bg-red-500",
+    bg: "bg-red-500/10 border border-red-500/20",
+    text: "text-red-600 dark:text-red-400",
   },
 };
 

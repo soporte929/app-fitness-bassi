@@ -8,7 +8,7 @@ export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "bg-white rounded-2xl shadow-sm border border-[#e5e5ea] overflow-hidden",
+        "bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg overflow-hidden transition-all duration-200",
         className
       )}
       {...props}
@@ -20,7 +20,10 @@ export function Card({ className, children, ...props }: CardProps) {
 
 export function CardHeader({ className, children, ...props }: CardProps) {
   return (
-    <div className={cn("px-6 py-5 border-b border-[#e5e5ea]", className)} {...props}>
+    <div
+      className={cn("px-6 py-5 border-b border-[var(--border)]", className)}
+      {...props}
+    >
       {children}
     </div>
   );

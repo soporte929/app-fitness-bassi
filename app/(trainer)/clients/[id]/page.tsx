@@ -1,170 +1,280 @@
-"use client";
+import { createClient } from '@/lib/supabase/server'
+import { redirect, notFound } from 'next/navigation'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { StatusBadge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { StatCard } from '@/components/ui/stat-card'
+import { MiniChart } from '@/components/ui/mini-chart'
+import { AlertBanner } from '@/components/ui/alert-banner'
+import { PageTransition } from '@/components/ui/page-transition'
+import { calculateNutrition } from '@/lib/calculations/nutrition'
+import { computeAlerts } from '@/lib/alerts'
+import { EditClientPanel } from './edit-panel'
+import { ArrowLeft, Flame, ChevronRight } from 'lucide-react'
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { StatusBadge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { StatCard } from "@/components/ui/stat-card";
-import { MiniChart } from "@/components/ui/mini-chart";
-import { AlertBanner } from "@/components/ui/alert-banner";
-import { calculateNutrition } from "@/lib/calculations/nutrition";
-import { computeAlerts } from "@/lib/alerts";
-import { PageTransition } from "@/components/ui/page-transition";
-import {
-  ArrowLeft,
-  Flame,
-  Video,
-  ChevronRight,
-} from "lucide-react";
-import Link from "next/link";
+export default async function ClientDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
 
-const client = {
-  id: 1,
-  name: "Carlos Martínez",
-  phase: "Déficit",
-  status: "green" as const,
-  weightKg: 82.4,
-  bodyFatPct: 18,
-  activityLevel: "moderate" as const,
-  dailySteps: 8500,
-  goal: "deficit" as const,
-  adherence: 94,
-  joinedDate: "Enero 2026",
-};
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-const weightHistory = [
-  { date: "20 ene", value: 85.2 },
-  { date: "27 ene", value: 84.6 },
-  { date: "3 feb", value: 84.0 },
-  { date: "10 feb", value: 83.4 },
-  { date: "17 feb", value: 83.1 },
-  { date: "24 feb", value: 82.8 },
-  { date: "3 mar", value: 82.4 },
-];
+  // Client + profile — security: only own clients via trainer_id
+  const { data: rawClient } = await supabase
+    .from('clients')
+    .select(
+      `id, phase, goal, weight_kg, body_fat_pct, activity_level, daily_steps, joined_date, notes,
+      profile:profiles!clients_profile_id_fkey (full_name, email)`
+    )
+    .eq('id', id)
+    .eq('trainer_id', user.id)
+    .single()
 
-const waistHistory = [
-  { date: "20 ene", value: 92 },
-  { date: "27 ene", value: 91 },
-  { date: "3 feb", value: 90 },
-  { date: "10 feb", value: 89 },
-  { date: "17 feb", value: 89 },
-  { date: "24 feb", value: 88 },
-  { date: "3 mar", value: 88 },
-];
+  if (!rawClient) notFound()
 
-const recentWorkouts = [
-  { date: "3 mar", day: "Día A", exercises: 6, completed: true },
-  { date: "1 mar", day: "Día B", exercises: 5, completed: true },
-  { date: "27 feb", day: "Día C", exercises: 6, completed: true },
-  { date: "25 feb", day: "Día A", exercises: 6, completed: false },
-];
+  // Parallel data fetches
+  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes] = await Promise.all([
+    supabase
+      .from('weight_logs')
+      .select('weight_kg, logged_at')
+      .eq('client_id', id)
+      .order('logged_at', { ascending: true })
+      .limit(12),
+    supabase
+      .from('measurements')
+      .select('waist_cm, measured_at')
+      .eq('client_id', id)
+      .order('measured_at', { ascending: true })
+      .limit(12),
+    supabase
+      .from('workout_sessions')
+      .select(
+        'id, started_at, completed, workout_day:workout_days!workout_sessions_day_id_fkey (name)'
+      )
+      .eq('client_id', id)
+      .order('started_at', { ascending: false })
+      .limit(20),
+    supabase
+      .from('workout_plans')
+      .select('id, name, days_per_week, active')
+      .eq('client_id', id)
+      .eq('active', true)
+      .maybeSingle(),
+  ])
 
-const clientAlertInput = {
-  adherencePct: client.adherence,
-  daysSinceLastWorkout: 1,
-  weightDeltaKg: -0.4,
-  waistDeltaCm: -0.5,
-  phase: "deficit" as const,
-  weeklyWorkoutsCompleted: 3,
-  weeklyWorkoutsTarget: 4,
-};
+  const weightLogs = weightLogsRes.data ?? []
+  const measurements = measurementsRes.data ?? []
+  const sessions = sessionsRes.data ?? []
+  const activePlan = activePlanRes.data
 
-export default function ClientDetailPage() {
+  const now = new Date()
+
+  // Adherence
+  const completedSessions = sessions.filter((s) => s.completed)
+  const adherencePct =
+    sessions.length > 0 ? Math.round((completedSessions.length / sessions.length) * 100) : 0
+
+  // Days since last workout
+  const lastSession = sessions[0]
+  const daysSinceLastWorkout = lastSession
+    ? Math.floor(
+      (now.getTime() - new Date(lastSession.started_at).getTime()) / (1000 * 60 * 60 * 24)
+    )
+    : 999
+
+  // Weight delta (first vs last log)
+  const weightDeltaKg =
+    weightLogs.length >= 2
+      ? weightLogs[weightLogs.length - 1].weight_kg - weightLogs[0].weight_kg
+      : 0
+
+  // Waist delta
+  const waistLogs = measurements.filter((m) => m.waist_cm != null)
+  const waistDeltaCm =
+    waistLogs.length >= 2
+      ? (waistLogs[waistLogs.length - 1].waist_cm ?? 0) - (waistLogs[0].waist_cm ?? 0)
+      : 0
+
+  // This week sessions
+  const startOfWeek = new Date(now)
+  startOfWeek.setDate(now.getDate() - now.getDay())
+  startOfWeek.setHours(0, 0, 0, 0)
+  const weeklyWorkoutsCompleted = sessions.filter(
+    (s) => s.completed && new Date(s.started_at) >= startOfWeek
+  ).length
+
+  // Status badge
+  let status: 'green' | 'yellow' | 'red' = 'green'
+  if (adherencePct < 50 || daysSinceLastWorkout >= 7) status = 'red'
+  else if (adherencePct < 70 || daysSinceLastWorkout >= 4) status = 'yellow'
+
+  const alerts = computeAlerts({
+    adherencePct,
+    daysSinceLastWorkout,
+    weightDeltaKg,
+    waistDeltaCm,
+    phase: rawClient.phase,
+    weeklyWorkoutsCompleted,
+    weeklyWorkoutsTarget: activePlan?.days_per_week ?? 3,
+  })
+
   const nutrition = calculateNutrition({
-    weightKg: client.weightKg,
-    bodyFatPct: client.bodyFatPct,
-    activityLevel: client.activityLevel,
-    dailySteps: client.dailySteps,
-    goal: client.goal,
-  });
+    weightKg: rawClient.weight_kg,
+    bodyFatPct: rawClient.body_fat_pct ?? 20,
+    activityLevel: rawClient.activity_level,
+    dailySteps: rawClient.daily_steps,
+    goal: rawClient.goal,
+  })
 
-  const weightDelta = weightHistory[weightHistory.length - 1].value - weightHistory[0].value;
-  const waistDelta = waistHistory[waistHistory.length - 1].value - waistHistory[0].value;
-  const alerts = computeAlerts(clientAlertInput);
+  const profile = rawClient.profile as { full_name: string; email: string } | null
+  const clientName = profile?.full_name ?? 'Cliente'
+
+  const phaseLabel =
+    { deficit: 'Déficit', maintenance: 'Mantenimiento', surplus: 'Superávit' }[rawClient.phase] ??
+    rawClient.phase
+
+  const joinedLabel = new Date(rawClient.joined_date).toLocaleDateString('es-ES', {
+    month: 'long',
+    year: 'numeric',
+  })
+
+  // Chart data
+  const weightHistory = weightLogs.map((w) => ({
+    date: new Date(w.logged_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+    value: w.weight_kg,
+  }))
+
+  const waistHistory = waistLogs.map((m) => ({
+    date: new Date(m.measured_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+    value: m.waist_cm!,
+  }))
+
+  const recentWorkouts = sessions.slice(0, 6).map((s) => {
+    const day = s.workout_day as { name: string } | null
+    return {
+      date: new Date(s.started_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+      dayName: day?.name ?? 'Día',
+      completed: s.completed,
+    }
+  })
 
   return (
     <PageTransition>
       <div className="p-5 lg:p-8 w-full max-w-full">
-
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <Link href="/dashboard">
-              <button className="w-9 h-9 rounded-xl bg-white border border-[#e5e5ea] flex items-center justify-center hover:bg-[#f5f5f7] transition-colors flex-shrink-0">
-                <ArrowLeft className="w-4 h-4 text-[#6e6e73]" />
-              </button>
+            <Link
+              href="/clients"
+              className="w-9 h-9 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)] flex items-center justify-center hover:bg-[var(--bg-overlay)] transition-colors flex-shrink-0"
+            >
+              <ArrowLeft className="w-4 h-4 text-[var(--text-secondary)]" />
             </Link>
-            <div className="w-10 h-10 rounded-full bg-[#0071e3]/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-[#0071e3] font-bold">{client.name[0]}</span>
+            <div className="w-10 h-10 rounded-full bg-[var(--accent)]/15 flex items-center justify-center flex-shrink-0">
+              <span className="text-[var(--accent)] font-bold">{clientName[0]}</span>
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl lg:text-2xl font-bold text-[#1d1d1f] tracking-tight">
-                  {client.name}
+                <h1 className="text-xl lg:text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+                  {clientName}
                 </h1>
                 <StatusBadge
-                  status={client.status}
+                  status={status}
                   label={
-                    client.status === "green" ? "Correcto"
-                    : client.status === "yellow" ? "Revisar"
-                    : "Intervención"
+                    status === 'green' ? 'Correcto' : status === 'yellow' ? 'Revisar' : 'Intervención'
                   }
                 />
               </div>
-              <p className="text-[#6e6e73] text-sm">{client.phase} · Desde {client.joinedDate}</p>
+              <p className="text-[var(--text-secondary)] text-sm">
+                {phaseLabel} · Desde {joinedLabel}
+              </p>
             </div>
           </div>
           <div className="flex gap-2 flex-shrink-0">
-            <Button variant="secondary" size="sm">
-              <Video className="w-4 h-4" /> Auditoría
+            <Button variant="ghost" size="sm">
+              Editar plan
             </Button>
-            <Button size="sm">Editar plan</Button>
           </div>
         </div>
 
-        {/* Alertas del motor */}
-        {alerts.length > 0 && (
+        {/* Alertas */}
+        {alerts.length > 0 ? (
           <div className="space-y-2 mb-5">
             {alerts.map((alert) => (
               <AlertBanner key={alert.id} alert={alert} />
             ))}
           </div>
-        )}
-        {alerts.length === 0 && (
-          <div className="flex items-center gap-3 bg-[#30d158]/8 border border-[#30d158]/20 rounded-xl px-4 py-3 mb-5">
-            <span className="text-sm text-[#248a3d] font-medium">Todo en orden — el cliente progresa bien</span>
+        ) : (
+          <div className="flex items-center gap-3 bg-[var(--success)]/8 border border-[var(--success)]/20 rounded-lg px-4 py-3 mb-5">
+            <span className="text-sm text-[var(--success)] font-medium">
+              Todo en orden — el cliente progresa bien
+            </span>
           </div>
         )}
 
-        {/* Layout principal: apila en md, 3 cols en xl */}
+        {/* Layout principal */}
         <div className="flex flex-col lg:flex-row gap-5">
-
-          {/* Columna principal (izquierda) */}
+          {/* Columna principal */}
           <div className="flex-1 min-w-0 space-y-5">
-
-            {/* Stats — 2 cols en sm, 4 en lg */}
+            {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <StatCard label="Peso actual" value={client.weightKg} unit="kg" trend="down" trendValue={`${weightDelta.toFixed(1)} kg`} />
-              <StatCard label="% Grasa" value={client.bodyFatPct} unit="%" sub="estimado" />
+              <StatCard
+                label="Peso actual"
+                value={rawClient.weight_kg}
+                unit="kg"
+                trend={weightDeltaKg <= 0 ? 'down' : 'up'}
+                trendValue={`${weightDeltaKg > 0 ? '+' : ''}${weightDeltaKg.toFixed(1)} kg`}
+              />
+              <StatCard
+                label="% Grasa"
+                value={rawClient.body_fat_pct ?? '—'}
+                unit={rawClient.body_fat_pct != null ? '%' : ''}
+                sub="estimado"
+              />
               <StatCard label="Masa libre grasa" value={nutrition.ffm} unit="kg" sub="FFM" />
-              <StatCard label="Adherencia" value={`${client.adherence}%`} trend="up" trendValue="Esta semana" />
+              <StatCard
+                label="Adherencia"
+                value={`${adherencePct}%`}
+                trend="up"
+                trendValue="últimas 4 sem."
+              />
             </div>
 
-            {/* Gráficas — 1 col en sm, 2 en md */}
+            {/* Gráficas */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-[#1d1d1f]">Peso</p>
-                      <p className="text-xs text-[#6e6e73] mt-0.5">Últimas 6 semanas</p>
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">Peso</p>
+                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">Historial</p>
                     </div>
-                    <span className="text-xs font-medium text-[#30d158] bg-[#30d158]/10 px-2 py-0.5 rounded-full">
-                      {weightDelta.toFixed(1)} kg
-                    </span>
+                    {weightHistory.length >= 2 && (
+                      <span
+                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${weightDeltaKg <= 0
+                            ? 'text-[var(--success)] bg-[var(--success)]/10'
+                            : 'text-[var(--danger)] bg-[var(--danger)]/10'
+                          }`}
+                      >
+                        {weightDeltaKg > 0 ? '+' : ''}
+                        {weightDeltaKg.toFixed(1)} kg
+                      </span>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="pt-3">
-                  <MiniChart data={weightHistory} color="#0071e3" unit=" kg" />
+                  {weightHistory.length >= 2 ? (
+                    <MiniChart data={weightHistory} color="var(--accent)" unit=" kg" />
+                  ) : (
+                    <p className="text-sm text-[var(--text-muted)] text-center py-4">Sin registros de peso</p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -172,16 +282,28 @@ export default function ClientDetailPage() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-[#1d1d1f]">Cintura</p>
-                      <p className="text-xs text-[#6e6e73] mt-0.5">Últimas 6 semanas</p>
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">Cintura</p>
+                      <p className="text-xs text-[var(--text-secondary)] mt-0.5">Historial</p>
                     </div>
-                    <span className="text-xs font-medium text-[#30d158] bg-[#30d158]/10 px-2 py-0.5 rounded-full">
-                      {waistDelta} cm
-                    </span>
+                    {waistHistory.length >= 2 && (
+                      <span
+                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${waistDeltaCm <= 0
+                            ? 'text-[var(--success)] bg-[var(--success)]/10'
+                            : 'text-[var(--danger)] bg-[var(--danger)]/10'
+                          }`}
+                      >
+                        {waistDeltaCm > 0 ? '+' : ''}
+                        {waistDeltaCm.toFixed(1)} cm
+                      </span>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="pt-3">
-                  <MiniChart data={waistHistory} color="#ff9f0a" unit=" cm" />
+                  {waistHistory.length >= 2 ? (
+                    <MiniChart data={waistHistory} color="var(--warning)" unit=" cm" />
+                  ) : (
+                    <p className="text-sm text-[var(--text-muted)] text-center py-4">Sin registros de cintura</p>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -190,79 +312,125 @@ export default function ClientDetailPage() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-[#1d1d1f]">Últimos entrenamientos</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">Últimos entrenamientos</p>
                   <Button variant="ghost" size="sm">
                     Ver historial <ChevronRight className="w-3.5 h-3.5" />
                   </Button>
                 </div>
               </CardHeader>
               <CardContent className="p-0">
-                {recentWorkouts.map((w, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-center justify-between px-5 py-3.5 ${
-                      i < recentWorkouts.length - 1 ? "border-b border-[#e5e5ea]" : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${w.completed ? "bg-[#30d158]" : "bg-[#ff375f]"}`} />
-                      <div>
-                        <p className="text-sm font-medium text-[#1d1d1f]">{w.day}</p>
-                        <p className="text-xs text-[#6e6e73]">{w.exercises} ejercicios</p>
+                {recentWorkouts.length === 0 ? (
+                  <p className="text-sm text-[var(--text-muted)] text-center py-6">
+                    Sin entrenamientos registrados
+                  </p>
+                ) : (
+                  recentWorkouts.map((w, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center justify-between px-5 py-3.5 ${i < recentWorkouts.length - 1 ? 'border-b border-[var(--border)]' : ''
+                        }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-2 h-2 rounded-full flex-shrink-0 ${w.completed ? 'bg-[var(--success)]' : 'bg-[var(--danger)]'
+                            }`}
+                        />
+                        <div>
+                          <p className="text-sm font-medium text-[var(--text-primary)]">{w.dayName}</p>
+                          <p className="text-xs text-[var(--text-secondary)]">
+                            {w.completed ? 'Completado' : 'No terminado'}
+                          </p>
+                        </div>
                       </div>
+                      <span className="text-xs text-[var(--text-muted)]">{w.date}</span>
                     </div>
-                    <span className="text-xs text-[#aeaeb2]">{w.date}</span>
-                  </div>
-                ))}
+                  ))
+                )}
               </CardContent>
             </Card>
+
+            {/* Edit panel */}
+            <EditClientPanel
+              clientId={rawClient.id}
+              clientName={clientName}
+              initial={{
+                weight_kg: rawClient.weight_kg,
+                body_fat_pct: rawClient.body_fat_pct,
+                phase: rawClient.phase,
+                goal: rawClient.goal,
+                activity_level: rawClient.activity_level,
+                daily_steps: rawClient.daily_steps,
+                notes: rawClient.notes,
+              }}
+            />
           </div>
 
-          {/* Columna lateral — nutrición (fija en xl, full en md) */}
+          {/* Columna lateral — nutrición */}
           <div className="xl:w-72 space-y-4 flex-shrink-0">
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-[#ff9f0a]" />
-                  <p className="text-sm font-semibold text-[#1d1d1f]">Plan nutricional</p>
+                  <Flame className="w-4 h-4 text-[var(--warning)]" />
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">Plan nutricional</p>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center py-1">
-                  <p className="text-4xl font-bold text-[#1d1d1f] tracking-tight">
+                  <p className="text-4xl font-bold text-[var(--text-primary)] tracking-tight font-[family-name:var(--font-geist-mono)]">
                     {nutrition.targetCalories}
                   </p>
-                  <p className="text-xs text-[#6e6e73] mt-1">kcal objetivo</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">kcal objetivo</p>
                 </div>
 
                 <div className="space-y-2.5">
                   {[
-                    { label: "Proteína", g: nutrition.macros.protein.g, pct: nutrition.macros.protein.pct, color: "#0071e3" },
-                    { label: "Carbohidratos", g: nutrition.macros.carbs.g, pct: nutrition.macros.carbs.pct, color: "#30d158" },
-                    { label: "Grasa", g: nutrition.macros.fat.g, pct: nutrition.macros.fat.pct, color: "#ff9f0a" },
+                    {
+                      label: 'Proteína',
+                      g: nutrition.macros.protein.g,
+                      pct: nutrition.macros.protein.pct,
+                      color: 'var(--accent)',
+                    },
+                    {
+                      label: 'Carbohidratos',
+                      g: nutrition.macros.carbs.g,
+                      pct: nutrition.macros.carbs.pct,
+                      color: 'var(--success)',
+                    },
+                    {
+                      label: 'Grasa',
+                      g: nutrition.macros.fat.g,
+                      pct: nutrition.macros.fat.pct,
+                      color: 'var(--warning)',
+                    },
                   ].map((macro) => (
                     <div key={macro.label}>
                       <div className="flex justify-between mb-1">
-                        <span className="text-xs text-[#6e6e73]">{macro.label}</span>
-                        <span className="text-xs font-medium text-[#1d1d1f]">{macro.g}g</span>
+                        <span className="text-xs text-[var(--text-secondary)]">{macro.label}</span>
+                        <span className="text-xs font-medium text-[var(--text-primary)]">{macro.g}g</span>
                       </div>
-                      <div className="h-1.5 bg-[#f2f2f4] rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${macro.pct}%`, backgroundColor: macro.color }} />
+                      <div className="h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${macro.pct}%`, backgroundColor: macro.color }}
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="border-t border-[#e5e5ea] pt-3 space-y-1.5">
+                <div className="border-t border-[var(--border)] pt-3 space-y-1.5">
                   {[
-                    { label: "TMB (Cunningham)", value: `${nutrition.tmb_cunningham} kcal` },
-                    { label: "TMB (Tinsley)", value: `${nutrition.tmb_tinsley} kcal` },
-                    { label: "GET total", value: `${nutrition.get} kcal` },
-                    { label: "Bonus pasos", value: `+${nutrition.stepsBonus} kcal`, green: true },
+                    { label: 'TMB (Cunningham)', value: `${nutrition.tmb_cunningham} kcal` },
+                    { label: 'TMB (Tinsley)', value: `${nutrition.tmb_tinsley} kcal` },
+                    { label: 'GET total', value: `${nutrition.get} kcal` },
+                    { label: 'Bonus pasos', value: `+${nutrition.stepsBonus} kcal`, green: true },
                   ].map((row) => (
                     <div key={row.label} className="flex justify-between">
-                      <span className="text-xs text-[#6e6e73]">{row.label}</span>
-                      <span className={`text-xs font-medium ${row.green ? "text-[#30d158]" : "text-[#1d1d1f]"}`}>
+                      <span className="text-xs text-[var(--text-secondary)]">{row.label}</span>
+                      <span
+                        className={`text-xs font-medium ${row.green ? 'text-[var(--success)]' : 'text-[var(--text-primary)]'
+                          }`}
+                      >
                         {row.value}
                       </span>
                     </div>
@@ -271,24 +439,32 @@ export default function ClientDetailPage() {
               </CardContent>
             </Card>
 
+            {/* Plan activo */}
             <Card>
               <CardContent className="py-4">
-                <p className="text-xs text-[#6e6e73] mb-2 font-medium">Fase actual</p>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-[#1d1d1f]">{client.phase}</span>
-                  <span className="text-xs text-[#0071e3] bg-[#0071e3]/10 px-2 py-0.5 rounded-full">
-                    Semana 6
-                  </span>
-                </div>
-                <div className="h-1.5 bg-[#f2f2f4] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#0071e3] rounded-full" style={{ width: "60%" }} />
-                </div>
-                <p className="text-xs text-[#aeaeb2] mt-1.5">6 de 10 semanas</p>
+                <p className="text-xs text-[var(--text-muted)] mb-2 font-medium">Plan activo</p>
+                {activePlan ? (
+                  <>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-semibold text-[var(--text-primary)]">
+                        {activePlan.name}
+                      </span>
+                      <span className="text-xs text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded-full">
+                        {activePlan.days_per_week} días/sem
+                      </span>
+                    </div>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      {weeklyWorkoutsCompleted}/{activePlan.days_per_week} entrenamientos esta semana
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-[var(--text-muted)]">Sin plan activo</p>
+                )}
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
     </PageTransition>
-  );
+  )
 }

@@ -70,7 +70,9 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/nutrition") ||
     pathname.startsWith("/progress") ||
     pathname.startsWith("/audit") ||
-    pathname.startsWith("/profile");
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/routines") ||
+    pathname.startsWith("/workout");
 
   if (isTrainerRoute && profile?.role !== "trainer") {
     return NextResponse.redirect(new URL("/today", request.url));

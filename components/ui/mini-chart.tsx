@@ -19,7 +19,7 @@ interface MiniChartProps {
 
 export function MiniChart({
   data,
-  color = "#0071e3",
+  color = "var(--accent)",
   unit = "",
   target,
 }: MiniChartProps) {
@@ -28,32 +28,32 @@ export function MiniChart({
       <LineChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
         <XAxis
           dataKey="date"
-          tick={{ fontSize: 10, fill: "#aeaeb2" }}
+          tick={{ fontSize: 10, fill: "var(--text-muted)" }}
           axisLine={false}
           tickLine={false}
           interval="preserveStartEnd"
         />
         <YAxis
-          tick={{ fontSize: 10, fill: "#aeaeb2" }}
+          tick={{ fontSize: 10, fill: "var(--text-muted)" }}
           axisLine={false}
           tickLine={false}
           domain={["auto", "auto"]}
         />
         <Tooltip
           contentStyle={{
-            background: "#1c1c1e",
-            border: "none",
+            background: "var(--bg-elevated)",
+            border: "1px solid var(--border-hover)",
             borderRadius: 10,
             padding: "6px 10px",
           }}
-          labelStyle={{ color: "#aeaeb2", fontSize: 11 }}
-          itemStyle={{ color: "#fff", fontSize: 12, fontWeight: 600 }}
-          formatter={(v: number) => [`${v}${unit}`, ""]}
+          labelStyle={{ color: "var(--text-secondary)", fontSize: 11 }}
+          itemStyle={{ color: "var(--text-primary)", fontSize: 12, fontWeight: 600 }}
+          formatter={(v: any) => [`${v}${unit}`, ""]}
         />
         {target && (
           <ReferenceLine
             y={target}
-            stroke="#aeaeb2"
+            stroke="var(--border-hover)"
             strokeDasharray="4 4"
             strokeWidth={1}
           />

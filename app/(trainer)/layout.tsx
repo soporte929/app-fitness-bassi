@@ -6,7 +6,7 @@ export default function TrainerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#f5f5f7]">
+    <div className="min-h-screen bg-[var(--bg-base)]">
       <TrainerSidebar />
       {/* pl-16 = 64px para el strip de iconos colapsado */}
       <main className="pl-16 min-h-screen overflow-x-hidden">
