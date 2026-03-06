@@ -8,19 +8,19 @@ interface BadgeProps {
 
 const config = {
   green: {
-    dot: "bg-green-500",
-    bg: "bg-green-500/10 border border-green-500/20",
-    text: "text-green-600 dark:text-green-400",
+    dot: "bg-[var(--success)]",
+    bg: "bg-[var(--success)]/10 border border-[var(--success)]/20",
+    text: "text-[var(--success)]",
   },
   yellow: {
-    dot: "bg-yellow-500",
-    bg: "bg-yellow-500/10 border border-yellow-500/20",
-    text: "text-yellow-600 dark:text-yellow-400",
+    dot: "bg-[var(--warning)]",
+    bg: "bg-[var(--warning)]/10 border border-[var(--warning)]/20",
+    text: "text-[var(--warning)]",
   },
   red: {
-    dot: "bg-red-500",
-    bg: "bg-red-500/10 border border-red-500/20",
-    text: "text-red-600 dark:text-red-400",
+    dot: "bg-[var(--danger)]",
+    bg: "bg-[var(--danger)]/10 border border-[var(--danger)]/20",
+    text: "text-[var(--danger)]",
   },
 };
 

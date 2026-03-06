@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { Check, CheckCircle2, ChevronDown, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { saveSetLog } from '@/app/(client)/today/actions'
@@ -41,10 +41,12 @@ export function ExerciseCard({
   exercise,
   sessionId,
   lastSetLogs = [],
+  onCompletionChange,
 }: {
   exercise: ExerciseWithSets
   sessionId: string
   lastSetLogs?: LastSetLog[]
+  onCompletionChange?: (exerciseId: string, completed: boolean) => void
 }) {
   const myLastLogs = lastSetLogs.filter((l) => l.exercise_id === exercise.id)
 
@@ -74,6 +76,10 @@ export function ExerciseCard({
 
   const completedSets = sets.filter((s) => s.done).length
   const allDone = completedSets === sets.length && sets.length > 0
+
+  useEffect(() => {
+    onCompletionChange?.(exercise.id, allDone)
+  }, [allDone, exercise.id, onCompletionChange])
 
   const updateSet = (i: number, field: 'weight' | 'reps' | 'rir', value: string) => {
     setSets((prev) => prev.map((s, idx) => (idx === i ? { ...s, [field]: value } : s)))

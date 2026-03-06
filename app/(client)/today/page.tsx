@@ -3,9 +3,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { PageTransition } from '@/components/ui/page-transition'
 import { Button } from '@/components/ui/button'
-import { ExerciseCard } from '@/components/client/exercise-card'
 import { CheckCircle2, Flame, Dumbbell } from 'lucide-react'
 import { finishWorkout } from './actions'
+import { TodayExercisesProgress } from '@/components/client/today-exercises-progress'
 
 function calcStreak(sessions: { started_at: string }[]): number {
   if (sessions.length === 0) return 0
@@ -129,10 +129,6 @@ export default async function TodayPage() {
     set_logs: setLogs.filter((log) => log.exercise_id === ex.id),
   }))
 
-  const completedCount = exercisesWithSets.filter(
-    (ex) => ex.set_logs.filter((l) => l.completed).length >= ex.target_sets
-  ).length
-
   const finishAction = finishWorkout.bind(null, session.id)
 
   return (
@@ -152,35 +148,9 @@ export default async function TodayPage() {
             )}
           </div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">{dayName}</h1>
-
-          {/* Barra de progreso */}
-          <div className="mt-3 flex items-center gap-3">
-            <div className="flex-1 h-2 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[var(--accent)] rounded-full transition-all duration-500"
-                style={{
-                  width: `${exercises.length > 0 ? (completedCount / exercises.length) * 100 : 0}%`,
-                }}
-              />
-            </div>
-            <span className="text-sm text-[var(--text-secondary)] font-medium whitespace-nowrap">
-              {completedCount}/{exercises.length} ejercicios
-            </span>
-          </div>
         </div>
 
-        {/* Ejercicios */}
-        <div className="space-y-3 stagger">
-          {exercisesWithSets.map((exercise, i) => (
-            <div
-              key={exercise.id}
-              className="animate-fade-in"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <ExerciseCard exercise={exercise} sessionId={session.id} lastSetLogs={lastSetLogs} />
-            </div>
-          ))}
-        </div>
+        <TodayExercisesProgress exercises={exercisesWithSets} sessionId={session.id} lastSetLogs={lastSetLogs} />
 
         {/* Finalizar */}
         <div className="mt-6">

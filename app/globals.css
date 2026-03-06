@@ -4,49 +4,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light mode */
-  --bg-base: #f5f7fb;
-  --bg-surface: #ffffff;
-  --bg-elevated: #edf1f7;
-  --bg-overlay: #e4ebf4;
+  /* Slate design system — single dark theme */
+  --bg-base: #191919;
+  --bg-surface: #212121;
+  --bg-elevated: #2a2a2a;
+  --bg-overlay: #333333;
 
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #94a3b8;
+  --text-primary: #e8e8e6;
+  --text-secondary: #b0b0ae;
+  --text-muted: #a0a0a0;
 
-  --border: rgba(15, 23, 42, 0.1);
-  --border-hover: rgba(15, 23, 42, 0.18);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
 
-  --accent: #0f766e;
-  --accent-hover: #0d5f59;
-  --accent-text: #ffffff;
+  --accent: #6b7fa3;
+  --accent-hover: #7d90b3;
+  --accent-text: #e8e8e6;
 
-  --success: #059669;
-  --warning: #d97706;
-  --danger: #dc2626;
-
-  color-scheme: light;
-}
-
-.dark {
-  --bg-base: #090d14;
-  --bg-surface: #101826;
-  --bg-elevated: #182335;
-  --bg-overlay: #213049;
-
-  --text-primary: #e8eefc;
-  --text-secondary: #bac5dc;
-  --text-muted: #7c8ba8;
-
-  --border: rgba(168, 191, 232, 0.14);
-  --border-hover: rgba(200, 219, 255, 0.24);
-
-  --accent: #2dd4bf;
-  --accent-hover: #24b8a6;
-  --accent-text: #04201c;
-
-  --success: #34d399;
-  --warning: #f59e0b;
+  --success: #4ade80;
+  --warning: #f5c518;
   --danger: #f87171;
 
   color-scheme: dark;
@@ -81,12 +57,7 @@ body {
   transition: background-color 0.2s, color 0.2s;
 }
 
-.dark body {
-  background-image:
-    radial-gradient(circle at 8% -12%, rgba(45, 212, 191, 0.16), transparent 34%),
-    radial-gradient(circle at 92% -8%, rgba(56, 189, 248, 0.14), transparent 32%);
-  background-attachment: fixed;
-}
+/* No additional body background — Slate uses flat #191919 */
 
 ::-webkit-scrollbar {
   width: 4px;
@@ -211,4 +182,107 @@ textarea:focus {
 input::placeholder,
 textarea::placeholder {
   color: var(--text-muted);
+}
+
+/* ═══ Login — custom input ═══ */
+.login-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e8e8e6;
+  font-size: 0.875rem;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.login-input::placeholder {
+  color: #555;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #6b7fa3;
+  box-shadow: 0 0 0 3px rgba(107, 127, 163, 0.15);
+}
+
+@media (min-width: 768px) {
+  .login-input-responsive {
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+  }
+}
+
+/* ═══ Login — fade-in-down (logo + subtitle) ═══ */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 400ms ease-out forwards;
+}
+
+.animate-fade-in-down-delayed {
+  opacity: 0;
+  animation: fadeInDown 400ms ease-out 600ms forwards;
+}
+
+/* ═══ Login — fade-in-up (card entrance) ═══ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 500ms ease-out 200ms forwards;
+}
+
+/* ═══ Login — shimmer (button hover) ═══ */
+@keyframes shimmer {
+  from {
+    left: -60%;
+  }
+
+  to {
+    left: 110%;
+  }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 100%);
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+  animation: shimmer 600ms ease-in-out;
 }

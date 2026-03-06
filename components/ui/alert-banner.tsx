@@ -2,9 +2,9 @@ import { Alert, AlertLevel } from "@/lib/alerts";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
 
 const config: Record<AlertLevel, { Icon: typeof AlertTriangle; bg: string; border: string; text: string }> = {
-  critical: { Icon: AlertCircle,   bg: "bg-red-500/8",    border: "border-red-500/20",    text: "text-red-600 dark:text-red-400" },
-  warning:  { Icon: AlertTriangle, bg: "bg-yellow-500/8", border: "border-yellow-500/20", text: "text-yellow-600 dark:text-yellow-400" },
-  info:     { Icon: Info,          bg: "bg-blue-500/8",   border: "border-blue-500/20",   text: "text-blue-600 dark:text-blue-400" },
+  critical: { Icon: AlertCircle, bg: "bg-[var(--danger)]/8", border: "border-[var(--danger)]/20", text: "text-[var(--danger)]" },
+  warning: { Icon: AlertTriangle, bg: "bg-[var(--warning)]/8", border: "border-[var(--warning)]/20", text: "text-[var(--warning)]" },
+  info: { Icon: Info, bg: "bg-[var(--accent)]/8", border: "border-[var(--accent)]/20", text: "text-[var(--accent)]" },
 };
 
 export function AlertBanner({ alert }: { alert: Alert }) {

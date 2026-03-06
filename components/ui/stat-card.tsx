@@ -21,10 +21,10 @@ export function StatCard({
 }: StatCardProps) {
   const trendColor =
     trend === "up"
-      ? "text-green-600 dark:text-green-400"
+      ? "text-[var(--success)]"
       : trend === "down"
-      ? "text-red-500 dark:text-red-400"
-      : "text-[var(--text-muted)]";
+        ? "text-[var(--danger)]"
+        : "text-[var(--text-muted)]";
 
   return (
     <div

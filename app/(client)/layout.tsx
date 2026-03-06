@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { ClientNav } from '@/components/client/nav'
 import { RestTimer } from '@/components/client/rest-timer'
-import { LoadingScreen } from '@/components/ui/loading-screen'
+import LoadingScreen from '@/components/ui/loading-screen'
 import { ActiveSessionBanner } from '@/components/client/active-session-banner'
 import { createClient } from '@/lib/supabase/server'
 

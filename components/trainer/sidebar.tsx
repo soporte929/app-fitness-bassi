@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,10 +40,25 @@ const navigation = [
   },
 ];
 
-export function TrainerSidebar() {
+interface TrainerSidebarProps {
+  collapsed: boolean;
+  isMobile: boolean;
+  isMounted: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  onOpen: () => void;
+}
+
+export function TrainerSidebar({
+  collapsed,
+  isMobile,
+  isMounted,
+  onToggle,
+  onClose,
+  onOpen,
+}: TrainerSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -52,33 +66,49 @@ export function TrainerSidebar() {
     router.push("/login");
   };
 
+  if (!isMounted) return null; // Avoid hydration mismatch
+
+  // In mobile: sidebar is overlay with translate. In desktop: static.
+  const sidebarClasses = cn(
+    "fixed left-0 top-0 z-50 bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col h-screen overflow-hidden shadow-2xl shadow-black/20",
+    // Mobile: overlay with transform
+    isMobile
+      ? cn(
+        "w-60 transition-transform duration-300 ease-in-out",
+        collapsed ? "-translate-x-full" : "translate-x-0"
+      )
+      : cn(
+        "transition-all duration-300",
+        collapsed ? "w-[64px]" : "w-60"
+      )
+  );
+
+  // On mobile when expanded, show dark backdrop
+  const showBackdrop = isMobile && !collapsed;
+
   return (
     <>
-      {!collapsed && (
+      {/* Backdrop — only on mobile when sidebar is open */}
+      {showBackdrop && (
         <div
-          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-[2px] transition-opacity"
-          onClick={() => setCollapsed(true)}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity top-14"
+          onClick={onClose}
         />
       )}
 
-      <aside
-        className={cn(
-          "fixed left-0 top-0 z-40 bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col h-screen transition-all duration-300 overflow-hidden shadow-2xl shadow-black/20",
-          collapsed ? "w-[64px]" : "w-60"
-        )}
-      >
+      <aside className={sidebarClasses}>
         {/* Logo + toggle */}
         <div
           className={cn(
             "py-5 border-b border-[var(--border)] flex items-center gap-2",
-            collapsed ? "px-3 justify-center" : "px-4 justify-between"
+            collapsed && !isMobile ? "px-3 justify-center" : "px-4 justify-between"
           )}
         >
-          <div className={cn("flex items-center gap-3 min-w-0", collapsed && "justify-center")}>
+          <div className={cn("flex items-center gap-3 min-w-0", collapsed && !isMobile && "justify-center")}>
             <div className="w-8 h-8 bg-[var(--text-primary)] rounded-lg flex items-center justify-center flex-shrink-0">
               <Dumbbell className="w-4 h-4 text-[var(--bg-base)]" strokeWidth={2.5} />
             </div>
-            {!collapsed && (
+            {(isMobile || !collapsed) && (
               <div className="min-w-0">
                 <p className="text-[var(--text-primary)] text-sm font-semibold leading-tight truncate tracking-wide">
                   Fitness Bassi
@@ -87,9 +117,9 @@ export function TrainerSidebar() {
               </div>
             )}
           </div>
-          {!collapsed && (
+          {(isMobile || !collapsed) && (
             <button
-              onClick={() => setCollapsed(true)}
+              onClick={onClose}
               className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bg-elevated)] transition-colors flex-shrink-0"
               title="Colapsar menú"
             >
@@ -98,10 +128,11 @@ export function TrainerSidebar() {
           )}
         </div>
 
-        {collapsed && (
+        {/* Expand button — desktop collapsed only */}
+        {collapsed && !isMobile && (
           <div className="flex justify-center px-3 py-3 border-b border-[var(--border)]">
             <button
-              onClick={() => setCollapsed(false)}
+              onClick={onOpen}
               className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[var(--bg-elevated)] transition-colors"
               title="Expandir menú"
             >
@@ -111,10 +142,10 @@ export function TrainerSidebar() {
         )}
 
         {/* Nav */}
-        <nav className="flex-1 px-2 py-4 overflow-y-auto space-y-5">
+        <nav className="flex-1 px-2 py-4 overflow-y-auto space-y-5 flex flex-col justify-start">
           {navigation.map((group) => (
             <div key={group.section}>
-              {!collapsed && (
+              {(isMobile || !collapsed) && (
                 <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
                   {group.section}
                 </p>
@@ -123,21 +154,25 @@ export function TrainerSidebar() {
                 {group.items.map((item) => {
                   const active = pathname.startsWith(item.href);
                   const Icon = item.icon;
+                  const isIconOnly = collapsed && !isMobile;
                   return (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        title={collapsed ? item.label : undefined}
+                        title={isIconOnly ? item.label : undefined}
+                        onClick={() => {
+                          if (isMobile) onClose();
+                        }}
                         className={cn(
                           "flex items-center gap-3 rounded-lg text-sm transition-all duration-150",
-                          collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
+                          isIconOnly ? "justify-center px-2 py-2.5" : "px-3 py-2",
                           active
                             ? "bg-[var(--bg-elevated)] text-[var(--text-primary)] font-medium"
                             : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
                         )}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" strokeWidth={active ? 2.5 : 2} />
-                        {!collapsed && item.label}
+                        {!isIconOnly && item.label}
                       </Link>
                     </li>
                   );
@@ -148,7 +183,7 @@ export function TrainerSidebar() {
         </nav>
 
         {/* Theme toggle */}
-        <div className={cn("px-2 py-2 border-t border-[var(--border)]", collapsed ? "flex justify-center" : "px-3")}>
+        <div className={cn("px-2 py-2 border-t border-[var(--border)]", collapsed && !isMobile ? "flex justify-center" : "px-3")}>
           <ThemeToggle />
         </div>
 
@@ -158,13 +193,13 @@ export function TrainerSidebar() {
             onClick={handleLogout}
             className={cn(
               "flex items-center gap-3 rounded-lg hover:bg-[var(--bg-elevated)] cursor-pointer group transition-colors",
-              collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2"
+              collapsed && !isMobile ? "justify-center px-2 py-2.5" : "px-3 py-2"
             )}
           >
             <div className="w-7 h-7 rounded-full bg-[var(--accent)] flex items-center justify-center flex-shrink-0">
               <span className="text-[var(--accent-text)] text-xs font-semibold">B</span>
             </div>
-            {!collapsed && (
+            {(isMobile || !collapsed) && (
               <>
                 <div className="flex-1 min-w-0">
                   <p className="text-[var(--text-primary)] text-sm font-medium truncate">Bassi</p>
