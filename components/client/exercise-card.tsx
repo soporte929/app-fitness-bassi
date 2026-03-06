@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { CheckCircle2, Circle, ChevronDown, ChevronUp, Trophy } from 'lucide-react'
+import { useState, useTransition } from 'react'
+import { Check, CheckCircle2, ChevronDown, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { saveSetLog } from '@/app/(client)/today/actions'
 import type { Database } from '@/lib/supabase/types'
@@ -21,6 +20,13 @@ export type ExerciseWithSets = Pick<
   isPR?: boolean
 }
 
+export type LastSetLog = {
+  exercise_id: string
+  set_number: number
+  weight_kg: number
+  reps: number
+}
+
 type SetState = {
   weight: string
   reps: string
@@ -28,173 +34,266 @@ type SetState = {
   done: boolean
 }
 
+const inputClass =
+  'w-full h-10 px-1 rounded-lg text-sm text-center border transition-all focus:outline-none bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-primary)] focus:border-[var(--accent)]'
+
 export function ExerciseCard({
   exercise,
   sessionId,
+  lastSetLogs = [],
 }: {
   exercise: ExerciseWithSets
   sessionId: string
+  lastSetLogs?: LastSetLog[]
 }) {
+  const myLastLogs = lastSetLogs.filter((l) => l.exercise_id === exercise.id)
+
   const initialSets: SetState[] = Array.from({ length: exercise.target_sets }, (_, i) => {
     const existing = exercise.set_logs.find((l) => l.set_number === i + 1)
-    if (existing) {
+    if (existing && existing.completed) {
       return {
         weight: String(existing.weight_kg),
         reps: String(existing.reps),
         rir: String(existing.rir),
-        done: existing.completed,
+        done: true,
       }
     }
-    return { weight: '', reps: '', rir: '', done: false }
+    const prev = myLastLogs.find((l) => l.set_number === i + 1)
+    return {
+      weight: prev ? String(prev.weight_kg) : '',
+      reps: prev ? String(prev.reps) : '',
+      rir: String(exercise.target_rir),
+      done: false,
+    }
   })
 
   const [sets, setSets] = useState<SetState[]>(initialSets)
   const [expanded, setExpanded] = useState(true)
-  const [saving, setSaving] = useState<number | null>(null)
+  const [isPending, startTransition] = useTransition()
+  const [savingIdx, setSavingIdx] = useState<number | null>(null)
 
   const completedSets = sets.filter((s) => s.done).length
+  const allDone = completedSets === sets.length && sets.length > 0
 
   const updateSet = (i: number, field: 'weight' | 'reps' | 'rir', value: string) => {
     setSets((prev) => prev.map((s, idx) => (idx === i ? { ...s, [field]: value } : s)))
-  }
-
-  const handleBlur = async (i: number) => {
-    const set = sets[i]
-    if (!set.done && set.weight && set.reps && set.rir !== '') {
-      setSaving(i)
-      const result = await saveSetLog({
-        sessionId,
-        exerciseId: exercise.id,
-        setNumber: i + 1,
-        weightKg: parseFloat(set.weight),
-        reps: parseInt(set.reps),
-        rir: parseInt(set.rir),
+    // Re-save if this set is already completed
+    const currentSet = sets[i]
+    if (currentSet?.done) {
+      const updatedSet = { ...currentSet, [field]: value }
+      setSavingIdx(i)
+      startTransition(async () => {
+        const result = await saveSetLog({
+          sessionId,
+          exerciseId: exercise.id,
+          setNumber: i + 1,
+          weightKg: parseFloat(updatedSet.weight) || 0,
+          reps: parseInt(updatedSet.reps) || 0,
+          rir: parseInt(updatedSet.rir) || 0,
+          completed: true,
+        })
+        console.log('saveSetLog result:', JSON.stringify(result))
+        setSavingIdx(null)
       })
-      setSaving(null)
-      if (result.success) {
-        setSets((prev) => prev.map((s, idx) => (idx === i ? { ...s, done: true } : s)))
-      }
     }
   }
 
+  // Toggle: completes if not done, uncompletes if done
+  const handleComplete = (i: number) => {
+    const set = sets[i]
+    if (!set) return
+    const newCompleted = !set.done
+    setSavingIdx(i)
+    startTransition(async () => {
+      if (newCompleted) {
+        // Mark series i + any previous undone series
+        const toMark = sets
+          .map((s, idx) => ({ s, idx }))
+          .filter(({ s, idx }) => idx < i && !s.done)
+          .concat([{ s: set, idx: i }])
+
+        await Promise.all(
+          toMark.map(({ s, idx }) =>
+            saveSetLog({
+              sessionId,
+              exerciseId: exercise.id,
+              setNumber: idx + 1,
+              weightKg: parseFloat(s.weight) || 0,
+              reps: parseInt(s.reps) || 0,
+              rir: parseInt(s.rir) || 0,
+              completed: true,
+            })
+          )
+        )
+        setSavingIdx(null)
+        setSets((prev) =>
+          prev.map((s, idx) => (idx <= i ? { ...s, done: true } : s))
+        )
+      } else {
+        // Unmark series i + all subsequent done series
+        const toUnmark = sets
+          .map((s, idx) => ({ s, idx }))
+          .filter(({ s, idx }) => idx >= i && s.done)
+
+        await Promise.all(
+          toUnmark.map(({ s, idx }) =>
+            saveSetLog({
+              sessionId,
+              exerciseId: exercise.id,
+              setNumber: idx + 1,
+              weightKg: parseFloat(s.weight) || 0,
+              reps: parseInt(s.reps) || 0,
+              rir: parseInt(s.rir) || 0,
+              completed: false,
+            })
+          )
+        )
+        setSavingIdx(null)
+        setSets((prev) =>
+          prev.map((s, idx) => (idx >= i ? { ...s, done: false } : s))
+        )
+      }
+      if (newCompleted) {
+        window.dispatchEvent(new CustomEvent('startRestTimer', { detail: { seconds: 180 } }))
+      }
+    })
+  }
+
   return (
-    <Card>
+    <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border)] overflow-hidden">
+      {/* Header */}
       <button
+        type="button"
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-5 py-4 flex items-center justify-between text-left"
+        className="w-full p-4 flex items-center gap-3 text-left"
       >
-        <div className="flex items-center gap-3">
-          <div
-            className={cn(
-              'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold',
-              completedSets === sets.length
-                ? 'bg-[var(--success)]/15 text-[var(--success)]'
-                : 'bg-[var(--bg-elevated)] text-[var(--text-secondary)]'
-            )}
-          >
-            {completedSets}/{sets.length}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold text-[var(--text-primary)]">{exercise.name}</p>
-              {exercise.isPR && (
-                <span className="flex items-center gap-0.5 text-[10px] font-semibold text-[var(--warning)] bg-[var(--warning)]/10 px-1.5 py-0.5 rounded-full">
-                  <Trophy className="w-2.5 h-2.5" /> PR
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-[var(--text-secondary)]">
-              {exercise.muscle_group} · {exercise.target_reps} reps · RIR {exercise.target_rir}
-            </p>
-          </div>
+        <div
+          className={cn(
+            'flex-shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold',
+            allDone
+              ? 'bg-[var(--success)]/15 text-[var(--success)]'
+              : 'bg-[var(--bg-elevated)] text-[var(--text-secondary)]'
+          )}
+        >
+          {allDone && <Check className="w-3 h-3" />}
+          {completedSets}/{sets.length}
         </div>
-        {expanded ? (
-          <ChevronUp className="w-4 h-4 text-[var(--text-secondary)]" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-[var(--text-secondary)]" />
-        )}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{exercise.name}</p>
+            {exercise.isPR && (
+              <span className="flex-shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-[var(--warning)] bg-[var(--warning)]/10 px-1.5 py-0.5 rounded-full">
+                <Trophy className="w-2.5 h-2.5" /> PR
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-[var(--text-secondary)]">
+            {exercise.muscle_group} · {exercise.target_reps} reps · RIR {exercise.target_rir}
+          </p>
+        </div>
+
+        <ChevronDown
+          className={cn(
+            'w-4 h-4 text-[var(--text-muted)] flex-shrink-0 transition-transform duration-200',
+            expanded && 'rotate-180'
+          )}
+        />
       </button>
 
       {expanded && (
         <div className="border-t border-[var(--border)]">
-          <div className="grid grid-cols-4 gap-2 px-5 py-2 bg-[var(--bg-elevated)]">
-            {['Serie', 'Peso (kg)', 'Reps', 'RIR'].map((h) => (
-              <p key={h} className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wide">
+          {/* Table header */}
+          <div className="grid grid-cols-[28px_60px_1fr_1fr_46px_40px] gap-x-2 px-4 py-2 bg-[var(--bg-elevated)]">
+            {['#', 'ANT.', 'KG', 'REPS', 'RIR', ''].map((h) => (
+              <p key={h} className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wide text-center">
                 {h}
               </p>
             ))}
           </div>
 
-          {sets.map((set, i) => (
-            <div
-              key={i}
-              className={cn(
-                'grid grid-cols-4 gap-2 items-center px-5 min-h-[52px] border-t border-[var(--border)]',
-                set.done && 'bg-[var(--success)]/5'
-              )}
-            >
-              <div className="flex items-center gap-2">
-                {set.done ? (
-                  <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
-                ) : saving === i ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin" />
-                ) : (
-                  <Circle className="w-4 h-4 text-[var(--text-muted)]" />
+          {sets.map((set, i) => {
+            const prev = myLastLogs.find((l) => l.set_number === i + 1)
+            const isSaving = savingIdx === i && isPending
+            return (
+              <div
+                key={i}
+                className={cn(
+                  'grid grid-cols-[28px_60px_1fr_1fr_46px_40px] gap-x-2 items-center px-4 py-2 border-t border-[var(--border)]',
+                  set.done && 'bg-[var(--success)]/5'
                 )}
-                <span className="text-sm text-[var(--text-secondary)]">{i + 1}</span>
+              >
+                {/* # */}
+                <div className="flex items-center justify-center">
+                  {set.done ? (
+                    <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
+                  ) : (
+                    <span className="text-sm text-[var(--text-muted)] font-medium">{i + 1}</span>
+                  )}
+                </div>
+
+                {/* ANT. */}
+                <div className="flex items-center justify-center">
+                  <span className="text-xs text-[var(--text-muted)]">
+                    {prev ? `${prev.weight_kg}×${prev.reps}` : '—'}
+                  </span>
+                </div>
+
+                {/* KG */}
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={set.weight}
+                  onChange={(e) => updateSet(i, 'weight', e.target.value)}
+                  placeholder={prev ? String(prev.weight_kg) : '—'}
+                  className={inputClass}
+                />
+
+                {/* REPS */}
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={set.reps}
+                  onChange={(e) => updateSet(i, 'reps', e.target.value)}
+                  placeholder={prev ? String(prev.reps) : '—'}
+                  className={inputClass}
+                />
+
+                {/* RIR */}
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={set.rir}
+                  onChange={(e) => updateSet(i, 'rir', e.target.value)}
+                  placeholder="—"
+                  className={inputClass}
+                />
+
+                {/* ✓ toggle */}
+                <button
+                  type="button"
+                  onClick={() => handleComplete(i)}
+                  disabled={isSaving}
+                  className={cn(
+                    'w-full h-10 rounded-lg flex items-center justify-center transition-all',
+                    set.done
+                      ? 'bg-[var(--success)]/15 text-[var(--success)] hover:bg-[var(--success)]/25 active:scale-95'
+                      : isSaving
+                        ? 'bg-[var(--bg-elevated)] text-[var(--text-muted)] cursor-wait'
+                        : 'bg-[var(--accent)]/15 text-[var(--accent)] hover:bg-[var(--accent)]/25 active:scale-95'
+                  )}
+                >
+                  {isSaving ? (
+                    <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                </button>
               </div>
-
-              <input
-                type="number"
-                inputMode="decimal"
-                value={set.weight}
-                onChange={(e) => updateSet(i, 'weight', e.target.value)}
-                onBlur={() => handleBlur(i)}
-                disabled={set.done}
-                placeholder="—"
-                className={cn(
-                  'w-full h-12 px-2.5 rounded-lg text-base text-center border transition-all focus:outline-none',
-                  set.done
-                    ? 'bg-transparent border-transparent text-[var(--text-secondary)] cursor-not-allowed'
-                    : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-primary)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]'
-                )}
-              />
-
-              <input
-                type="number"
-                inputMode="numeric"
-                value={set.reps}
-                onChange={(e) => updateSet(i, 'reps', e.target.value)}
-                onBlur={() => handleBlur(i)}
-                disabled={set.done}
-                placeholder="—"
-                className={cn(
-                  'w-full h-12 px-2.5 rounded-lg text-base text-center border transition-all focus:outline-none',
-                  set.done
-                    ? 'bg-transparent border-transparent text-[var(--text-secondary)] cursor-not-allowed'
-                    : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-primary)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]'
-                )}
-              />
-
-              <input
-                type="number"
-                inputMode="numeric"
-                value={set.rir}
-                onChange={(e) => updateSet(i, 'rir', e.target.value)}
-                onBlur={() => handleBlur(i)}
-                disabled={set.done}
-                placeholder="—"
-                className={cn(
-                  'w-full h-12 px-2.5 rounded-lg text-base text-center border transition-all focus:outline-none',
-                  set.done
-                    ? 'bg-transparent border-transparent text-[var(--text-secondary)] cursor-not-allowed'
-                    : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-primary)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]'
-                )}
-              />
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
-    </Card>
+    </div>
   )
 }

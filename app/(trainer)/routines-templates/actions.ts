@@ -1,8 +1,9 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { daysToJson, type RoutinePlanInput } from './types'
+import type { RoutinePlanInput } from './types'
 
 function normalizeOptionalText(value: string | null): string | null {
   if (value == null) return null
@@ -67,6 +68,15 @@ async function getAuthenticatedTrainerId() {
   } = await supabase.auth.getUser()
 
   if (!user) return { supabase, trainerId: null as string | null }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'trainer') return { supabase, trainerId: null as string | null }
+
   return { supabase, trainerId: user.id }
 }
 
@@ -112,24 +122,57 @@ export async function createPlanAction(
     if (!isOwnedClient) return { success: false, error: 'Cliente no válido para este entrenador' }
   }
 
-  const { data, error } = await supabase.rpc('create_workout_plan_with_structure', {
-    p_trainer_id: trainerId,
-    p_name: normalized.name,
-    p_description: normalized.description,
-    p_days_per_week: normalized.days_per_week,
-    p_is_template: normalized.mode === 'template',
-    p_client_id: normalized.mode === 'client' ? normalized.client_id : null,
-    p_days: daysToJson(normalized.days),
-  })
+  const { data: plan, error: planError } = await supabase
+    .from('workout_plans')
+    .insert({
+      name: normalized.name,
+      description: normalized.description,
+      days_per_week: normalized.days_per_week,
+      is_template: normalized.mode === 'template',
+      trainer_id: trainerId,
+      client_id: normalized.mode === 'client' ? normalized.client_id : null,
+      active: true,
+    })
+    .select('id')
+    .single()
 
-  if (error || !data) {
-    return { success: false, error: error?.message ?? 'No se pudo crear el plan' }
+  if (planError || !plan) {
+    return { success: false, error: planError?.message ?? 'No se pudo crear el plan' }
   }
 
-  const planId = data
-  revalidateRoutinePaths(normalized.client_id, planId)
+  for (const day of normalized.days) {
+    const { data: dayRow, error: dayError } = await supabase
+      .from('workout_days')
+      .insert({ plan_id: plan.id, name: day.name, order_index: day.order_index })
+      .select('id')
+      .single()
 
-  return { success: true, planId }
+    if (dayError || !dayRow) {
+      return { success: false, error: dayError?.message ?? 'No se pudo crear el día' }
+    }
+
+    if (day.exercises.length > 0) {
+      const { error: exError } = await supabase
+        .from('exercises')
+        .insert(
+          day.exercises.map((ex, i) => ({
+            day_id: dayRow.id,
+            name: ex.name,
+            muscle_group: ex.muscle_group,
+            target_sets: ex.target_sets,
+            target_reps: ex.target_reps,
+            target_rir: ex.target_rir,
+            notes: ex.notes,
+            order_index: i,
+          }))
+        )
+
+      if (exError) return { success: false, error: exError.message }
+    }
+  }
+
+  revalidateRoutinePaths(normalized.client_id, plan.id)
+  redirect('/routines-templates')
 }
 
 export async function updatePlanAction(
@@ -172,24 +215,60 @@ export async function updatePlanAction(
     if (!isOwnedClient) return { success: false, error: 'Cliente no válido para este entrenador' }
   }
 
-  const { error } = await supabase.rpc('update_workout_plan_with_structure', {
-    p_plan_id: planId,
-    p_trainer_id: trainerId,
-    p_name: normalized.name,
-    p_description: normalized.description,
-    p_days_per_week: normalized.days_per_week,
-    p_is_template: plan.is_template,
-    p_client_id: plan.client_id,
-    p_days: daysToJson(normalized.days),
-    p_replace_structure: replaceStructure,
-  })
+  const { error: updateError } = await supabase
+    .from('workout_plans')
+    .update({
+      name: normalized.name,
+      description: normalized.description,
+      days_per_week: normalized.days_per_week,
+    })
+    .eq('id', planId)
+    .eq('trainer_id', trainerId)
 
-  if (error) {
-    return { success: false, error: error.message }
+  if (updateError) return { success: false, error: updateError.message }
+
+  if (replaceStructure) {
+    const { error: deleteError } = await supabase
+      .from('workout_days')
+      .delete()
+      .eq('plan_id', planId)
+
+    if (deleteError) return { success: false, error: deleteError.message }
+
+    for (const day of normalized.days) {
+      const { data: dayRow, error: dayError } = await supabase
+        .from('workout_days')
+        .insert({ plan_id: planId, name: day.name, order_index: day.order_index })
+        .select('id')
+        .single()
+
+      if (dayError || !dayRow) {
+        return { success: false, error: dayError?.message ?? 'No se pudo actualizar el día' }
+      }
+
+      if (day.exercises.length > 0) {
+        const { error: exError } = await supabase
+          .from('exercises')
+          .insert(
+            day.exercises.map((ex, i) => ({
+              day_id: dayRow.id,
+              name: ex.name,
+              muscle_group: ex.muscle_group,
+              target_sets: ex.target_sets,
+              target_reps: ex.target_reps,
+              target_rir: ex.target_rir,
+              notes: ex.notes,
+              order_index: i,
+            }))
+          )
+
+        if (exError) return { success: false, error: exError.message }
+      }
+    }
   }
 
   revalidateRoutinePaths(plan.client_id, planId)
-  return { success: true }
+  redirect('/routines-templates')
 }
 
 export async function deletePlanAction(
@@ -229,16 +308,89 @@ export async function clonePlanToClientAction(
   const isOwnedClient = await validateClientOwnership(supabase, trainerId, clientId)
   if (!isOwnedClient) return { success: false, error: 'Cliente no válido para este entrenador' }
 
-  const { data, error } = await supabase.rpc('clone_workout_plan_to_client', {
-    p_plan_id: planId,
-    p_trainer_id: trainerId,
-    p_client_id: clientId,
-  })
+  // Fetch source plan + structure
+  const { data: sourcePlan, error: sourceError } = await supabase
+    .from('workout_plans')
+    .select(`
+      name, description, days_per_week,
+      workout_days (
+        id, name, order_index,
+        exercises ( name, muscle_group, target_sets, target_reps, target_rir, notes, order_index )
+      )
+    `)
+    .eq('id', planId)
+    .eq('trainer_id', trainerId)
+    .eq('is_template', true)
+    .maybeSingle()
 
-  if (error || !data) {
-    return { success: false, error: error?.message ?? 'No se pudo asignar el template' }
+  if (sourceError || !sourcePlan) {
+    return { success: false, error: sourceError?.message ?? 'Template no encontrado' }
   }
 
-  revalidateRoutinePaths(clientId, data)
-  return { success: true, newPlanId: data }
+  // Insert new plan for client
+  const { data: newPlan, error: planError } = await supabase
+    .from('workout_plans')
+    .insert({
+      name: sourcePlan.name,
+      description: sourcePlan.description,
+      days_per_week: sourcePlan.days_per_week,
+      is_template: false,
+      trainer_id: trainerId,
+      client_id: clientId,
+      active: true,
+    })
+    .select('id')
+    .single()
+
+  if (planError || !newPlan) {
+    return { success: false, error: planError?.message ?? 'No se pudo asignar el template' }
+  }
+
+  const sourceDays = (sourcePlan.workout_days ?? []) as Array<{
+    name: string
+    order_index: number
+    exercises: Array<{
+      name: string
+      muscle_group: string
+      target_sets: number
+      target_reps: string
+      target_rir: number
+      notes: string | null
+      order_index: number
+    }>
+  }>
+
+  for (const day of sourceDays) {
+    const { data: dayRow, error: dayError } = await supabase
+      .from('workout_days')
+      .insert({ plan_id: newPlan.id, name: day.name, order_index: day.order_index })
+      .select('id')
+      .single()
+
+    if (dayError || !dayRow) {
+      return { success: false, error: dayError?.message ?? 'No se pudo clonar el día' }
+    }
+
+    if (day.exercises.length > 0) {
+      const { error: exError } = await supabase
+        .from('exercises')
+        .insert(
+          day.exercises.map((ex) => ({
+            day_id: dayRow.id,
+            name: ex.name,
+            muscle_group: ex.muscle_group,
+            target_sets: ex.target_sets,
+            target_reps: ex.target_reps,
+            target_rir: ex.target_rir,
+            notes: ex.notes,
+            order_index: ex.order_index,
+          }))
+        )
+
+      if (exError) return { success: false, error: exError.message }
+    }
+  }
+
+  revalidateRoutinePaths(clientId, newPlan.id)
+  return { success: true, newPlanId: newPlan.id }
 }

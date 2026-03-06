@@ -12,6 +12,12 @@ export type SessionDetailSet = {
   completed: boolean
 }
 
+export type SessionDetailBestSet = {
+  weightKg: number
+  reps: number
+  volume: number
+}
+
 export type SessionDetailExerciseGroup = {
   exerciseId: string
   name: string
@@ -20,6 +26,7 @@ export type SessionDetailExerciseGroup = {
   targetReps: string
   targetRir: number
   volume: number
+  bestSet: SessionDetailBestSet | null
   sets: SessionDetailSet[]
 }
 
@@ -31,7 +38,9 @@ export type SessionDetailViewModel = {
   durationLabel: string
   totalVolume: number
   exerciseCount: number
+  completedSets: number
   totalSets: number
+  trainedMuscles: string[]
   exercises: SessionDetailExerciseGroup[]
 }
 
@@ -55,6 +64,11 @@ function formatVolume(volume: number): string {
 
 function formatObjective(exercise: SessionDetailExerciseGroup): string {
   return `${exercise.targetSets}×${exercise.targetReps} reps · RIR ${exercise.targetRir}`
+}
+
+function formatBestSet(bestSet: SessionDetailBestSet | null): string {
+  if (!bestSet) return '—'
+  return `${formatWeight(bestSet.weightKg)}kg × ${bestSet.reps} reps`
 }
 
 export function SessionDetail({ session }: { session: SessionDetailViewModel }) {
@@ -90,9 +104,24 @@ export function SessionDetail({ session }: { session: SessionDetailViewModel }) 
           </div>
           <div className="rounded-lg bg-[var(--bg-surface)] border border-[var(--border)] px-3 py-2">
             <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Series</p>
-            <p className="text-sm font-semibold text-[var(--text-primary)] mt-0.5">{session.totalSets}</p>
+            <p className="text-sm font-semibold text-[var(--text-primary)] mt-0.5">
+              {session.completedSets}/{session.totalSets}
+            </p>
           </div>
         </div>
+
+        {session.trainedMuscles.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {session.trainedMuscles.map((muscle) => (
+              <span
+                key={muscle}
+                className="text-xs bg-[var(--bg-elevated)] text-[var(--text-secondary)] px-2 py-0.5 rounded-full"
+              >
+                {muscle}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       {session.exercises.length === 0 ? (
@@ -158,11 +187,14 @@ export function SessionDetail({ session }: { session: SessionDetailViewModel }) 
                 </table>
               </div>
 
-              <div className="border-t border-[var(--border)] px-5 py-3 flex items-center justify-between">
-                <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
-                  Volumen ejercicio
-                </span>
-                <span className="text-sm font-bold text-[var(--accent)]">{formatVolume(exercise.volume)}</span>
+              <div className="border-t border-[var(--border)] px-5 py-3 space-y-1.5">
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Mejor serie:{' '}
+                  <span className="font-semibold text-[var(--text-primary)]">{formatBestSet(exercise.bestSet)}</span>
+                </p>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Volumen: <span className="font-semibold text-[var(--accent)]">{formatVolume(exercise.volume)}</span>
+                </p>
               </div>
             </div>
           ))}

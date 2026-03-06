@@ -5,6 +5,37 @@ import { HistoryFilters } from '@/components/client/history-filters'
 import type { SessionData } from '@/components/client/session-history-card'
 import { History } from 'lucide-react'
 
+type SessionSetLogRow = {
+  weight_kg: number
+  reps: number
+  completed: boolean
+  exercises: {
+    muscle_group: string | null
+  } | null
+}
+
+type SessionRow = {
+  id: string
+  started_at: string
+  finished_at: string | null
+  workout_day: {
+    name: string
+  } | null
+  set_logs: SessionSetLogRow[] | null
+}
+
+function formatDuration(startedAt: string, finishedAt: string | null): string {
+  if (!finishedAt) return '—'
+
+  const diffMs = new Date(finishedAt).getTime() - new Date(startedAt).getTime()
+  const minutes = Math.max(0, Math.round(diffMs / 60000))
+
+  if (minutes < 60) return `${minutes}min`
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`
+}
+
 export default async function HistoryPage() {
   const supabase = await createClient()
   const {
@@ -26,15 +57,39 @@ export default async function HistoryPage() {
       `id, started_at, finished_at,
       workout_day:workout_days!workout_sessions_day_id_fkey (name),
       set_logs (
-        id, exercise_id, set_number, weight_kg, reps,
-        exercise:exercises!set_logs_exercise_id_fkey (name)
+        weight_kg, reps, completed,
+        exercises (
+          muscle_group
+        )
       )`
     )
     .eq('client_id', client.id)
     .eq('completed', true)
     .order('finished_at', { ascending: false })
 
-  const sessions = (rawSessions ?? []) as unknown as SessionData[]
+  const sessionsFromDb = (rawSessions ?? []) as SessionRow[]
+  const sessions: SessionData[] = sessionsFromDb.map((session) => {
+    const completedLogs = (session.set_logs ?? []).filter((log) => log.completed)
+    const totalVolume = completedLogs.reduce((sum, log) => sum + log.weight_kg * log.reps, 0)
+    const trainedMuscles = Array.from(
+      new Set(
+        completedLogs
+          .map((log) => log.exercises?.muscle_group?.trim())
+          .filter((muscle): muscle is string => Boolean(muscle))
+      )
+    )
+
+    return {
+      id: session.id,
+      started_at: session.started_at,
+      finished_at: session.finished_at,
+      workout_day: session.workout_day,
+      durationLabel: formatDuration(session.started_at, session.finished_at),
+      totalVolume,
+      completedSets: completedLogs.length,
+      trainedMuscles,
+    }
+  })
 
   if (sessions.length === 0) {
     return (

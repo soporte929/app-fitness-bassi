@@ -13,6 +13,7 @@ export async function saveSetLog({
   weightKg,
   reps,
   rir,
+  completed = true,
 }: {
   sessionId: string
   exerciseId: string
@@ -20,6 +21,7 @@ export async function saveSetLog({
   weightKg: number
   reps: number
   rir: number
+  completed?: boolean
 }): Promise<{ success: boolean }> {
   const supabase = await createClient()
 
@@ -31,11 +33,12 @@ export async function saveSetLog({
       weight_kg: weightKg,
       reps,
       rir,
-      completed: true,
+      completed,
     } satisfies SetLogInsert,
     { onConflict: 'session_id,exercise_id,set_number' }
   )
 
+  console.log('saveSetLog error:', JSON.stringify(error))
   return { success: !error }
 }
 
@@ -48,6 +51,6 @@ export async function finishWorkout(sessionId: string, _formData?: FormData): Pr
     .eq('id', sessionId)
 
   if (!error) {
-    redirect(`/workout/${sessionId}/summary`)
+    redirect('/history')
   }
 }

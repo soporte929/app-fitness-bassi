@@ -122,6 +122,7 @@ export default async function SessionDetailPage({
   for (const log of sortedSetLogs) {
     const existing = groupedByExercise.get(log.exercise_id)
     if (!existing) {
+      const setVolume = log.weight_kg * log.reps
       groupedByExercise.set(log.exercise_id, {
         exerciseId: log.exercise_id,
         name: log.exercise?.name ?? 'Ejercicio',
@@ -129,7 +130,12 @@ export default async function SessionDetailPage({
         targetSets: log.exercise?.target_sets ?? 0,
         targetReps: log.exercise?.target_reps ?? '—',
         targetRir: log.exercise?.target_rir ?? 0,
-        volume: log.weight_kg * log.reps,
+        volume: setVolume,
+        bestSet: {
+          weightKg: log.weight_kg,
+          reps: log.reps,
+          volume: setVolume,
+        },
         sets: [
           {
             id: log.id,
@@ -144,6 +150,7 @@ export default async function SessionDetailPage({
       continue
     }
 
+    const setVolume = log.weight_kg * log.reps
     existing.sets.push({
       id: log.id,
       setNumber: log.set_number,
@@ -152,11 +159,28 @@ export default async function SessionDetailPage({
       rir: log.rir,
       completed: log.completed,
     })
-    existing.volume += log.weight_kg * log.reps
+    existing.volume += setVolume
+
+    if (!existing.bestSet || setVolume > existing.bestSet.volume) {
+      existing.bestSet = {
+        weightKg: log.weight_kg,
+        reps: log.reps,
+        volume: setVolume,
+      }
+    }
   }
 
   const exercises = Array.from(groupedByExercise.values())
   const totalVolume = sortedSetLogs.reduce((sum, log) => sum + log.weight_kg * log.reps, 0)
+  const completedSets = sortedSetLogs.filter((log) => log.completed).length
+  const trainedMuscles = Array.from(
+    new Set(
+      sortedSetLogs
+        .filter((log) => log.completed)
+        .map((log) => log.exercise?.muscle_group?.trim())
+        .filter((muscle): muscle is string => Boolean(muscle))
+    )
+  )
 
   const sessionViewModel: SessionDetailViewModel = {
     sessionId: session.id,
@@ -166,7 +190,9 @@ export default async function SessionDetailPage({
     durationLabel: formatDuration(session.started_at, session.finished_at),
     totalVolume,
     exerciseCount: exercises.length,
+    completedSets,
     totalSets: sortedSetLogs.length,
+    trainedMuscles,
     exercises,
   }
 

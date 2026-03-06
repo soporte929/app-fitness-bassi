@@ -2,56 +2,24 @@
 
 import Link from 'next/link'
 
-export type SetLogWithExercise = {
-  id: string
-  exercise_id: string
-  set_number: number
-  weight_kg: number
-  reps: number
-  exercise: { name: string } | null
-}
-
 export type SessionData = {
   id: string
   started_at: string
   finished_at: string | null
   workout_day: { name: string } | null
-  set_logs: SetLogWithExercise[]
+  durationLabel: string
+  totalVolume: number
+  completedSets: number
+  trainedMuscles: string[]
 }
 
-type ExerciseSummary = {
-  name: string
-  sets: number
-  maxWeight: number
-}
+const volumeFormatter = new Intl.NumberFormat('es-ES', {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+})
 
-function groupByExercise(setLogs: SetLogWithExercise[]): ExerciseSummary[] {
-  const map = new Map<string, ExerciseSummary>()
-  for (const log of setLogs) {
-    const name = log.exercise?.name ?? 'Ejercicio'
-    const entry = map.get(name)
-    if (!entry) {
-      map.set(name, { name, sets: 1, maxWeight: log.weight_kg })
-    } else {
-      entry.sets++
-      if (log.weight_kg > entry.maxWeight) entry.maxWeight = log.weight_kg
-    }
-  }
-  return Array.from(map.values())
-}
-
-function calcVolume(setLogs: SetLogWithExercise[]): number {
-  return setLogs.reduce((sum, log) => sum + log.weight_kg * log.reps, 0)
-}
-
-function formatDuration(startedAt: string, finishedAt: string | null): string {
-  if (!finishedAt) return ''
-  const diff = new Date(finishedAt).getTime() - new Date(startedAt).getTime()
-  const minutes = Math.round(diff / 60000)
-  if (minutes < 60) return `${minutes}min`
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m > 0 ? `${h}h ${m}min` : `${h}h`
+function formatVolume(volume: number): string {
+  return `${volumeFormatter.format(volume)} kg`
 }
 
 function formatDate(dateStr: string): string {
@@ -68,12 +36,10 @@ interface Props {
 }
 
 export function SessionHistoryCard({ session, index }: Props) {
-  const exercises = groupByExercise(session.set_logs)
-  const volume = calcVolume(session.set_logs)
-  const duration = formatDuration(session.started_at, session.finished_at)
   const dateLabel = formatDate(session.finished_at ?? session.started_at)
   const dayName = session.workout_day?.name ?? 'Entrenamiento'
   const detailsHref = `/history/${session.id}`
+  const setLabel = `${session.completedSets} ${session.completedSets === 1 ? 'serie' : 'series'}`
 
   return (
     <div className="animate-fade-in" style={{ animationDelay: `${index * 60}ms` }}>
@@ -82,37 +48,28 @@ export function SessionHistoryCard({ session, index }: Props) {
         aria-label={`Ver detalle de sesión: ${dayName}, ${dateLabel}`}
         className="block bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg overflow-hidden transition-all duration-300 hover:border-[var(--border-hover)] cursor-pointer"
       >
-        {/* Header */}
         <div className="px-5 pt-4 pb-3">
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-medium text-[var(--text-secondary)] capitalize">{dateLabel}</p>
-            {duration && <p className="text-xs text-[var(--text-muted)]">{duration}</p>}
-          </div>
+          <p className="text-xs font-medium text-[var(--text-secondary)] capitalize mb-1">{dateLabel}</p>
           <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight text-lg">{dayName}</h2>
         </div>
 
-        {/* Exercise list */}
-        {exercises.length > 0 && (
-          <div className="px-5 py-3 border-t border-[var(--border)] space-y-1.5">
-            {exercises.map((ex) => (
-              <div key={ex.name} className="flex items-center justify-between">
-                <span className="text-sm text-[var(--text-secondary)] truncate flex-1 mr-3">{ex.name}</span>
-                <span className="text-sm font-medium text-[var(--text-primary)] whitespace-nowrap font-[family-name:var(--font-geist-mono)]">
-                  {ex.sets}×{ex.maxWeight === 0 ? 'PC' : `${ex.maxWeight}kg`}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="px-5 py-3 border-t border-[var(--border)] space-y-2">
+          <p className="text-sm text-[var(--text-primary)] font-medium font-[family-name:var(--font-geist-mono)]">
+            {formatVolume(session.totalVolume)} · {setLabel} · {session.durationLabel}
+          </p>
 
-        {/* Footer: total volume */}
-        <div className="px-5 py-3 border-t border-[var(--border)] flex items-center justify-between">
-          <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
-            Volumen total
-          </span>
-          <span className="text-sm font-bold text-[var(--accent)] font-[family-name:var(--font-geist-mono)]">
-            {volume.toLocaleString('es-ES')} kg
-          </span>
+          {session.trainedMuscles.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {session.trainedMuscles.map((muscle) => (
+                <span
+                  key={muscle}
+                  className="text-xs bg-[var(--bg-elevated)] text-[var(--text-secondary)] px-2 py-0.5 rounded-full"
+                >
+                  {muscle}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </Link>
     </div>

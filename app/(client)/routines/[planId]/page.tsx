@@ -31,21 +31,41 @@ export default async function PlanDetailPage({
 
   if (!client) redirect('/login')
 
-  const { data: rawPlan } = await supabase
-    .from('workout_plans')
-    .select(
-      `id, name, active, days_per_week, client_id,
-      workout_days (
-        id, name, order_index,
-        exercises (
-          id, name, muscle_group, target_sets, target_reps, target_rir, order_index, notes
-        )
-      )`
-    )
-    .eq('id', planId)
-    .single()
+  const now = new Date()
+  const todayStart = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  ).toISOString()
+  const todayEnd = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999)
+  ).toISOString()
 
-  // Verificar que el plan pertenece al cliente autenticado
+  const [rawPlanResult, activeSessionResult] = await Promise.all([
+    supabase
+      .from('workout_plans')
+      .select(
+        `id, name, active, days_per_week, client_id,
+        workout_days (
+          id, name, order_index,
+          exercises (
+            id, name, muscle_group, target_sets, target_reps, target_rir, order_index, notes
+          )
+        )`
+      )
+      .eq('id', planId)
+      .single(),
+    supabase
+      .from('workout_sessions')
+      .select('id')
+      .eq('client_id', client.id)
+      .eq('completed', false)
+      .gte('started_at', todayStart)
+      .lte('started_at', todayEnd)
+      .maybeSingle(),
+  ])
+
+  const rawPlan = rawPlanResult.data
+  const hasActiveSession = Boolean(activeSessionResult.data)
+
   if (!rawPlan || (rawPlan as Pick<PlanRow, 'client_id'>).client_id !== client.id) {
     notFound()
   }
@@ -59,6 +79,7 @@ export default async function PlanDetailPage({
       exercises: [...d.exercises].sort((a, b) => a.order_index - b.order_index),
     }))
 
+  const firstDayId = days[0]?.id ?? ''
   const muscleGroups = [...new Set(days.flatMap((d) => d.exercises.map((e) => e.muscle_group)))]
 
   return (
@@ -108,7 +129,7 @@ export default async function PlanDetailPage({
       {days.length > 0 && (
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 pb-20 pt-4 bg-gradient-to-t from-[var(--bg-base)] via-[var(--bg-base)]/95 to-transparent pointer-events-none">
           <div className="pointer-events-auto">
-            <StartWorkoutButton />
+            <StartWorkoutButton dayId={firstDayId} hasActiveSession={hasActiveSession} />
           </div>
         </div>
       )}

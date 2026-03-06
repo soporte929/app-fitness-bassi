@@ -90,7 +90,7 @@ export default async function TodayPage() {
     )
   }
 
-  const [exercisesResult, setLogsResult, dayResult] = await Promise.all([
+  const [exercisesResult, setLogsResult, dayResult, lastSessionResult] = await Promise.all([
     supabase
       .from('exercises')
       .select('id, name, muscle_group, target_sets, target_reps, target_rir, order_index')
@@ -101,11 +101,28 @@ export default async function TodayPage() {
       .select('id, exercise_id, set_number, weight_kg, reps, rir, completed')
       .eq('session_id', session.id),
     supabase.from('workout_days').select('name').eq('id', session.day_id).single(),
+    supabase
+      .from('workout_sessions')
+      .select('id')
+      .eq('client_id', client.id)
+      .eq('day_id', session.day_id)
+      .eq('completed', true)
+      .order('finished_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ])
 
   const exercises = exercisesResult.data ?? []
   const setLogs = setLogsResult.data ?? []
   const dayName = dayResult.data?.name ?? 'Entreno de hoy'
+
+  const lastSetLogsResult = lastSessionResult.data
+    ? await supabase
+        .from('set_logs')
+        .select('exercise_id, set_number, weight_kg, reps')
+        .eq('session_id', lastSessionResult.data.id)
+    : null
+  const lastSetLogs = lastSetLogsResult?.data ?? []
 
   const exercisesWithSets = exercises.map((ex) => ({
     ...ex,
@@ -120,7 +137,7 @@ export default async function TodayPage() {
 
   return (
     <PageTransition>
-      <div className="px-4 pt-6 pb-4">
+      <div className="px-4 pt-6 pb-32">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-1">
@@ -160,7 +177,7 @@ export default async function TodayPage() {
               className="animate-fade-in"
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <ExerciseCard exercise={exercise} sessionId={session.id} />
+              <ExerciseCard exercise={exercise} sessionId={session.id} lastSetLogs={lastSetLogs} />
             </div>
           ))}
         </div>
