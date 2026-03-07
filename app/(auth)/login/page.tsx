@@ -52,29 +52,50 @@ export default function LoginPage() {
       }}
     >
       <style>{`
-        @keyframes assemble {
-          0%   { opacity: 0; transform: scale(0.6) rotate(-8deg); filter: blur(8px) brightness(2); }
-          40%  { opacity: 0.8; filter: blur(2px) brightness(1.5); }
-          70%  { transform: scale(1.05) rotate(1deg); filter: blur(0px) brightness(1.2); }
-          85%  { transform: scale(0.98) rotate(-0.5deg); filter: drop-shadow(0 0 20px #f5c518); }
-          100% { opacity: 1; transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 6px rgba(245,197,24,0.3)); }
+        @keyframes logoReveal {
+          0% {
+            opacity: 0;
+            transform: scale(1.1);
+            filter: blur(20px) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15));
+          }
+          50% {
+            opacity: 0.8;
+            filter: blur(6px) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15));
+          }
+          75% {
+            opacity: 1;
+            transform: scale(1.01);
+            filter: blur(0px) drop-shadow(0 0 20px rgba(245,197,24,0.6)) drop-shadow(1px 1px 0px rgba(255,255,255,0.2)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.2));
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px) drop-shadow(0 0 6px rgba(245,197,24,0.2)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15));
+          }
         }
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
-          50%      { transform: translateY(-6px); }
+          50%      { transform: translateY(-5px); }
         }
-        @keyframes logo-glow {
-          0%, 100% { filter: drop-shadow(0 0 0px rgba(245,197,24,0)); }
-          50%      { filter: drop-shadow(0 0 12px rgba(245,197,24,0.2)); }
+
+        @keyframes logoGlowPulse {
+          0%, 100% { 
+            filter: drop-shadow(0 0 4px rgba(245,197,24,0.2)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15)); 
+          }
+          50%      { 
+            filter: drop-shadow(0 0 20px rgba(245,197,24,0.5)) drop-shadow(1px 1px 0px rgba(255,255,255,0.2)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.2)); 
+          }
         }
+
         @keyframes subtitleReveal {
-          0%   { opacity: 0; letter-spacing: 0.1em; }
-          60%  { opacity: 1; }
+          0%   { opacity: 0; letter-spacing: 0.08em; }
           100% { opacity: 1; letter-spacing: 0.25em; }
+        }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
@@ -87,23 +108,26 @@ export default function LoginPage() {
         }}
       >
         <div
-          style={{
-            animation:
-              logoPhase === "enter"
-                ? "assemble 1.1s cubic-bezier(0.34,1.2,0.64,1) 0.1s both"
-                : "float 3s ease-in-out infinite, logo-glow 3s ease-in-out infinite",
-          }}
           onAnimationEnd={() => {
-            if (logoPhase === "enter") setLogoPhase("float");
+            if (logoPhase === 'enter') setLogoPhase('float')
+          }}
+          style={{
+            animation: logoPhase === 'enter'
+              ? 'logoReveal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both'
+              : 'float 4s ease-in-out infinite, logoGlowPulse 4s ease-in-out infinite',
           }}
         >
           <Image
             src="/Black and Yellow Square Fitness Logo.png"
             alt="Fitness Bassi"
-            width={340}
-            height={170}
+            width={320}
+            height={160}
             className="object-contain"
             priority
+            style={{
+              display: 'block',
+              filter: 'drop-shadow(0 0 0px rgba(255,255,255,0)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15))',
+            }}
           />
         </div>
 
@@ -118,7 +142,7 @@ export default function LoginPage() {
             marginTop: '6px',
             marginBottom: '32px',
             opacity: 0,
-            animation: 'subtitleReveal 1s ease-out 1.2s forwards',
+            animation: 'subtitleReveal 0.7s ease-out 1.1s forwards',
           }}
         >
           Tu entrenador en el bolsillo
@@ -133,7 +157,7 @@ export default function LoginPage() {
           border: "1px solid rgba(255,255,255,0.07)",
           backdropFilter: "blur(8px)",
           boxShadow: "0 24px 48px rgba(0,0,0,0.4)",
-          animation: "fadeInUp 600ms ease-out 300ms forwards",
+          animation: "fadeInUp 500ms ease-out 0.4s forwards",
           opacity: 0,
         }}
       >

@@ -4,63 +4,8 @@ import { ClientNav } from '@/components/client/nav'
 import { RestTimer } from '@/components/client/rest-timer'
 import LoadingScreen from '@/components/ui/loading-screen'
 import { ActiveSessionBanner } from '@/components/client/active-session-banner'
-import { createClient } from '@/lib/supabase/server'
 
-export default async function ClientLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  let activeSession: { id: string; started_at: string; day: { name: string } } | null = null
-  let completedSets = 0
-  let totalSets = 0
-
-  if (user) {
-    const { data: clientRecord } = await supabase
-      .from('clients')
-      .select('id')
-      .eq('profile_id', user.id)
-      .maybeSingle()
-
-    const { data: session } = clientRecord
-      ? await supabase
-          .from('workout_sessions')
-          .select('id, started_at, day_id')
-          .eq('client_id', clientRecord.id)
-          .eq('completed', false)
-          .gte('started_at', new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString())
-          .lte('started_at', new Date(new Date().setUTCHours(23, 59, 59, 999)).toISOString())
-          .order('started_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
-      : { data: null }
-
-    if (session) {
-      const [dayResult, setLogsResult] = await Promise.all([
-        supabase
-          .from('workout_days')
-          .select('name')
-          .eq('id', session.day_id)
-          .single(),
-        supabase
-          .from('set_logs')
-          .select('completed')
-          .eq('session_id', session.id),
-      ])
-
-      const dayName = dayResult.data?.name ?? ''
-      const setLogs = setLogsResult.data ?? []
-      totalSets = setLogs.length
-      completedSets = setLogs.filter((s) => s.completed).length
-
-      activeSession = {
-        id: session.id,
-        started_at: session.started_at,
-        day: { name: dayName },
-      }
-    }
-  }
-
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen" style={{ background: '#111111' }}>
       <div
@@ -85,7 +30,7 @@ export default async function ClientLayout({ children }: { children: React.React
         </main>
         <ClientNav />
         <RestTimer />
-        <ActiveSessionBanner activeSession={activeSession} completedSets={completedSets} totalSets={totalSets} />
+        <ActiveSessionBanner />
       </div>
     </div>
   )
