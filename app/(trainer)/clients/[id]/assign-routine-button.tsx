@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, X } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { clonePlanToClientAction } from '@/app/(trainer)/routines-templates/actions'
 
@@ -56,85 +56,64 @@ export function AssignRoutineButton({ clientId, templates }: Props) {
   }
 
   return (
-    <>
-      <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
+    <div className="relative">
+      <Button variant="secondary" size="sm" onClick={() => setOpen((value) => !value)}>
         Asignar rutina
       </Button>
 
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) close()
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative bg-[var(--bg-surface)] rounded-lg w-full max-w-xl max-h-[85vh] shadow-2xl border border-[var(--border)] flex flex-col">
-            <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-[var(--text-primary)]">Asignar rutina</h2>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Selecciona un template para clonar</p>
+        <>
+          <button
+            type="button"
+            aria-label="Cerrar selector"
+            className="fixed inset-0 z-40 bg-black/40"
+            onClick={close}
+          />
+          <div className="absolute top-full left-0 mt-2 z-50 min-w-[280px] max-h-[70vh] overflow-y-auto bg-[#2a2a2a] rounded-xl shadow-xl border border-[rgba(255,255,255,0.08)] p-3 space-y-2">
+            <div className="px-1 pb-1">
+              <p className="text-xs font-semibold text-[var(--text-primary)]">Asignar rutina</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Selecciona un template para clonar</p>
+            </div>
+
+            {serverError && (
+              <div className="bg-[var(--danger)]/8 border border-[var(--danger)]/25 rounded-md px-3 py-2">
+                <p className="text-xs text-[var(--danger)]">{serverError}</p>
               </div>
-              <button
-                onClick={close}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)]"
-                aria-label="Cerrar"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+            )}
 
-            <div className="px-6 py-5 overflow-y-auto space-y-3">
-              {serverError && (
-                <div className="bg-[var(--danger)]/8 border border-[var(--danger)]/25 rounded-md px-4 py-3">
-                  <p className="text-sm text-[var(--danger)]">{serverError}</p>
-                </div>
-              )}
-
-              {sortedTemplates.length === 0 ? (
-                <div className="border border-dashed border-[var(--border)] rounded-lg p-6 text-center">
-                  <p className="text-sm text-[var(--text-secondary)]">No hay templates disponibles</p>
-                </div>
-              ) : (
-                sortedTemplates.map((template) => (
-                  <div key={template.id} className="rounded-md border border-[var(--border)] bg-[var(--bg-base)] p-4">
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--text-primary)]">{template.name}</p>
-                        {template.description && (
-                          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{template.description}</p>
-                        )}
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => assignTemplate(template.id)}
-                        disabled={pending}
-                      >
-                        {pending && pendingTemplateId === template.id ? (
-                          <>
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" /> Asignando…
-                          </>
-                        ) : (
-                          'Asignar'
-                        )}
-                      </Button>
+            {sortedTemplates.length === 0 ? (
+              <div className="border border-dashed border-[var(--border)] rounded-lg p-4 text-center">
+                <p className="text-xs text-[var(--text-secondary)]">No hay templates disponibles</p>
+              </div>
+            ) : (
+              sortedTemplates.map((template) => (
+                <div key={template.id} className="rounded-md border border-[var(--border)] bg-[var(--bg-base)] p-3">
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{template.name}</p>
+                      {template.description && (
+                        <p className="text-xs text-[var(--text-secondary)] mt-0.5">{template.description}</p>
+                      )}
                     </div>
-                    <div className="text-xs text-[var(--text-secondary)]">
-                      {template.days_per_week} días/semana · {template.total_exercises} ejercicios
-                    </div>
+                    <Button size="sm" onClick={() => assignTemplate(template.id)} disabled={pending}>
+                      {pending && pendingTemplateId === template.id ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" /> Asignando…
+                        </>
+                      ) : (
+                        'Asignar'
+                      )}
+                    </Button>
                   </div>
-                ))
-              )}
-            </div>
-
-            <div className="px-6 py-4 border-t border-[var(--border)]">
-              <Button variant="ghost" size="sm" onClick={close} className="w-full" disabled={pending}>
-                Cerrar
-              </Button>
-            </div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    {template.days_per_week} días/semana · {template.total_exercises} ejercicios
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-        </div>
+        </>
       )}
-    </>
+    </div>
   )
 }

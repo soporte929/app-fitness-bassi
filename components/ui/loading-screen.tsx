@@ -16,7 +16,7 @@ export function LoadingScreen() {
           }
           92%  { 
             stroke: #f5c518;
-            filter: drop-shadow(0 0 3px rgba(245,197,24,0.6));
+            filter: drop-shadow(0 0 6px rgba(245,197,24,0.9));
           }
           100% { 
             stroke-dashoffset: 0;
@@ -96,7 +96,7 @@ export function LoadingScreen() {
               {/* Anillo base estático */}
               <circle
                 cx="48" cy="48" r="44"
-                stroke="rgba(107,127,163,0.12)"
+                stroke="rgba(107,127,163,0.2)"
                 strokeWidth="2"
                 fill="none"
               />
@@ -104,10 +104,10 @@ export function LoadingScreen() {
               <circle
                 cx="48" cy="48" r="44"
                 stroke="url(#comet-gradient)"
-                strokeWidth="2.5"
+                strokeWidth="3.5"
                 fill="none"
                 strokeLinecap="round"
-                strokeDasharray="80 196"
+                strokeDasharray="110 166"
                 strokeDashoffset="0"
                 className="ls-comet"
               />
@@ -116,7 +116,7 @@ export function LoadingScreen() {
                   x1="0%" y1="0%" x2="100%" y2="0%"
                   gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#6b7fa3" stopOpacity="0" />
-                  <stop offset="60%" stopColor="#6b7fa3" stopOpacity="0.6" />
+                  <stop offset="60%" stopColor="#6b7fa3" stopOpacity="0.8" />
                   <stop offset="100%" stopColor="#6b7fa3" stopOpacity="1" />
                 </linearGradient>
               </defs>

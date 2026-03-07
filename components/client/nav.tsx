@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Dumbbell, History, TrendingUp, ClipboardList, UserCircle } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Dumbbell, History, TrendingUp, ClipboardList, UserCircle, UtensilsCrossed } from "lucide-react";
 
 const tabs = [
   { label: "Hoy", href: "/today", icon: Dumbbell },
   { label: "Historial", href: "/history", icon: History },
   { label: "Rutinas", href: "/routines", icon: ClipboardList },
   { label: "Progreso", href: "/progress", icon: TrendingUp },
+  { label: "Nutrición", href: "/nutrition", icon: UtensilsCrossed },
   { label: "Perfil", href: "/profile", icon: UserCircle },
 ];
 
@@ -18,7 +18,7 @@ export function ClientNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg bg-[var(--bg-surface)]/95 backdrop-blur-xl border-t border-[var(--border)] px-2 pb-safe">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-[var(--bg-surface)]/95 backdrop-blur-xl border-t border-[var(--border)] px-2 pb-safe">
       <div className="flex items-center justify-around py-2">
         {tabs.map((tab) => {
           const active = pathname.startsWith(tab.href);

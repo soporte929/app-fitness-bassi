@@ -43,7 +43,11 @@ export default async function ClientsPage() {
   const now = new Date()
 
   const phaseLabel = (phase: string) =>
-    ({ deficit: 'Déficit', maintenance: 'Mantenimiento', surplus: 'Superávit' }[phase] ?? phase)
+  ({
+    deficit: 'Déficit calórico',
+    maintenance: 'Mantenimiento',
+    surplus: 'Volumen',
+  }[phase] ?? phase)
 
   const clientsWithStats: ClientItem[] = clients.map((c) => {
     const clientSessions = allSessions.filter((s) => s.client_id === c.id)
@@ -90,6 +94,7 @@ export default async function ClientsPage() {
       id: c.id,
       name: profile?.full_name ?? 'Sin nombre',
       phase: phaseLabel(c.phase),
+      goal: c.goal,
       status,
       adherence,
       lastWorkout,

@@ -3,25 +3,72 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
-import type { ActivityLevel, Phase, Goal } from '@/lib/supabase/types'
+import type {
+  ActivityLevel,
+  Goal,
+  Lifestyle,
+  Objective,
+  Phase,
+  TrainingDays,
+} from '@/lib/supabase/types'
 
+function phaseToGoal(phase: Phase): Goal {
+  if (phase === 'deficit') return 'deficit'
+  if (phase === 'surplus') return 'surplus'
+  return 'maintenance'
+}
+
+function objectiveToGoal(objective: Objective | null, phase: Phase): Goal {
+  if (!objective) return phaseToGoal(phase)
+  if (objective === 'lose_fat') return 'deficit'
+  if (objective === 'gain_muscle') return 'surplus'
+  return 'maintenance'
+}
+
+// NOTE: Ensure this RLS policy exists in Supabase SQL Editor:
+//   CREATE POLICY "trainer_update_clients" ON clients
+//     FOR UPDATE USING (trainer_id = auth.uid());
 export async function updateClientAction(
   clientId: string,
   data: {
     weight_kg: number
     body_fat_pct: number | null
     phase: Phase
-    goal: Goal
+    objective: Objective | null
+    age: number | null
+    height_cm: number | null
+    lifestyle: Lifestyle | null
+    training_days: TrainingDays | null
     activity_level: ActivityLevel
     daily_steps: number
-    notes: string | null
+    trainer_notes: string | null
   }
 ): Promise<void> {
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('No autenticado')
+
+  const goal = objectiveToGoal(data.objective, data.phase)
   const { error } = await supabase
     .from('clients')
-    .update(data)
+    .update({
+      weight_kg: data.weight_kg,
+      body_fat_pct: data.body_fat_pct,
+      phase: data.phase,
+      goal,
+      objective: data.objective,
+      age: data.age,
+      height_cm: data.height_cm,
+      lifestyle: data.lifestyle,
+      training_days: data.training_days,
+      activity_level: data.activity_level,
+      daily_steps: data.daily_steps,
+      trainer_notes: data.trainer_notes,
+    })
     .eq('id', clientId)
+    .eq('trainer_id', user.id)
   if (error) throw new Error(error.message)
   revalidatePath(`/clients/${clientId}`)
   revalidatePath('/clients')
@@ -31,14 +78,18 @@ export async function createClientAction(data: {
   email: string
   full_name: string
   phase: Phase
-  goal: Goal
+  objective: Objective | null
   weight_kg: number
   body_fat_pct: number | null
+  age: number | null
+  height_cm: number | null
+  lifestyle: Lifestyle | null
+  training_days: TrainingDays | null
   activity_level: ActivityLevel
   daily_steps: number
   target_weight_kg: number | null
   joined_date: string
-  notes: string | null
+  trainer_notes: string | null
 }): Promise<{ success: boolean; id?: string; error?: string }> {
   const supabase = await createClient()
 
@@ -84,20 +135,26 @@ export async function createClientAction(data: {
   }
 
   // Crear registro de cliente
+  const goal = objectiveToGoal(data.objective, data.phase)
   const { data: newClient, error: clientError } = await supabase
     .from('clients')
     .insert({
       profile_id: profileId,
       trainer_id: user.id,
       phase: data.phase,
-      goal: data.goal,
+      goal,
+      objective: data.objective,
       weight_kg: data.weight_kg,
       body_fat_pct: data.body_fat_pct,
+      age: data.age,
+      height_cm: data.height_cm,
+      lifestyle: data.lifestyle,
+      training_days: data.training_days,
       activity_level: data.activity_level,
       daily_steps: data.daily_steps,
       target_weight_kg: data.target_weight_kg,
       joined_date: data.joined_date,
-      notes: data.notes,
+      trainer_notes: data.trainer_notes,
       active: true,
     })
     .select('id')

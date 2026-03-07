@@ -1,0 +1,275 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
+import { NUTRITION_TEMPLATES } from './templates'
+import type { Database } from '@/lib/supabase/types'
+
+type ActionResult = {
+  success: boolean
+  message?: string
+  error?: string
+}
+
+type NutritionPlanMealSchema = {
+  plan_id: string
+  name: string
+  kcal_per_100g: number | null
+  protein_per_100g: number | null
+  carbs_per_100g: number | null
+  fat_per_100g: number | null
+  default_grams: number | null
+  meal_time: string | null
+  order_index: number
+}
+
+type CreateTemplateMealInput = {
+  name: string
+  kcal_per_100g: number | null
+  protein_per_100g: number | null
+  carbs_per_100g: number | null
+  fat_per_100g: number | null
+  default_grams: number | null
+  meal_time: string | null
+  order_index: number
+}
+
+type CreateNutritionTemplateInput = {
+  name: string
+  kcal_target: number | null
+  protein_target_g: number | null
+  carbs_target_g: number | null
+  fat_target_g: number | null
+  meals: CreateTemplateMealInput[]
+}
+
+type NutritionPlanInsertCompat = Database['public']['Tables']['nutrition_plans']['Insert'] & {
+  client_id: string | null
+  is_template: boolean
+}
+
+async function assignTemplateToClient(params: {
+  trainerId: string
+  clientId: string
+  clientName: string
+  name: string
+  kcal_target: number | null
+  protein_target_g: number | null
+  carbs_target_g: number | null
+  fat_target_g: number | null
+  meals: CreateTemplateMealInput[]
+}): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  const { error: disableError } = await supabase
+    .from('nutrition_plans')
+    .update({ active: false })
+    .eq('client_id', params.clientId)
+  if (disableError) {
+    return { success: false, error: disableError.message }
+  }
+
+  const newPlanPayload = {
+    client_id: params.clientId,
+    trainer_id: params.trainerId,
+    name: params.name,
+    kcal_target: params.kcal_target,
+    protein_target_g: params.protein_target_g,
+    carbs_target_g: params.carbs_target_g,
+    fat_target_g: params.fat_target_g,
+    active: true,
+    is_template: false,
+  } as unknown as NutritionPlanInsertCompat
+
+  const { data: newPlan, error: planError } = await supabase
+    .from('nutrition_plans')
+    .insert(newPlanPayload)
+    .select('id')
+    .single<{ id: string }>()
+  if (planError || !newPlan) {
+    return { success: false, error: planError?.message ?? 'No se pudo crear el plan' }
+  }
+
+  const mealsToInsert: NutritionPlanMealSchema[] = params.meals.map((meal, index) => ({
+    plan_id: newPlan.id,
+    name: meal.name,
+    kcal_per_100g: meal.kcal_per_100g,
+    protein_per_100g: meal.protein_per_100g,
+    carbs_per_100g: meal.carbs_per_100g,
+    fat_per_100g: meal.fat_per_100g,
+    default_grams: meal.default_grams,
+    meal_time: meal.meal_time,
+    order_index: typeof meal.order_index === 'number' ? meal.order_index : index,
+  }))
+
+  if (mealsToInsert.length > 0) {
+    const { error: mealsError } = await supabase
+      .from('nutrition_plan_meals')
+      .insert(mealsToInsert as unknown as Database['public']['Tables']['nutrition_plan_meals']['Insert'][])
+    if (mealsError) return { success: false, error: mealsError.message }
+  }
+
+  revalidatePath('/nutrition-plans')
+  return { success: true, message: `Plan asignado a ${params.clientName}` }
+}
+
+export async function assignNutritionTemplateAction(
+  templateIndex: number,
+  clientId: string,
+  clientName: string
+): Promise<ActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  const template = NUTRITION_TEMPLATES[templateIndex]
+  if (!template) return { success: false, error: 'Template no encontrado' }
+
+  return assignTemplateToClient({
+    trainerId: user.id,
+    clientId,
+    clientName,
+    name: template.name,
+    kcal_target: template.kcal_target,
+    protein_target_g: template.protein_target_g,
+    carbs_target_g: template.carbs_target_g,
+    fat_target_g: template.fat_target_g,
+    meals: template.meals.map((meal, index) => ({
+      name: meal.name,
+      kcal_per_100g: meal.kcal_per_100g ?? null,
+      protein_per_100g: meal.protein_per_100g ?? null,
+      carbs_per_100g: meal.carbs_per_100g ?? null,
+      fat_per_100g: meal.fat_per_100g ?? null,
+      default_grams: meal.default_grams ?? null,
+      meal_time: meal.meal_time ?? null,
+      order_index: typeof meal.order_index === 'number' ? meal.order_index : index,
+    })),
+  })
+}
+
+export async function assignOwnNutritionTemplateAction(
+  templatePlanId: string,
+  clientId: string,
+  clientName: string
+): Promise<ActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  const { data: templatePlan, error: templatePlanError } = await supabase
+    .from('nutrition_plans')
+    .select('id, name, trainer_id, kcal_target, protein_target_g, carbs_target_g, fat_target_g, is_template')
+    .eq('id', templatePlanId)
+    .eq('trainer_id', user.id)
+    .single<{
+      id: string
+      name: string
+      trainer_id: string
+      kcal_target: number | null
+      protein_target_g: number | null
+      carbs_target_g: number | null
+      fat_target_g: number | null
+      is_template: boolean
+    }>()
+
+  if (templatePlanError || !templatePlan) {
+    return { success: false, error: templatePlanError?.message ?? 'Template no encontrado' }
+  }
+
+  if (!templatePlan.is_template) {
+    return { success: false, error: 'El plan seleccionado no es un template' }
+  }
+
+  const { data: rawMeals, error: mealsError } = await supabase
+    .from('nutrition_plan_meals')
+    .select(
+      'name, kcal_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g, default_grams, meal_time, order_index'
+    )
+    .eq('plan_id', templatePlanId)
+    .order('order_index', { ascending: true })
+    .returns<
+      Array<{
+        name: string
+        kcal_per_100g: number | null
+        protein_per_100g: number | null
+        carbs_per_100g: number | null
+        fat_per_100g: number | null
+        default_grams: number | null
+        meal_time: string | null
+        order_index: number
+      }>
+    >()
+
+  if (mealsError) return { success: false, error: mealsError.message }
+
+  return assignTemplateToClient({
+    trainerId: user.id,
+    clientId,
+    clientName,
+    name: templatePlan.name,
+    kcal_target: templatePlan.kcal_target,
+    protein_target_g: templatePlan.protein_target_g,
+    carbs_target_g: templatePlan.carbs_target_g,
+    fat_target_g: templatePlan.fat_target_g,
+    meals: rawMeals ?? [],
+  })
+}
+
+export async function createNutritionTemplateAction(
+  input: CreateNutritionTemplateInput
+): Promise<ActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  if (!input.name.trim()) return { success: false, error: 'El nombre de la plantilla es obligatorio' }
+
+  const planPayload = {
+    client_id: null,
+    trainer_id: user.id,
+    name: input.name.trim(),
+    kcal_target: input.kcal_target,
+    protein_target_g: input.protein_target_g,
+    carbs_target_g: input.carbs_target_g,
+    fat_target_g: input.fat_target_g,
+    active: true,
+    is_template: true,
+  } as unknown as NutritionPlanInsertCompat
+
+  const { data: newTemplate, error: templateError } = await supabase
+    .from('nutrition_plans')
+    .insert(planPayload)
+    .select('id')
+    .single<{ id: string }>()
+  if (templateError || !newTemplate) {
+    return { success: false, error: templateError?.message ?? 'No se pudo crear la plantilla' }
+  }
+
+  const mealsToInsert: NutritionPlanMealSchema[] = input.meals.map((meal, index) => ({
+    plan_id: newTemplate.id,
+    name: meal.name,
+    kcal_per_100g: meal.kcal_per_100g,
+    protein_per_100g: meal.protein_per_100g,
+    carbs_per_100g: meal.carbs_per_100g,
+    fat_per_100g: meal.fat_per_100g,
+    default_grams: meal.default_grams,
+    meal_time: meal.meal_time,
+    order_index: typeof meal.order_index === 'number' ? meal.order_index : index,
+  }))
+
+  if (mealsToInsert.length > 0) {
+    const { error: mealsError } = await supabase
+      .from('nutrition_plan_meals')
+      .insert(mealsToInsert as unknown as Database['public']['Tables']['nutrition_plan_meals']['Insert'][])
+    if (mealsError) return { success: false, error: mealsError.message }
+  }
+
+  revalidatePath('/nutrition-plans')
+  return { success: true, message: 'Plantilla creada correctamente' }
+}

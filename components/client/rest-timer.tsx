@@ -61,7 +61,7 @@ export function RestTimer() {
   return (
     <div
       className={cn(
-        'fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 z-30',
+        'fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-[430px] px-4 z-30',
         'transition-all duration-300 ease-out',
         active ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-3 opacity-0 pointer-events-none'
       )}

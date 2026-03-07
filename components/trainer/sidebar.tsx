@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -13,6 +14,8 @@ import {
   Settings,
   Dumbbell,
   ClipboardList,
+  Layers,
+  UtensilsCrossed,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -30,6 +33,8 @@ const navigation = [
     section: "Herramientas",
     items: [
       { label: "Rutinas", href: "/routines-templates", icon: ClipboardList },
+      { label: "Planes", href: "/plans", icon: Layers },
+      { label: "Nutrición", href: "/nutrition-plans", icon: UtensilsCrossed },
       { label: "Ejercicios", href: "/exercises", icon: Dumbbell },
       { label: "Informes", href: "/reports", icon: FileText },
     ],
@@ -70,17 +75,14 @@ export function TrainerSidebar({
 
   // In mobile: sidebar is overlay with translate. In desktop: static.
   const sidebarClasses = cn(
-    "fixed left-0 top-0 z-50 bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col h-screen overflow-hidden shadow-2xl shadow-black/20",
+    "fixed inset-y-0 left-0 z-50 bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col h-screen overflow-hidden",
     // Mobile: overlay with transform
     isMobile
       ? cn(
-        "w-60 transition-transform duration-300 ease-in-out",
-        collapsed ? "-translate-x-full" : "translate-x-0"
+        "w-64 transition-transform duration-300 ease-in-out shadow-2xl shadow-black/20",
+        collapsed ? "translate-x-[-100%]" : "translate-x-0"
       )
-      : cn(
-        "transition-all duration-300",
-        collapsed ? "w-[64px]" : "w-60"
-      )
+      : "w-64 transition-none translate-x-0"
   );
 
   // On mobile when expanded, show dark backdrop
@@ -91,7 +93,7 @@ export function TrainerSidebar({
       {/* Backdrop — only on mobile when sidebar is open */}
       {showBackdrop && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity top-14"
+          className="fixed inset-0 z-40 bg-black/40"
           onClick={onClose}
         />
       )}
@@ -101,45 +103,36 @@ export function TrainerSidebar({
         <div
           className={cn(
             "py-5 border-b border-[var(--border)] flex items-center gap-2",
-            collapsed && !isMobile ? "px-3 justify-center" : "px-4 justify-between"
+            isMobile ? (collapsed ? "px-3 justify-center" : "px-4 justify-between") : "px-4 justify-between" // Desktop always expanded
           )}
         >
-          <div className={cn("flex items-center gap-3 min-w-0", collapsed && !isMobile && "justify-center")}>
-            <div className="w-8 h-8 bg-[var(--text-primary)] rounded-lg flex items-center justify-center flex-shrink-0">
-              <Dumbbell className="w-4 h-4 text-[var(--bg-base)]" strokeWidth={2.5} />
-            </div>
-            {(isMobile || !collapsed) && (
-              <div className="min-w-0">
-                <p className="text-[var(--text-primary)] text-sm font-semibold leading-tight truncate tracking-wide">
-                  Fitness Bassi
-                </p>
-                <p className="text-[var(--text-muted)] text-xs">Entrenador</p>
+          <div className={cn("flex items-center gap-3 min-w-0", isMobile && collapsed && "justify-center")}>
+            {(!isMobile || !collapsed) ? (
+              <Image
+                src="/Black_and_Yellow_Square_Fitness_Logo.png"
+                alt="Fitness Bassi"
+                width={120}
+                height={60}
+                className="object-contain"
+                priority
+              />
+            ) : (
+              <div className="w-8 h-8 bg-[var(--text-primary)] rounded-lg flex items-center justify-center flex-shrink-0">
+                <Dumbbell className="w-4 h-4 text-[var(--bg-base)]" strokeWidth={2.5} />
               </div>
             )}
           </div>
-          {(isMobile || !collapsed) && (
+          {/* Close button (only mobile) */}
+          {isMobile && (
             <button
               onClick={onClose}
-              className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--bg-elevated)] transition-colors flex-shrink-0"
-              title="Colapsar menú"
+              className="lg:hidden p-2 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              aria-label="Cerrar menú"
             >
-              <PanelLeftClose className="w-4 h-4 text-[var(--text-muted)]" />
+              <PanelLeftClose className="w-5 h-5" />
             </button>
           )}
         </div>
-
-        {/* Expand button — desktop collapsed only */}
-        {collapsed && !isMobile && (
-          <div className="flex justify-center px-3 py-3 border-b border-[var(--border)]">
-            <button
-              onClick={onOpen}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[var(--bg-elevated)] transition-colors"
-              title="Expandir menú"
-            >
-              <PanelLeftOpen className="w-4 h-4 text-[var(--text-muted)]" />
-            </button>
-          </div>
-        )}
 
         {/* Nav */}
         <nav className="flex-1 px-2 py-4 overflow-y-auto space-y-5 flex flex-col justify-start">

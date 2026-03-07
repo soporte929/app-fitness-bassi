@@ -11,7 +11,7 @@ type Phase = Database['public']['Tables']['clients']['Row']['phase']
 const PHASE_LABELS: Record<Phase, string> = {
   deficit: 'Déficit',
   maintenance: 'Mantenimiento',
-  surplus: 'Superávit',
+  surplus: 'Volumen',
 }
 
 function calcStreak(sessions: { started_at: string }[]): number {

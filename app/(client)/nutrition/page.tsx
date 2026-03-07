@@ -1,233 +1,303 @@
-"use client";
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { PageTransition } from '@/components/ui/page-transition'
+import { AddMealFab } from './add-meal-fab'
+import { deleteNutritionLogAction } from './actions'
+import { NutritionChecklist } from './nutrition-checklist'
+import type { Database, Phase } from '@/lib/supabase/types'
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { PageTransition } from "@/components/ui/page-transition";
-import { cn } from "@/lib/utils";
-import { Plus, Flame, Check, X } from "lucide-react";
+type ClientNutritionData = Pick<
+  Database['public']['Tables']['clients']['Row'],
+  'id' | 'weight_kg' | 'phase' | 'objective' | 'lifestyle'
+>
 
-const goals = {
-  calories: 2671,
-  protein: 149,
-  carbs: 352,
-  fat: 74,
-};
+type NutritionLogRow = Database['public']['Tables']['nutrition_logs']['Row']
+type NutritionPlanRow = Database['public']['Tables']['nutrition_plans']['Row']
+type NutritionPlanMealRow = Database['public']['Tables']['nutrition_plan_meals']['Row']
+type NutritionMealLogRow = Database['public']['Tables']['nutrition_meal_logs']['Row']
+type NutritionMealLogStatus = Pick<NutritionMealLogRow, 'meal_id' | 'completed'>
+type NutritionPlanWithMeals = NutritionPlanRow & { meals: NutritionPlanMealRow[] }
 
-const initialMeals = [
-  {
-    id: 1,
-    name: "Desayuno",
-    time: "08:30",
-    items: [
-      { name: "Avena con leche", calories: 320, protein: 14, carbs: 52, fat: 7 },
-      { name: "Plátano", calories: 89, protein: 1, carbs: 23, fat: 0 },
-    ],
-  },
-  {
-    id: 2,
-    name: "Comida",
-    time: "14:00",
-    items: [
-      { name: "Arroz integral", calories: 215, protein: 5, carbs: 45, fat: 2 },
-      { name: "Pechuga de pollo", calories: 165, protein: 31, carbs: 0, fat: 4 },
-      { name: "Verduras al vapor", calories: 55, protein: 3, carbs: 10, fat: 0 },
-    ],
-  },
-  {
-    id: 3,
-    name: "Merienda",
-    time: "17:30",
-    items: [
-      { name: "Yogur griego", calories: 130, protein: 17, carbs: 6, fat: 4 },
-    ],
-  },
-  {
-    id: 4,
-    name: "Cena",
-    time: "21:00",
-    items: [],
-  },
-];
-
-type MacroKey = "protein" | "carbs" | "fat";
-
-const macros: { key: MacroKey; label: string; color: string; goal: number }[] = [
-  { key: "protein", label: "Proteína", color: "var(--accent)", goal: goals.protein },
-  { key: "carbs", label: "Carbohidratos", color: "var(--success)", goal: goals.carbs },
-  { key: "fat", label: "Grasa", color: "var(--warning)", goal: goals.fat },
-];
-
-function sum(meals: typeof initialMeals, key: "calories" | MacroKey) {
-  return meals.flatMap((m) => m.items).reduce((acc, i) => acc + i[key], 0);
+type MacroTargets = {
+  kcal: number
+  protein: number
+  carbs: number
+  fat: number
 }
 
-export default function NutritionPage() {
-  const [meals] = useState(initialMeals);
-  const [showAdd, setShowAdd] = useState(false);
+type MacroSummary = {
+  label: string
+  consumed: number
+  target: number
+  unit: string
+}
 
-  const consumed = {
-    calories: sum(meals, "calories"),
-    protein: sum(meals, "protein"),
-    carbs: sum(meals, "carbs"),
-    fat: sum(meals, "fat"),
-  };
+function getKcalByPhase(phase: Phase): number {
+  if (phase === 'deficit') return 1800
+  if (phase === 'surplus') return 2800
+  return 2400
+}
 
-  const remaining = goals.calories - consumed.calories;
-  const calPct = Math.min((consumed.calories / goals.calories) * 100, 100);
+function buildTargets(client: ClientNutritionData | null): MacroTargets {
+  const weight = client?.weight_kg ?? 70
+
+  // Placeholder adjustments until trainer custom targets are implemented.
+  const objectiveAdjustment = client?.objective ? 0 : 0
+  const lifestyleAdjustment = client?.lifestyle ? 0 : 0
+
+  const protein = Math.round(weight * 2.2)
+  const fat = Math.round(weight * 1)
+  const kcal = getKcalByPhase(client?.phase ?? 'maintenance') + objectiveAdjustment + lifestyleAdjustment
+  const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4))
+
+  return { kcal, protein, carbs, fat }
+}
+
+function getDayString(date: Date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')
+  ].join('-')
+}
+
+function formatValue(value: number, maxDecimals = 1): string {
+  const shouldShowDecimals = Math.abs(value % 1) > 0
+  return value.toLocaleString('es-ES', {
+    minimumFractionDigits: shouldShowDecimals ? 1 : 0,
+    maximumFractionDigits: shouldShowDecimals ? maxDecimals : 0,
+  })
+}
+
+function formatTime(dateIso: string): string {
+  return new Date(dateIso).toLocaleTimeString('es-ES', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+}
+
+function clampProgress(consumed: number, target: number): number {
+  if (target <= 0) return 0
+  return Math.min((consumed / target) * 100, 100)
+}
+
+export default async function NutritionPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) redirect('/login')
+
+  let client: ClientNutritionData | null = null
+  try {
+    const { data } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('profile_id', user.id)
+      .returns<ClientNutritionData>()
+      .single()
+    client = data
+  } catch (error) {
+    console.error('client fetch error:', error)
+  }
+
+  const now = new Date()
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+  const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString()
+  const currentDateString = getDayString(now)
+
+  let todayLogs: NutritionLogRow[] = []
+  let activePlan: NutritionPlanWithMeals | null = null
+  let mealLogs: NutritionMealLogStatus[] = []
+
+  if (client?.id) {
+    try {
+      const [freeLogsRes, planRes, mealLogsRes] = await Promise.all([
+        supabase
+          .from('nutrition_logs')
+          .select('*')
+          .eq('client_id', client.id)
+          .gte('logged_at', todayStart)
+          .lt('logged_at', tomorrowStart)
+          .order('logged_at', { ascending: true })
+          .returns<NutritionLogRow[]>(),
+        supabase
+          .from('nutrition_plans')
+          .select('*, meals:nutrition_plan_meals(*)')
+          .eq('client_id', client.id)
+          .eq('active', true)
+          .returns<NutritionPlanWithMeals>()
+          .single(),
+        supabase
+          .from('nutrition_meal_logs')
+          .select('meal_id, completed')
+          .eq('client_id', client.id)
+          .eq('logged_date', currentDateString)
+          .returns<NutritionMealLogStatus[]>(),
+      ])
+
+      if (!freeLogsRes.error && freeLogsRes.data) todayLogs = freeLogsRes.data
+
+      if (planRes.data) {
+        const sortedMeals = [...(planRes.data.meals ?? [])].sort(
+          (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)
+        )
+        activePlan = {
+          ...planRes.data,
+          meals: sortedMeals,
+        }
+      }
+
+      if (mealLogsRes.data) {
+        mealLogs = mealLogsRes.data
+      }
+    } catch (error) {
+      console.error('nutrition data fetch error:', error)
+    }
+  }
+
+  const fallbackTargets = buildTargets(client)
+  const targets = activePlan
+    ? {
+        kcal: activePlan.kcal_target ?? fallbackTargets.kcal,
+        protein: activePlan.protein_target_g ?? fallbackTargets.protein,
+        carbs: activePlan.carbs_target_g ?? fallbackTargets.carbs,
+        fat: activePlan.fat_target_g ?? fallbackTargets.fat,
+      }
+    : null
+
+  let consumedKcal = todayLogs.reduce((sum, log) => sum + (log.kcal ?? 0), 0)
+  let consumedProtein = todayLogs.reduce((sum, log) => sum + (log.protein_g ?? 0), 0)
+  let consumedCarbs = todayLogs.reduce((sum, log) => sum + (log.carbs_g ?? 0), 0)
+  let consumedFat = todayLogs.reduce((sum, log) => sum + (log.fat_g ?? 0), 0)
+
+  if (activePlan) {
+    const completedMealIds = new Set(mealLogs.filter((log) => log.completed).map((log) => log.meal_id))
+    activePlan.meals.forEach((meal) => {
+      if (completedMealIds.has(meal.id)) {
+        consumedKcal += meal.kcal ?? 0
+        consumedProtein += meal.protein_g ?? 0
+        consumedCarbs += meal.carbs_g ?? 0
+        consumedFat += meal.fat_g ?? 0
+      }
+    })
+  }
+
+  const cards: MacroSummary[] = targets
+    ? [
+        { label: 'Kcal', consumed: consumedKcal, target: targets.kcal, unit: 'kcal' },
+        { label: 'Proteína', consumed: consumedProtein, target: targets.protein, unit: 'g' },
+        { label: 'Carbos', consumed: consumedCarbs, target: targets.carbs, unit: 'g' },
+        { label: 'Grasa', consumed: consumedFat, target: targets.fat, unit: 'g' },
+      ]
+    : []
+
+  const dateLabel = now.toLocaleDateString('es-ES', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
 
   return (
     <PageTransition>
-      <div className="px-4 pt-6 pb-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5">
-          <div>
-            <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Nutrición</h1>
-            <p className="text-sm text-[var(--text-secondary)] mt-0.5">Miércoles, 4 de marzo</p>
-          </div>
-          <button
-            onClick={() => setShowAdd(true)}
-            className="w-9 h-9 bg-[var(--accent)] rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-transform"
-          >
-            <Plus className="w-5 h-5 text-[var(--accent-text)]" />
-          </button>
+      <div className="px-4 pt-6 pb-28">
+        <div className="mb-5">
+          <h1 className="text-2xl font-bold text-[#e8e8e6] tracking-tight">Nutrición</h1>
+          <p className="text-sm text-[#a0a0a0] mt-0.5 capitalize">{dateLabel}</p>
         </div>
 
-        {/* Calorías */}
-        <Card className="mb-4">
-          <CardContent className="py-5 px-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Flame className="w-4 h-4 text-[var(--warning)]" />
-                <span className="text-sm font-semibold text-[var(--text-primary)]">Calorías</span>
-              </div>
-              <span className={cn("text-xs font-medium", remaining >= 0 ? "text-[var(--success)]" : "text-[var(--danger)]")}>
-                {remaining >= 0 ? `${remaining} kcal restantes` : `${Math.abs(remaining)} kcal excedidas`}
-              </span>
-            </div>
-
-            {/* Barra principal */}
-            <div className="h-3 bg-[var(--bg-elevated)] rounded-full overflow-hidden mb-3">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${calPct}%`,
-                  backgroundColor: calPct > 100 ? "var(--danger)" : calPct > 85 ? "var(--warning)" : "var(--success)",
-                }}
-              />
-            </div>
-
-            <div className="flex justify-between text-xs text-[var(--text-secondary)]">
-              <span><span className="text-[var(--text-primary)] font-semibold text-base">{consumed.calories}</span> consumidas</span>
-              <span>Objetivo: <span className="font-medium text-[var(--text-primary)]">{goals.calories}</span> kcal</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Macros */}
-        <Card className="mb-5">
-          <CardContent className="py-4 px-5 space-y-3">
-            {macros.map((m) => {
-              const val = consumed[m.key];
-              const pct = Math.min((val / m.goal) * 100, 100);
-              return (
-                <div key={m.key}>
-                  <div className="flex justify-between mb-1.5">
-                    <span className="text-xs text-[var(--text-secondary)]">{m.label}</span>
-                    <span className="text-xs font-medium text-[var(--text-primary)]">
-                      {val}g <span className="text-[var(--text-muted)] font-normal">/ {m.goal}g</span>
-                    </span>
+        <section className="mb-6">
+          {cards.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3">
+              {cards.map((card) => (
+                <div
+                  key={card.label}
+                  className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-4"
+                >
+                  <p className="text-xs text-[#a0a0a0]">{card.label}</p>
+                  <div className="mt-2 flex items-end gap-1.5">
+                    <p className="text-2xl leading-none font-[family-name:var(--font-geist-mono)] text-[#e8e8e6]">
+                      {formatValue(card.consumed)}
+                    </p>
+                    <p className="text-xs text-[#a0a0a0] pb-0.5">
+                      / {formatValue(card.target, 0)} {card.unit}
+                    </p>
                   </div>
-                  <div className="h-2 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
+                  <div className="mt-3 h-[3px] bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${pct}%`, backgroundColor: m.color }}
+                      className="h-full rounded-full bg-[#6b7fa3]"
+                      style={{ width: `${clampProgress(card.consumed, card.target)}%` }}
                     />
                   </div>
                 </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-
-        {/* Comidas */}
-        <div className="space-y-3">
-          {meals.map((meal) => {
-            const mealCals = meal.items.reduce((a, i) => a + i.calories, 0);
-            return (
-              <Card key={meal.id}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-[var(--text-primary)]">{meal.name}</p>
-                      <span className="text-xs text-[var(--text-muted)]">{meal.time}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {mealCals > 0 && (
-                        <span className="text-xs font-medium text-[var(--text-secondary)]">{mealCals} kcal</span>
-                      )}
-                      <button className="w-6 h-6 rounded-lg bg-[var(--bg-elevated)] flex items-center justify-center hover:bg-[var(--bg-overlay)] transition-colors">
-                        <Plus className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
-                      </button>
-                    </div>
-                  </div>
-                </CardHeader>
-                {meal.items.length > 0 && (
-                  <CardContent className="p-0">
-                    {meal.items.map((item, i) => (
-                      <div
-                        key={i}
-                        className={cn(
-                          "flex items-center justify-between px-5 py-2.5",
-                          i < meal.items.length - 1 && "border-b border-[var(--border)]"
-                        )}
-                      >
-                        <span className="text-sm text-[var(--text-primary)]">{item.name}</span>
-                        <div className="flex items-center gap-3 text-xs text-[var(--text-muted)]">
-                          <span>{item.protein}P</span>
-                          <span>{item.carbs}C</span>
-                          <span>{item.fat}G</span>
-                          <span className="text-[var(--text-secondary)] font-medium">{item.calories}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                )}
-                {meal.items.length === 0 && (
-                  <CardContent className="py-3 px-5">
-                    <p className="text-xs text-[var(--text-muted)]">Sin registrar</p>
-                  </CardContent>
-                )}
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Modal añadir alimento */}
-        {showAdd && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end">
-            <div className="bg-[var(--bg-surface)] w-full rounded-t-3xl p-6 animate-slide-up">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-[var(--text-primary)]">Añadir alimento</h2>
-                <button onClick={() => setShowAdd(false)}>
-                  <X className="w-5 h-5 text-[var(--text-secondary)]" />
-                </button>
-              </div>
-              <input
-                autoFocus
-                placeholder="Buscar alimento..."
-                className="w-full px-4 py-3 bg-[var(--bg-base)] rounded-xl text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] mb-4 border border-[var(--border)]"
-              />
-              <p className="text-xs text-[var(--text-muted)] text-center">Base de datos de alimentos — próximamente</p>
-              <button
-                onClick={() => setShowAdd(false)}
-                className="w-full mt-4 py-3 bg-[var(--accent)] text-[var(--accent-text)] rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-              >
-                <Check className="w-4 h-4" /> Confirmar
-              </button>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-6 text-center">
+              <p className="text-sm text-[#a0a0a0]">Tu entrenador aún no ha configurado tu plan nutricional</p>
+            </div>
+          )}
+        </section>
+
+        {activePlan && (
+          <section className="mb-6">
+            <p className="text-xs font-medium text-[#6b7fa3] tracking-wide uppercase mb-3">
+              Plan del entrenador
+            </p>
+            <NutritionChecklist
+              clientId={client?.id ?? ''}
+              plan={activePlan}
+              mealLogs={mealLogs}
+              currentDate={currentDateString}
+            />
+          </section>
         )}
+
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-medium text-[#6b7fa3] tracking-wide uppercase">
+              Registro libre
+            </p>
+          </div>
+
+          {todayLogs.length === 0 ? (
+            <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5">
+              <p className="text-sm text-[#a0a0a0]">Sin comidas registradas hoy</p>
+            </div>
+          ) : (
+            <div>
+              {todayLogs.map((log) => (
+                <div
+                  key={log.id}
+                  className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-3 mb-2 flex items-start justify-between gap-3"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-[#e8e8e6]">{log.meal_name}</p>
+                    <p className="text-xs text-[#a0a0a0] mt-0.5">
+                      {`${formatValue(log.kcal ?? 0, 0)} kcal · ${formatValue(log.protein_g ?? 0)}g prot · ${formatValue(log.carbs_g ?? 0)}g carbs · ${formatValue(log.fat_g ?? 0)}g grasa`}
+                    </p>
+                    <p className="text-xs text-[#a0a0a0] mt-1">{formatTime(log.logged_at)}</p>
+                  </div>
+
+                  <form action={deleteNutritionLogAction.bind(null, log.id)}>
+                    <button
+                      type="submit"
+                      className="text-[#a0a0a0] hover:text-[var(--danger)] transition-colors text-lg leading-none px-1"
+                      aria-label={`Eliminar ${log.meal_name}`}
+                    >
+                      ×
+                    </button>
+                  </form>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
+
+      <AddMealFab clientId={client?.id ?? ''} />
     </PageTransition>
-  );
+  )
 }

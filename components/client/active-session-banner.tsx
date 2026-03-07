@@ -46,7 +46,7 @@ export function ActiveSessionBanner({
     <button
       type="button"
       onClick={() => router.push('/today')}
-      className="fixed left-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--bg-surface)] border border-green-500/30 shadow-lg animate-slide-up"
+      className="fixed left-1/2 -translate-x-1/2 w-full max-w-[430px] px-4 z-50 flex items-center gap-3 py-3 rounded-xl bg-[var(--bg-surface)] border border-green-500/30 shadow-lg animate-slide-up"
       style={{ bottom: '72px' }}
     >
       {/* Green ping dot */}

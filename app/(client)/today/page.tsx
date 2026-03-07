@@ -49,7 +49,7 @@ export default async function TodayPage() {
   const [sessionResult, streakResult] = await Promise.all([
     supabase
       .from('workout_sessions')
-      .select('id, day_id')
+      .select('id, day_id, started_at')
       .eq('client_id', client.id)
       .eq('completed', false)
       .gte('started_at', todayStart)
@@ -118,9 +118,9 @@ export default async function TodayPage() {
 
   const lastSetLogsResult = lastSessionResult.data
     ? await supabase
-        .from('set_logs')
-        .select('exercise_id, set_number, weight_kg, reps')
-        .eq('session_id', lastSessionResult.data.id)
+      .from('set_logs')
+      .select('exercise_id, set_number, weight_kg, reps')
+      .eq('session_id', lastSessionResult.data.id)
     : null
   const lastSetLogs = lastSetLogsResult?.data ?? []
 
@@ -150,7 +150,7 @@ export default async function TodayPage() {
           <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">{dayName}</h1>
         </div>
 
-        <TodayExercisesProgress exercises={exercisesWithSets} sessionId={session.id} lastSetLogs={lastSetLogs} />
+        <TodayExercisesProgress exercises={exercisesWithSets} sessionId={session.id} sessionStartedAt={session.started_at} lastSetLogs={lastSetLogs} />
 
         {/* Finalizar */}
         <div className="mt-6">

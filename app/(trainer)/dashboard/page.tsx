@@ -115,7 +115,7 @@ export default async function TrainerDashboard() {
       daysSinceLastWorkout: daysSinceLast,
       weightDeltaKg: 0,
       waistDeltaCm: 0,
-      phase: c.phase,
+      phase: c.phase === 'deficit' ? 'deficit' : c.phase === 'surplus' ? 'surplus' : 'maintenance',
       weeklyWorkoutsCompleted: weeklyCompleted,
       weeklyWorkoutsTarget: 3,
     }
@@ -125,7 +125,11 @@ export default async function TrainerDashboard() {
       name,
       phase: c.phase,
       phaseLabel:
-        { deficit: 'Déficit', maintenance: 'Mantenimiento', surplus: 'Superávit' }[c.phase] ??
+        ({
+          deficit: 'Déficit calórico',
+          maintenance: 'Mantenimiento',
+          surplus: 'Volumen',
+        } as Record<string, string>)[c.phase] ??
         c.phase,
       status,
       adherence,
@@ -160,7 +164,7 @@ export default async function TrainerDashboard() {
   const phaseData = [
     { phase: 'deficit', count: phaseCounts.deficit, label: 'Déficit' },
     { phase: 'maintenance', count: phaseCounts.maintenance, label: 'Mantenimiento' },
-    { phase: 'surplus', count: phaseCounts.surplus, label: 'Superávit' },
+    { phase: 'surplus', count: phaseCounts.surplus, label: 'Volumen' },
   ].filter((d) => d.count > 0)
 
   // Weight trend chart — top 3 clients by absolute weight change, last 30 days
@@ -237,7 +241,7 @@ export default async function TrainerDashboard() {
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 stagger">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 stagger">
           {stats.map((stat) => {
             const Icon = stat.icon
             return (
@@ -325,47 +329,114 @@ export default async function TrainerDashboard() {
               </Link>
             </div>
           </CardHeader>
-          <CardContent className="p-0 overflow-x-auto">
+          <CardContent className="p-0 overflow-x-auto md:overflow-visible">
             {clientStats.length === 0 ? (
               <p className="text-sm text-[var(--text-muted)] text-center py-8">Sin clientes activos</p>
             ) : (
-              <table className="w-full min-w-[640px]">
-                <thead>
-                  <tr className="border-b border-[var(--border)]">
-                    {['Cliente', 'Fase', 'Estado', 'Último entreno', 'Adherencia', 'Alerta', ''].map(
-                      (col) => (
-                        <th
-                          key={col}
-                          className="text-left px-5 py-3 text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap"
-                        >
-                          {col}
-                        </th>
-                      )
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {clientStats.map((client, i) => (
-                    <tr
-                      key={client.id}
-                      className={`hover:bg-[var(--bg-elevated)] animate-fade-in ${i < clientStats.length - 1 ? 'border-b border-[var(--border)]' : ''
-                        }`}
-                      style={{ animationDelay: `${i * 50}ms` }}
-                    >
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <Link href={`/clients/${client.id}`} className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[var(--bg-elevated)] flex items-center justify-center flex-shrink-0">
-                            <span className="text-sm font-semibold text-[var(--text-primary)]">
-                              {client.name[0]}
-                            </span>
+              <>
+                <table className="hidden md:table w-full min-w-[640px]">
+                  <thead>
+                    <tr className="border-b border-[var(--border)]">
+                      {['Cliente', 'Fase', 'Estado', 'Último entreno', 'Adherencia', 'Alerta', ''].map(
+                        (col) => (
+                          <th
+                            key={col}
+                            className="text-left px-5 py-3 text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap"
+                          >
+                            {col}
+                          </th>
+                        )
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clientStats.map((client, i) => (
+                      <tr
+                        key={client.id}
+                        className={`hover:bg-[var(--bg-elevated)] animate-fade-in ${i < clientStats.length - 1 ? 'border-b border-[var(--border)]' : ''
+                          }`}
+                        style={{ animationDelay: `${i * 50}ms` }}
+                      >
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <Link href={`/clients/${client.id}`} className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-[var(--bg-elevated)] flex items-center justify-center flex-shrink-0">
+                              <span className="text-sm font-semibold text-[var(--text-primary)]">
+                                {client.name[0]}
+                              </span>
+                            </div>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{client.name}</span>
+                          </Link>
+                        </td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <span className="text-sm text-[var(--text-secondary)]">{client.phaseLabel}</span>
+                        </td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <StatusBadge
+                            status={client.status}
+                            label={
+                              client.status === 'green'
+                                ? 'Correcto'
+                                : client.status === 'yellow'
+                                  ? 'Revisar'
+                                  : 'Intervención'
+                            }
+                          />
+                        </td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <span className="text-sm text-[var(--text-secondary)]">{client.lastWorkout}</span>
+                        </td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{
+                                  width: `${client.adherence}%`,
+                                  backgroundColor:
+                                    client.adherence >= 80
+                                      ? 'var(--success)'
+                                      : client.adherence >= 60
+                                        ? 'var(--warning)'
+                                        : 'var(--danger)',
+                                }}
+                              />
+                            </div>
+                            <span className="text-sm text-[var(--text-secondary)]">{client.adherence}%</span>
                           </div>
-                          <span className="text-sm font-medium text-[var(--text-primary)]">{client.name}</span>
+                        </td>
+                        <td className="px-5 py-4 max-w-[200px]">
+                          {getClientAlert(client.alertInput) ? (
+                            <span className="text-xs text-[var(--danger)] line-clamp-1">
+                              {getClientAlert(client.alertInput)}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-[var(--text-muted)]">—</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <Link href={`/clients/${client.id}`}>
+                            <ArrowRight className="w-4 h-4 text-[var(--text-muted)]" />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden flex flex-col divide-y divide-[var(--border)]">
+                  {clientStats.map((client, i) => (
+                    <div key={client.id} className="p-4 animate-fade-in" style={{ animationDelay: `${i * 30}ms` }}>
+                      <div className="flex justify-between items-start gap-4 mb-3">
+                        <Link href={`/clients/${client.id}`} className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-full bg-[var(--bg-elevated)] flex items-center justify-center flex-shrink-0">
+                            <span className="text-sm font-semibold text-[var(--text-primary)]">{client.name[0]}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{client.name}</p>
+                            <p className="text-xs text-[var(--text-secondary)] mt-0.5">{client.phaseLabel}</p>
+                          </div>
                         </Link>
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className="text-sm text-[var(--text-secondary)]">{client.phaseLabel}</span>
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
                         <StatusBadge
                           status={client.status}
                           label={
@@ -376,47 +447,50 @@ export default async function TrainerDashboard() {
                                 : 'Intervención'
                           }
                         />
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className="text-sm text-[var(--text-secondary)]">{client.lastWorkout}</span>
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: `${client.adherence}%`,
-                                backgroundColor:
-                                  client.adherence >= 80
-                                    ? 'var(--success)'
-                                    : client.adherence >= 60
-                                      ? 'var(--warning)'
-                                      : 'var(--danger)',
-                              }}
-                            />
-                          </div>
-                          <span className="text-sm text-[var(--text-secondary)]">{client.adherence}%</span>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-[var(--text-muted)]">Último entreno</span>
+                          <span className="text-xs font-medium text-[var(--text-secondary)]">{client.lastWorkout}</span>
                         </div>
-                      </td>
-                      <td className="px-5 py-4 max-w-[200px]">
-                        {getClientAlert(client.alertInput) ? (
-                          <span className="text-xs text-[var(--danger)] line-clamp-1">
-                            {getClientAlert(client.alertInput)}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-[var(--text-muted)]">—</span>
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-xs text-[var(--text-muted)] whitespace-nowrap">Adherencia</span>
+                          <div className="flex items-center gap-2 flex-1 justify-end">
+                            <div className="w-20 h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{
+                                  width: `${client.adherence}%`,
+                                  backgroundColor:
+                                    client.adherence >= 80
+                                      ? 'var(--success)'
+                                      : client.adherence >= 60
+                                        ? 'var(--warning)'
+                                        : 'var(--danger)',
+                                }}
+                              />
+                            </div>
+                            <span className="text-xs font-semibold text-[var(--text-secondary)]">{client.adherence}%</span>
+                          </div>
+                        </div>
+                        {getClientAlert(client.alertInput) && (
+                          <div className="mt-1">
+                            <span className="text-xs text-[var(--danger)]">{getClientAlert(client.alertInput)}</span>
+                          </div>
                         )}
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <Link href={`/clients/${client.id}`}>
-                          <ArrowRight className="w-4 h-4 text-[var(--text-muted)]" />
-                        </Link>
-                      </td>
-                    </tr>
+                        <div className="mt-2 pt-3 border-t border-[var(--border)]">
+                          <Link href={`/clients/${client.id}`}>
+                            <Button variant="secondary" size="sm" className="w-full">
+                              Ver detalles
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>

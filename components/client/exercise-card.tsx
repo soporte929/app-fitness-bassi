@@ -41,12 +41,12 @@ export function ExerciseCard({
   exercise,
   sessionId,
   lastSetLogs = [],
-  onCompletionChange,
+  onSetCountChange,
 }: {
   exercise: ExerciseWithSets
   sessionId: string
   lastSetLogs?: LastSetLog[]
-  onCompletionChange?: (exerciseId: string, completed: boolean) => void
+  onSetCountChange?: (exerciseId: string, completedSets: number) => void
 }) {
   const myLastLogs = lastSetLogs.filter((l) => l.exercise_id === exercise.id)
 
@@ -75,11 +75,10 @@ export function ExerciseCard({
   const [savingIdx, setSavingIdx] = useState<number | null>(null)
 
   const completedSets = sets.filter((s) => s.done).length
-  const allDone = completedSets === sets.length && sets.length > 0
 
   useEffect(() => {
-    onCompletionChange?.(exercise.id, allDone)
-  }, [allDone, exercise.id, onCompletionChange])
+    onSetCountChange?.(exercise.id, completedSets)
+  }, [completedSets, exercise.id, onSetCountChange])
 
   const updateSet = (i: number, field: 'weight' | 'reps' | 'rir', value: string) => {
     setSets((prev) => prev.map((s, idx) => (idx === i ? { ...s, [field]: value } : s)))
@@ -176,12 +175,12 @@ export function ExerciseCard({
         <div
           className={cn(
             'flex-shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold',
-            allDone
+            completedSets === sets.length && sets.length > 0
               ? 'bg-[var(--success)]/15 text-[var(--success)]'
               : 'bg-[var(--bg-elevated)] text-[var(--text-secondary)]'
           )}
         >
-          {allDone && <Check className="w-3 h-3" />}
+          {completedSets === sets.length && sets.length > 0 && <Check className="w-3 h-3" />}
           {completedSets}/{sets.length}
         </div>
 

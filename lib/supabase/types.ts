@@ -1,8 +1,13 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 export type ActivityLevel = "sedentary" | "light" | "moderate" | "active" | "very_active";
+export type PlanPhase = "recomposition" | "deficit" | "volume" | "maintenance";
+export type PlanLevel = "beginner" | "intermediate" | "advanced";
 export type Goal = "deficit" | "maintenance" | "surplus";
-export type Phase = "deficit" | "maintenance" | "surplus";
+export type Phase = "recomposition" | "deficit" | "volume" | "maintenance" | "surplus";
+export type Lifestyle = "sedentary" | "light" | "active" | "very_active";
+export type TrainingDays = "3" | "4-5" | "6";
+export type Objective = "lose_fat" | "gain_muscle" | "maintenance_high" | "maintenance_normal";
 export type UserRole = "trainer" | "client";
 
 export interface Database {
@@ -36,13 +41,19 @@ export interface Database {
           trainer_id: string;
           phase: Phase;
           goal: Goal;
+          objective: Objective | null;
           weight_kg: number;
           body_fat_pct: number | null;
+          age: number | null;
+          height_cm: number | null;
           activity_level: ActivityLevel;
+          lifestyle: Lifestyle | null;
+          training_days: TrainingDays | null;
           daily_steps: number;
           target_weight_kg: number | null;
           joined_date: string;
           notes: string | null;
+          trainer_notes: string | null;
           active: boolean;
           created_at: string;
           updated_at: string;
@@ -52,13 +63,19 @@ export interface Database {
           trainer_id: string;
           phase: Phase;
           goal: Goal;
+          objective?: Objective | null;
           weight_kg: number;
           body_fat_pct?: number | null;
+          age?: number | null;
+          height_cm?: number | null;
           activity_level: ActivityLevel;
+          lifestyle?: Lifestyle | null;
+          training_days?: TrainingDays | null;
           daily_steps: number;
           target_weight_kg?: number | null;
           joined_date: string;
           notes?: string | null;
+          trainer_notes?: string | null;
           active?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["clients"]["Insert"]>;
@@ -320,23 +337,19 @@ export interface Database {
           client_id: string;
           logged_at: string;
           meal_name: string;
-          food_name: string;
-          calories: number;
-          protein_g: number;
-          carbs_g: number;
-          fat_g: number;
-          quantity_g: number | null;
+          kcal: number | null;
+          protein_g: number | null;
+          carbs_g: number | null;
+          fat_g: number | null;
         };
         Insert: {
           client_id: string;
-          logged_at: string;
+          logged_at?: string;
           meal_name: string;
-          food_name: string;
-          calories: number;
-          protein_g: number;
-          carbs_g: number;
-          fat_g: number;
-          quantity_g?: number | null;
+          kcal?: number | null;
+          protein_g?: number | null;
+          carbs_g?: number | null;
+          fat_g?: number | null;
         };
         Update: Partial<Database["public"]["Tables"]["nutrition_logs"]["Insert"]>;
         Relationships: [
@@ -345,6 +358,216 @@ export interface Database {
             columns: ["client_id"];
             isOneToOne: false;
             referencedRelation: "clients";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      nutrition_plans: {
+        Row: {
+          id: string;
+          client_id: string;
+          trainer_id: string;
+          name: string;
+          kcal_target: number | null;
+          protein_target_g: number | null;
+          carbs_target_g: number | null;
+          fat_target_g: number | null;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          client_id: string;
+          trainer_id: string;
+          name?: string;
+          kcal_target?: number | null;
+          protein_target_g?: number | null;
+          carbs_target_g?: number | null;
+          fat_target_g?: number | null;
+          active?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["nutrition_plans"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "nutrition_plans_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "nutrition_plans_trainer_id_fkey";
+            columns: ["trainer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      nutrition_plan_meals: {
+        Row: {
+          id: string;
+          plan_id: string;
+          name: string;
+          kcal_per_100g: number | null;
+          protein_per_100g: number | null;
+          carbs_per_100g: number | null;
+          fat_per_100g: number | null;
+          default_grams: number | null;
+          meal_time: string | null;
+          order_index: number | null;
+        };
+        Insert: {
+          id?: string;
+          plan_id: string;
+          name: string;
+          kcal_per_100g?: number | null;
+          protein_per_100g?: number | null;
+          carbs_per_100g?: number | null;
+          fat_per_100g?: number | null;
+          default_grams?: number | null;
+          meal_time?: string | null;
+          order_index?: number | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["nutrition_plan_meals"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "nutrition_plan_meals_plan_id_fkey";
+            columns: ["plan_id"];
+            isOneToOne: false;
+            referencedRelation: "nutrition_plans";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      nutrition_meal_logs: {
+        Row: {
+          id: string;
+          client_id: string;
+          meal_id: string;
+          logged_date: string;
+          completed: boolean;
+        };
+        Insert: {
+          id?: string;
+          client_id: string;
+          meal_id: string;
+          logged_date?: string;
+          completed?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["nutrition_meal_logs"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "nutrition_meal_logs_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "nutrition_meal_logs_meal_id_fkey";
+            columns: ["meal_id"];
+            isOneToOne: false;
+            referencedRelation: "nutrition_plan_meals";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      plans: {
+        Row: {
+          id: string;
+          trainer_id: string;
+          name: string;
+          description: string | null;
+          phase: PlanPhase | null;
+          level: PlanLevel | null;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          trainer_id: string;
+          name: string;
+          description?: string | null;
+          phase?: PlanPhase | null;
+          level?: PlanLevel | null;
+          active?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["plans"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "plans_trainer_id_fkey";
+            columns: ["trainer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      plan_routines: {
+        Row: {
+          id: string;
+          plan_id: string;
+          workout_plan_id: string;
+          order_index: number;
+        };
+        Insert: {
+          plan_id: string;
+          workout_plan_id: string;
+          order_index?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["plan_routines"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "plan_routines_plan_id_fkey";
+            columns: ["plan_id"];
+            isOneToOne: false;
+            referencedRelation: "plans";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "plan_routines_workout_plan_id_fkey";
+            columns: ["workout_plan_id"];
+            isOneToOne: false;
+            referencedRelation: "workout_plans";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      client_plans: {
+        Row: {
+          id: string;
+          client_id: string;
+          plan_id: string;
+          active: boolean;
+          assigned_at: string;
+        };
+        Insert: {
+          client_id: string;
+          plan_id: string;
+          active?: boolean;
+          assigned_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["client_plans"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "client_plans_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "client_plans_plan_id_fkey";
+            columns: ["plan_id"];
+            isOneToOne: false;
+            referencedRelation: "plans";
             referencedColumns: ["id"];
           }
         ];

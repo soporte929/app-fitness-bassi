@@ -11,6 +11,7 @@ import { PageTransition } from '@/components/ui/page-transition'
 import { calculateNutrition } from '@/lib/calculations/nutrition'
 import { computeAlerts } from '@/lib/alerts'
 import { EditClientPanel } from './edit-panel'
+import { EditNutritionPlanModal } from './edit-nutrition-plan-modal'
 import { AssignRoutineButton } from './assign-routine-button'
 import { ArrowLeft, Flame, ChevronRight } from 'lucide-react'
 
@@ -31,7 +32,7 @@ export default async function ClientDetailPage({
   const { data: rawClient } = await supabase
     .from('clients')
     .select(
-      `id, phase, goal, weight_kg, body_fat_pct, activity_level, daily_steps, joined_date, notes,
+      `id, phase, goal, objective, age, height_cm, lifestyle, training_days, weight_kg, body_fat_pct, activity_level, daily_steps, joined_date, notes, trainer_notes,
       profile:profiles!clients_profile_id_fkey (full_name, email)`
     )
     .eq('id', id)
@@ -40,8 +41,7 @@ export default async function ClientDetailPage({
 
   if (!rawClient) notFound()
 
-  // Parallel data fetches
-  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, templatesRes] = await Promise.all([
+  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, templatesRes, activeNutritionPlanRaw] = await Promise.all([
     supabase
       .from('weight_logs')
       .select('weight_kg, logged_at')
@@ -81,6 +81,12 @@ export default async function ClientDetailPage({
       .eq('is_template', true)
       .eq('active', true)
       .order('created_at', { ascending: false }),
+    supabase
+      .from('nutrition_plans' as any)
+      .select('*, meals:nutrition_plan_meals(*)')
+      .eq('client_id', id)
+      .eq('active', true)
+      .maybeSingle(),
   ])
 
   const weightLogs = weightLogsRes.data ?? []
@@ -100,6 +106,12 @@ export default async function ClientDetailPage({
     days_per_week: plan.days_per_week,
     total_exercises: (plan.workout_days ?? []).reduce((acc, day) => acc + (day.exercises?.length ?? 0), 0),
   }))
+
+  const activeNutritionPlanData = activeNutritionPlanRaw.data
+  const activeNutritionPlan = activeNutritionPlanData ? {
+    ...(activeNutritionPlanData as any),
+    meals: ((activeNutritionPlanData as any).meals || []).sort((a: any, b: any) => a.order_index - b.order_index)
+  } : null
 
   const now = new Date()
 
@@ -164,7 +176,13 @@ export default async function ClientDetailPage({
   const clientName = profile?.full_name ?? 'Cliente'
 
   const phaseLabel =
-    { deficit: 'Déficit', maintenance: 'Mantenimiento', surplus: 'Superávit' }[rawClient.phase] ??
+    {
+      recomposition: 'Recomposición corporal',
+      deficit: 'Déficit calórico',
+      volume: 'Volumen',
+      maintenance: 'Mantenimiento',
+      surplus: 'Superávit',
+    }[rawClient.phase] ??
     rawClient.phase
 
   const joinedLabel = new Date(rawClient.joined_date).toLocaleDateString('es-ES', {
@@ -186,8 +204,9 @@ export default async function ClientDetailPage({
   const recentWorkouts = sessions.slice(0, 6).map((s) => {
     const day = s.workout_day as { name: string } | null
     return {
+      id: s.id,
       date: new Date(s.started_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
-      dayName: day?.name ?? 'Día',
+      dayName: day?.name ?? 'Entrenamiento',
       completed: s.completed,
     }
   })
@@ -284,8 +303,8 @@ export default async function ClientDetailPage({
                     {weightHistory.length >= 2 && (
                       <span
                         className={`text-xs font-medium px-2 py-0.5 rounded-full ${weightDeltaKg <= 0
-                            ? 'text-[var(--success)] bg-[var(--success)]/10'
-                            : 'text-[var(--danger)] bg-[var(--danger)]/10'
+                          ? 'text-[var(--success)] bg-[var(--success)]/10'
+                          : 'text-[var(--danger)] bg-[var(--danger)]/10'
                           }`}
                       >
                         {weightDeltaKg > 0 ? '+' : ''}
@@ -313,8 +332,8 @@ export default async function ClientDetailPage({
                     {waistHistory.length >= 2 && (
                       <span
                         className={`text-xs font-medium px-2 py-0.5 rounded-full ${waistDeltaCm <= 0
-                            ? 'text-[var(--success)] bg-[var(--success)]/10'
-                            : 'text-[var(--danger)] bg-[var(--danger)]/10'
+                          ? 'text-[var(--success)] bg-[var(--success)]/10'
+                          : 'text-[var(--danger)] bg-[var(--danger)]/10'
                           }`}
                       >
                         {waistDeltaCm > 0 ? '+' : ''}
@@ -350,15 +369,15 @@ export default async function ClientDetailPage({
                   </p>
                 ) : (
                   recentWorkouts.map((w, i) => (
-                    <div
+                    <Link
                       key={i}
-                      className={`flex items-center justify-between px-5 py-3.5 ${i < recentWorkouts.length - 1 ? 'border-b border-[var(--border)]' : ''
-                        }`}
+                      href={`/history/${w.id}`}
+                      target="_blank"
+                      className={`flex items-center justify-between px-5 py-3.5 hover:bg-[var(--bg-elevated)] transition-colors ${i < recentWorkouts.length - 1 ? 'border-b border-[var(--border)]' : ''}`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-2 h-2 rounded-full flex-shrink-0 ${w.completed ? 'bg-[var(--success)]' : 'bg-[var(--danger)]'
-                            }`}
+                          className={`w-2 h-2 rounded-full flex-shrink-0 ${w.completed ? 'bg-[var(--success)]' : 'bg-[var(--danger)]'}`}
                         />
                         <div>
                           <p className="text-sm font-medium text-[var(--text-primary)]">{w.dayName}</p>
@@ -367,8 +386,11 @@ export default async function ClientDetailPage({
                           </p>
                         </div>
                       </div>
-                      <span className="text-xs text-[var(--text-muted)]">{w.date}</span>
-                    </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-[var(--text-muted)]">{w.date}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                      </div>
+                    </Link>
                   ))
                 )}
               </CardContent>
@@ -382,10 +404,14 @@ export default async function ClientDetailPage({
                 weight_kg: rawClient.weight_kg,
                 body_fat_pct: rawClient.body_fat_pct,
                 phase: rawClient.phase,
-                goal: rawClient.goal,
+                objective: rawClient.objective,
+                age: rawClient.age,
+                height_cm: rawClient.height_cm,
+                lifestyle: rawClient.lifestyle,
+                training_days: rawClient.training_days,
                 activity_level: rawClient.activity_level,
                 daily_steps: rawClient.daily_steps,
-                notes: rawClient.notes,
+                trainer_notes: rawClient.trainer_notes,
               }}
             />
           </div>
@@ -393,77 +419,82 @@ export default async function ClientDetailPage({
           {/* Columna lateral — nutrición */}
           <div className="xl:w-72 space-y-4 flex-shrink-0">
             <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-[var(--warning)]" />
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">Plan nutricional</p>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-[var(--warning)]" />
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">Plan nutricional</p>
+                  </div>
+                  <EditNutritionPlanModal
+                    clientId={id}
+                    plan={activeNutritionPlan}
+                    trigger={
+                      <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                        {activeNutritionPlan ? 'Editar plan' : 'Crear plan'}
+                      </Button>
+                    }
+                  />
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center py-1">
-                  <p className="text-4xl font-bold text-[var(--text-primary)] tracking-tight font-[family-name:var(--font-geist-mono)]">
-                    {nutrition.targetCalories}
-                  </p>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">kcal objetivo</p>
-                </div>
+              <CardContent>
+                {activeNutritionPlan ? (
+                  <div className="space-y-4">
+                    <div className="text-center py-1">
+                      <p className="text-3xl font-bold text-[var(--text-primary)] tracking-tight font-[family-name:var(--font-geist-mono)]">
+                        {activeNutritionPlan.kcal_target}
+                      </p>
+                      <p className="text-[10px] text-[var(--text-secondary)] mt-1 uppercase tracking-wider">Kcal objetivo</p>
+                    </div>
 
-                <div className="space-y-2.5">
-                  {[
-                    {
-                      label: 'Proteína',
-                      g: nutrition.macros.protein.g,
-                      pct: nutrition.macros.protein.pct,
-                      color: 'var(--accent)',
-                    },
-                    {
-                      label: 'Carbohidratos',
-                      g: nutrition.macros.carbs.g,
-                      pct: nutrition.macros.carbs.pct,
-                      color: 'var(--success)',
-                    },
-                    {
-                      label: 'Grasa',
-                      g: nutrition.macros.fat.g,
-                      pct: nutrition.macros.fat.pct,
-                      color: 'var(--warning)',
-                    },
-                  ].map((macro) => (
-                    <div key={macro.label}>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-xs text-[var(--text-secondary)]">{macro.label}</span>
-                        <span className="text-xs font-medium text-[var(--text-primary)]">{macro.g}g</span>
+                    <div className="flex justify-between divide-x divide-[var(--border)] border border-[var(--border)] rounded-lg p-2 bg-[var(--bg-base)]">
+                      <div className="flex-1 text-center">
+                        <p className="text-xs font-semibold text-[var(--text-primary)]">{activeNutritionPlan.protein_target_g}g</p>
+                        <p className="text-[10px] text-[var(--text-secondary)]">Prot</p>
                       </div>
-                      <div className="h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${macro.pct}%`, backgroundColor: macro.color }}
-                        />
+                      <div className="flex-1 text-center">
+                        <p className="text-xs font-semibold text-[var(--text-primary)]">{activeNutritionPlan.carbs_target_g}g</p>
+                        <p className="text-[10px] text-[var(--text-secondary)]">Carb</p>
+                      </div>
+                      <div className="flex-1 text-center">
+                        <p className="text-xs font-semibold text-[var(--text-primary)]">{activeNutritionPlan.fat_target_g}g</p>
+                        <p className="text-[10px] text-[var(--text-secondary)]">Grasa</p>
                       </div>
                     </div>
-                  ))}
-                </div>
 
-                <div className="border-t border-[var(--border)] pt-3 space-y-1.5">
-                  {[
-                    { label: 'TMB (Cunningham)', value: `${nutrition.tmb_cunningham} kcal` },
-                    { label: 'TMB (Tinsley)', value: `${nutrition.tmb_tinsley} kcal` },
-                    { label: 'GET total', value: `${nutrition.get} kcal` },
-                    { label: 'Bonus pasos', value: `+${nutrition.stepsBonus} kcal`, green: true },
-                  ].map((row) => (
-                    <div key={row.label} className="flex justify-between">
-                      <span className="text-xs text-[var(--text-secondary)]">{row.label}</span>
-                      <span
-                        className={`text-xs font-medium ${row.green ? 'text-[var(--success)]' : 'text-[var(--text-primary)]'
-                          }`}
-                      >
-                        {row.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                    {activeNutritionPlan.meals && activeNutritionPlan.meals.length > 0 && (
+                      <div className="space-y-2 mt-4">
+                        <p className="text-[10px] uppercase text-[var(--text-muted)] font-medium mb-1">Comidas del plan</p>
+                        {activeNutritionPlan.meals.map((meal: any) => (
+                          <div key={meal.id} className="flex items-center justify-between bg-[var(--bg-base)] border border-[var(--border)] p-2 rounded-md">
+                            <div>
+                              <p className="text-xs font-medium text-[var(--text-primary)]">{meal.name}</p>
+                              <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">
+                                {Math.round((meal.kcal_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)} kcal · {Math.round((meal.protein_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)}p {Math.round((meal.carbs_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)}c {Math.round((meal.fat_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)}f
+                              </p>
+                            </div>
+                            {meal.meal_time && (
+                              <span className="text-[10px] text-[var(--text-muted)]">{meal.meal_time}</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <p className="text-sm text-[var(--text-muted)] mb-3">Este cliente aún no tiene un plan nutricional configurado.</p>
+                    <EditNutritionPlanModal
+                      clientId={id}
+                      trigger={
+                        <Button size="sm" className="w-full bg-[var(--accent)] text-white hover:bg-[var(--accent)]/90">
+                          Crear plan nutricional
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
-
             {/* Plan activo */}
             <Card>
               <CardContent className="py-4">

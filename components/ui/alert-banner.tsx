@@ -13,7 +13,7 @@ export function AlertBanner({ alert }: { alert: Alert }) {
     <div className={`flex items-start gap-3 ${bg} border ${border} rounded-lg px-4 py-3`}>
       <Icon className={`w-4 h-4 ${text} flex-shrink-0 mt-0.5`} />
       <div className="min-w-0">
-        <p className={`text-sm font-medium ${text}`}>{alert.message}</p>
+        <p className={`text-sm font-medium md:whitespace-normal truncate block ${text}`}>{alert.message}</p>
         {alert.action && (
           <p className={`text-xs mt-0.5 opacity-70 ${text}`}>{alert.action}</p>
         )}

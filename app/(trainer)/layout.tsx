@@ -12,20 +12,25 @@ export default function TrainerLayout({
   children: React.ReactNode;
 }) {
   const [isMounted, setIsMounted] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  });
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  });
 
   useEffect(() => {
     setIsMounted(true);
-    const mobile = window.innerWidth < 768;
-    setIsMobile(mobile);
-    setCollapsed(mobile); // Start collapsed on mobile, open on desktop
 
     const handleResize = () => {
       const mobileResize = window.innerWidth < 768;
       setIsMobile(mobileResize);
       if (mobileResize) {
         setCollapsed(true);
+      } else {
+        setCollapsed(false);
       }
     };
 
@@ -62,7 +67,7 @@ export default function TrainerLayout({
       <main
         className={cn(
           "pl-0 min-h-screen overflow-x-hidden transition-all duration-300",
-          !isMounted ? "md:pl-60" : collapsed ? "md:pl-16" : "md:pl-60"
+          !isMounted ? "md:pl-64" : isMobile ? "pl-0" : "md:pl-64"
         )}
       >
         <Suspense fallback={<LoadingScreen />}>

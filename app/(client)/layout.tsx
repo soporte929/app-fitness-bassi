@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import Image from 'next/image'
 import { ClientNav } from '@/components/client/nav'
 import { RestTimer } from '@/components/client/rest-timer'
 import LoadingScreen from '@/components/ui/loading-screen'
@@ -15,13 +16,24 @@ export default async function ClientLayout({ children }: { children: React.React
   let totalSets = 0
 
   if (user) {
-    const { data: session } = await supabase
-      .from('workout_sessions')
-      .select('id, started_at, day_id')
-      .eq('completed', false)
-      .order('started_at', { ascending: false })
-      .limit(1)
+    const { data: clientRecord } = await supabase
+      .from('clients')
+      .select('id')
+      .eq('profile_id', user.id)
       .maybeSingle()
+
+    const { data: session } = clientRecord
+      ? await supabase
+          .from('workout_sessions')
+          .select('id, started_at, day_id')
+          .eq('client_id', clientRecord.id)
+          .eq('completed', false)
+          .gte('started_at', new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString())
+          .lte('started_at', new Date(new Date().setUTCHours(23, 59, 59, 999)).toISOString())
+          .order('started_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      : { data: null }
 
     if (session) {
       const [dayResult, setLogsResult] = await Promise.all([
@@ -50,13 +62,31 @@ export default async function ClientLayout({ children }: { children: React.React
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] flex flex-col max-w-lg mx-auto relative">
-      <main className="flex-1 pb-20">
-        <Suspense fallback={<LoadingScreen />}>{children}</Suspense>
-      </main>
-      <ClientNav />
-      <RestTimer />
-      <ActiveSessionBanner activeSession={activeSession} completedSets={completedSets} totalSets={totalSets} />
+    <div className="min-h-screen" style={{ background: '#111111' }}>
+      <div
+        className="relative mx-auto min-h-screen w-full max-w-[430px] md:shadow-2xl flex flex-col"
+        style={{ background: '#191919' }}
+      >
+        <header
+          className="sticky top-0 z-30 flex items-center px-4"
+          style={{ height: '44px', background: '#191919', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <Image
+            src="/2.png"
+            alt="Fitness Bassi"
+            width={28}
+            height={28}
+            className="object-contain"
+            style={{ mixBlendMode: 'screen' }}
+          />
+        </header>
+        <main className="flex-1 pb-20">
+          <Suspense fallback={<LoadingScreen />}>{children}</Suspense>
+        </main>
+        <ClientNav />
+        <RestTimer />
+        <ActiveSessionBanner activeSession={activeSession} completedSets={completedSets} totalSets={totalSets} />
+      </div>
     </div>
   )
 }

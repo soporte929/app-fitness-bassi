@@ -92,7 +92,7 @@ export default async function RoutinesTemplatesPage() {
   return (
     <PageTransition>
       <div className="p-6 xl:p-8 w-full">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl xl:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
               Rutinas
@@ -102,14 +102,14 @@ export default async function RoutinesTemplatesPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <Link href="/routines-templates/new?mode=template">
-              <Button size="sm">
+          <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+            <Link href="/routines-templates/new?mode=template" className="w-full sm:w-auto">
+              <Button size="sm" className="w-full">
                 <Plus className="w-4 h-4" /> Nuevo template
               </Button>
             </Link>
-            <Link href="/routines-templates/new?mode=client">
-              <Button variant="secondary" size="sm">
+            <Link href="/routines-templates/new?mode=client" className="w-full sm:w-auto">
+              <Button variant="secondary" size="sm" className="w-full">
                 <Plus className="w-4 h-4" /> Plan para cliente
               </Button>
             </Link>
@@ -127,7 +127,7 @@ export default async function RoutinesTemplatesPage() {
               <p className="text-sm text-[var(--text-secondary)]">Sin templates todavía</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 stagger">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
               {templates.map((plan, index) => (
                 <div key={plan.id} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
                   <TemplateCard plan={plan} clients={clients} />
@@ -148,7 +148,7 @@ export default async function RoutinesTemplatesPage() {
               <p className="text-sm text-[var(--text-secondary)]">Aún no has asignado planes</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 stagger">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
               {assignedPlans.map((plan, index) => (
                 <div key={plan.id} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
                   <TemplateCard plan={plan} clients={clients} />
