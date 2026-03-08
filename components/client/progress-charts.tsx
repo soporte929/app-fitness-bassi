@@ -238,6 +238,17 @@ interface Props {
 }
 
 export function ProgressCharts({ weightLogs, measurements, sessions, targetWeightKg, nowIso }: Props) {
+  console.log('RAW SESSIONS:', JSON.stringify(sessions?.slice(0,2).map((s: any) => ({
+    id: s.id,
+    set_logs_count: s.set_logs?.length,
+    first_3_sets: s.set_logs?.slice(0,3).map((l: any) => ({
+      weight_kg: l.weight_kg,
+      weight_type: typeof l.weight_kg,
+      reps: l.reps,
+      reps_type: typeof l.reps,
+      completed: l.completed
+    }))
+  })), null, 2))
   const [period, setPeriod] = useState<PeriodDays>(7)
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
 
@@ -266,7 +277,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       .filter((s) => new Date(s.finished_at ?? s.started_at) >= since)
       .map((s) => ({
         iso: s.finished_at ?? s.started_at,
-        value: (s.set_logs as any[])
+        value: ((s.set_logs ?? []) as any[])
           .filter((l) => Number(l.weight_kg) > 0 && Number(l.reps) > 0)
           .reduce((sum: number, l) => sum + Number(l.weight_kg) * Number(l.reps), 0),
       }))
@@ -279,7 +290,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
   const exerciseList = useMemo(() => {
     const map = new Map<string, string>()
     for (const s of sessions) {
-      for (const l of s.set_logs) {
+      for (const l of (s.set_logs ?? [])) {
         if (l.exercise && !map.has(l.exercise.id)) {
           map.set(l.exercise.id, l.exercise.name)
         }
@@ -296,7 +307,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
     for (const s of sessions) {
       if (new Date(s.finished_at ?? s.started_at) < since) continue
       let maxRm = 0
-      for (const l of s.set_logs) {
+      for (const l of (s.set_logs ?? [])) {
         if (l.exercise?.id !== activeExerciseId) continue
         const rm = epleyRM(parseFloat(String(l.weight_kg)), l.reps)
         if (rm > maxRm) maxRm = rm
