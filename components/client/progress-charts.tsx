@@ -37,10 +37,10 @@ export type SessionForProgress = {
   id: string
   started_at: string
   finished_at: string | null
+  completed: boolean
   set_logs: {
     weight_kg: number
     reps: number
-    completed: boolean
     exercise: { id: string; name: string } | null
   }[]
 }
@@ -242,7 +242,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
 
   const since = useMemo(() => cutoff(period, nowIso), [period, nowIso])
-  const { mode: groupingMode, label: groupingLabel } = GROUPING_CONFIG[period]
+  const { mode: groupingMode } = GROUPING_CONFIG[period]
 
   // Chart 1 — Weight (mean per bucket)
   const weightData = useMemo(() => {
@@ -267,11 +267,12 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       .map((s) => ({
         iso: s.finished_at ?? s.started_at,
         value: s.set_logs
-          .filter((l) => l.completed === true && parseFloat(String(l.weight_kg)) > 0)
+          .filter((l) => parseFloat(String(l.weight_kg)) > 0 && l.reps > 0)
           .reduce((sum, l) => sum + parseFloat(String(l.weight_kg)) * l.reps, 0),
       }))
     const grouped = groupByBucket(entries, groupingMode, 'sum')
-    return grouped.map((d) => ({ date: d.date, volume: d.value }))
+    const result = grouped.map((d) => ({ date: d.date, volume: d.value }))
+    return result
   }, [sessions, since, groupingMode])
 
   // Chart 4 — RM per exercise (max per bucket)
@@ -296,7 +297,6 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       if (new Date(s.finished_at ?? s.started_at) < since) continue
       let maxRm = 0
       for (const l of s.set_logs) {
-        if (!l.completed) continue
         if (l.exercise?.id !== activeExerciseId) continue
         const rm = epleyRM(parseFloat(String(l.weight_kg)), l.reps)
         if (rm > maxRm) maxRm = rm
