@@ -266,9 +266,9 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       .filter((s) => new Date(s.finished_at ?? s.started_at) >= since)
       .map((s) => ({
         iso: s.finished_at ?? s.started_at,
-        value: s.set_logs
-          .filter((l) => parseFloat(String(l.weight_kg)) > 0 && l.reps > 0)
-          .reduce((sum, l) => sum + parseFloat(String(l.weight_kg)) * l.reps, 0),
+        value: (s.set_logs as any[])
+          .filter((l) => Number(l.weight_kg) > 0 && Number(l.reps) > 0)
+          .reduce((sum: number, l) => sum + Number(l.weight_kg) * Number(l.reps), 0),
       }))
     const grouped = groupByBucket(entries, groupingMode, 'sum')
     const result = grouped.map((d) => ({ date: d.date, volume: d.value }))
