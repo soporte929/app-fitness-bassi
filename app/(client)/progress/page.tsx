@@ -55,6 +55,7 @@ export default async function ProgressPage() {
           measurements={(measurementsResult.data ?? []) as Measurement[]}
           sessions={(sessionsResult.data ?? []) as unknown as SessionForProgress[]}
           targetWeightKg={client.target_weight_kg}
+          nowIso={new Date().toISOString()}
         />
       </div>
     </PageTransition>

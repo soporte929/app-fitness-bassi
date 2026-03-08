@@ -73,8 +73,8 @@ const VOLUME_SUBTITLE: Record<GroupingMode, string> = {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function cutoff(days: number): Date {
-  const now = new Date()
+function cutoff(days: number, nowIso: string): Date {
+  const now = new Date(nowIso)
   const start = new Date(Date.UTC(
     now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()
   ))
@@ -234,13 +234,14 @@ interface Props {
   measurements: Measurement[]
   sessions: SessionForProgress[]
   targetWeightKg: number | null
+  nowIso: string
 }
 
-export function ProgressCharts({ weightLogs, measurements, sessions, targetWeightKg }: Props) {
+export function ProgressCharts({ weightLogs, measurements, sessions, targetWeightKg, nowIso }: Props) {
   const [period, setPeriod] = useState<PeriodDays>(7)
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
 
-  const since = useMemo(() => cutoff(period), [period])
+  const since = useMemo(() => cutoff(period, nowIso), [period, nowIso])
   const { mode: groupingMode, label: groupingLabel } = GROUPING_CONFIG[period]
 
   // Chart 1 — Weight (mean per bucket)
