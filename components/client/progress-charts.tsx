@@ -267,7 +267,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       .map((s) => ({
         iso: s.finished_at ?? s.started_at,
         value: s.set_logs
-          .filter((l) => l.completed === true)
+          .filter((l) => l.completed === true && parseFloat(String(l.weight_kg)) > 0)
           .reduce((sum, l) => sum + parseFloat(String(l.weight_kg)) * l.reps, 0),
       }))
     const grouped = groupByBucket(entries, groupingMode, 'sum')

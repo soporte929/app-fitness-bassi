@@ -50,6 +50,7 @@ export default async function ProgressPage() {
     <PageTransition>
       <div className="px-4 pt-6 pb-24">
         <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight mb-5">Progreso</h1>
+
         <ProgressCharts
           weightLogs={(weightResult.data ?? []) as WeightLog[]}
           measurements={(measurementsResult.data ?? []) as Measurement[]}
