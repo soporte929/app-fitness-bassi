@@ -238,7 +238,7 @@ interface Props {
 }
 
 export function ProgressCharts({ weightLogs, measurements, sessions, targetWeightKg, nowIso }: Props) {
-  const [period, setPeriod] = useState<PeriodDays>(30)
+  const [period, setPeriod] = useState<PeriodDays>(180)
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
 
   const since = useMemo(() => cutoff(period, nowIso), [period, nowIso])
