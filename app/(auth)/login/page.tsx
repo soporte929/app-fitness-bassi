@@ -40,8 +40,8 @@ export default function LoginPage() {
 
     await new Promise((resolve) => setTimeout(resolve, 2200));
 
-    router.push(profile?.role === "trainer" ? "/dashboard" : "/today");
-    router.refresh();
+    const destination = profile?.role === "trainer" ? "/dashboard" : "/today";
+    window.location.href = destination;
   };
 
   return (

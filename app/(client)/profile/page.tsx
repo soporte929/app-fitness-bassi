@@ -9,7 +9,7 @@ import type { Database } from '@/lib/supabase/types'
 
 type Phase = Database['public']['Tables']['clients']['Row']['phase']
 
-const PHASE_LABELS: Record<Phase, string> = {
+const PHASE_LABELS: Partial<Record<Phase, string>> = {
   deficit: 'Déficit',
   maintenance: 'Mantenimiento',
   surplus: 'Volumen',
@@ -106,7 +106,7 @@ export default async function ProfilePage() {
         month: 'long',
         year: 'numeric',
       })
-      phaseLabel = PHASE_LABELS[clientRecord.phase]
+      phaseLabel = PHASE_LABELS[clientRecord.phase] ?? clientRecord.phase
     }
   }
 

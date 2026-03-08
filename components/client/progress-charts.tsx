@@ -267,7 +267,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       .map((s) => ({
         iso: s.finished_at ?? s.started_at,
         value: ((s.set_logs ?? []) as any[])
-          .filter((l) => Number(l.weight_kg) > 0 && Number(l.reps) > 0)
+          .filter((l) => Number(l.reps) > 0)
           .reduce((sum: number, l) => sum + Number(l.weight_kg) * Number(l.reps), 0),
       }))
     const grouped = groupByBucket(entries, groupingMode, 'sum')
@@ -447,7 +447,7 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
                     '',
                   ]}
                 />
-                <Bar dataKey="volume" fill="var(--accent)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="volume" fill="var(--accent)" radius={[4, 4, 0, 0]} minPointSize={3} />
               </BarChart>
             </ResponsiveContainer>
           )}
