@@ -3,16 +3,17 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, UserPlus } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { assignPlanToClient } from '../actions'
 
-type Client = { id: string; name: string }
+type Client = { id: string; name: string; hasActivePlan: boolean }
 
 export function AssignClientDropdown({
   planId,
-  availableClients,
+  clients,
 }: {
   planId: string
-  availableClients: Client[]
+  clients: Client[]
 }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -52,23 +53,24 @@ export function AssignClientDropdown({
               boxShadow: '0 16px 32px rgba(0,0,0,0.5)',
             }}
           >
-            {availableClients.length === 0 ? (
+            {clients.length === 0 ? (
               <p className="px-4 py-3 text-sm" style={{ color: '#a0a0a0' }}>
                 Todos los clientes tienen este plan
               </p>
             ) : (
-              availableClients.map((c) => (
-                <button
+              clients.map((c) => (
+                <div
                   key={c.id}
-                  onClick={() => handleAssign(c.id)}
-                  disabled={loading === c.id}
-                  className="w-full flex items-center justify-between px-4 py-3 text-sm text-left disabled:opacity-40"
-                  style={{
-                    color: '#e8e8e6',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                  }}
+                  className={cn(
+                    'flex items-center justify-between px-4 py-3',
+                    c.hasActivePlan
+                      ? 'opacity-40 cursor-not-allowed'
+                      : 'cursor-pointer'
+                  )}
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(107,127,163,0.1)'
+                    if (!c.hasActivePlan)
+                      e.currentTarget.style.background = 'rgba(107,127,163,0.1)'
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent'
@@ -83,10 +85,25 @@ export function AssignClientDropdown({
                         {c.name[0]}
                       </span>
                     </div>
-                    <span className="font-medium">{c.name}</span>
+                    <div>
+                      <p className="text-sm font-medium" style={{ color: '#e8e8e6' }}>
+                        {c.name}
+                      </p>
+                      {c.hasActivePlan && (
+                        <p className="text-xs" style={{ color: '#a0a0a0' }}>
+                          Ya tiene plan activo
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <Plus size={14} color="#6b7fa3" />
-                </button>
+                  <button
+                    disabled={c.hasActivePlan || loading === c.id}
+                    onClick={() => handleAssign(c.id)}
+                    className="disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    <Plus size={14} color="#6b7fa3" />
+                  </button>
+                </div>
               ))
             )}
           </div>

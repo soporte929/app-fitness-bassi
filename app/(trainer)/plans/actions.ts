@@ -101,5 +101,6 @@ export async function assignPlanToClient(
 
   if (error) return { success: false, error: error.message }
   revalidatePath(`/plans/${planId}`)
+  revalidatePath('/clients')
   return { success: true }
 }

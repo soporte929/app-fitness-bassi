@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { PageTransition } from '@/components/ui/page-transition'
 import { LogoutButton } from './logout-button'
-import { User, Bell, Ruler, Shield, ChevronRight, Flame, Trophy } from 'lucide-react'
+import { User, Bell, Ruler, Shield, ClipboardList, ChevronRight, Flame, Trophy } from 'lucide-react'
 import type { Database } from '@/lib/supabase/types'
 
 type Phase = Database['public']['Tables']['clients']['Row']['phase']
@@ -41,7 +42,10 @@ const settingsSections = [
   },
   {
     title: 'App',
-    items: [{ label: 'Privacidad', icon: Shield }],
+    items: [
+      { label: 'Mis revisiones', icon: ClipboardList, href: '/revisions' },
+      { label: 'Privacidad', icon: Shield, href: undefined },
+    ],
   },
 ]
 
@@ -174,17 +178,23 @@ export default async function ProfilePage() {
               <CardContent className="p-0">
                 {section.items.map((item, i) => {
                   const Icon = item.icon
-                  return (
-                    <div
-                      key={item.label}
-                      className={`flex items-center gap-3 px-5 min-h-[52px] ${i < section.items.length - 1 ? 'border-b border-[var(--border)]' : ''
-                        }`}
-                    >
+                  const inner = (
+                    <>
                       <div className="w-8 h-8 rounded-xl bg-[var(--bg-elevated)] flex items-center justify-center flex-shrink-0">
                         <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
                       </div>
                       <span className="flex-1 text-sm font-medium text-[var(--text-primary)]">{item.label}</span>
                       <ChevronRight className="w-4 h-4 text-[var(--text-muted)]" />
+                    </>
+                  )
+                  const rowClass = `flex items-center gap-3 px-5 min-h-[52px] ${i < section.items.length - 1 ? 'border-b border-[var(--border)]' : ''}`
+                  return item.href ? (
+                    <Link key={item.label} href={item.href} className={rowClass}>
+                      {inner}
+                    </Link>
+                  ) : (
+                    <div key={item.label} className={rowClass}>
+                      {inner}
                     </div>
                   )
                 })}

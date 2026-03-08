@@ -13,7 +13,7 @@ import { computeAlerts } from '@/lib/alerts'
 import { EditClientPanel } from './edit-panel'
 import { EditNutritionPlanModal } from './edit-nutrition-plan-modal'
 import { AssignRoutineButton } from './assign-routine-button'
-import { ArrowLeft, Flame, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Flame, ChevronRight, ClipboardList } from 'lucide-react'
 
 export default async function ClientDetailPage({
   params,
@@ -63,11 +63,15 @@ export default async function ClientDetailPage({
       .order('started_at', { ascending: false })
       .limit(20),
     supabase
-      .from('workout_plans')
-      .select('id, name, days_per_week, active')
+      .from('client_plans')
+      .select(`
+        id, active, assigned_at,
+        plan:plans(id, name, description, phase, level)
+      `)
       .eq('client_id', id)
-      .eq('is_template', false)
       .eq('active', true)
+      .order('assigned_at', { ascending: false })
+      .limit(1)
       .maybeSingle(),
     supabase
       .from('workout_plans')
@@ -92,7 +96,13 @@ export default async function ClientDetailPage({
   const weightLogs = weightLogsRes.data ?? []
   const measurements = measurementsRes.data ?? []
   const sessions = sessionsRes.data ?? []
-  const activePlan = activePlanRes.data
+  const activePlan = (activePlanRes.data?.plan ?? null) as {
+    id: string
+    name: string
+    description: string | null
+    phase: string | null
+    level: string | null
+  } | null
   const templates = ((templatesRes.data ?? []) as unknown as Array<{
     id: string
     name: string
@@ -161,7 +171,7 @@ export default async function ClientDetailPage({
     waistDeltaCm,
     phase: rawClient.phase,
     weeklyWorkoutsCompleted,
-    weeklyWorkoutsTarget: activePlan?.days_per_week ?? 3,
+    weeklyWorkoutsTarget: 3,
   })
 
   const nutrition = calculateNutrition({
@@ -244,6 +254,13 @@ export default async function ClientDetailPage({
             </div>
           </div>
           <div className="flex gap-2 flex-shrink-0">
+            <Link
+              href={`/clients/${id}/revisions`}
+              className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl border transition-colors hover:bg-[var(--bg-overlay)] bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            >
+              <ClipboardList className="w-4 h-4" />
+              Revisiones
+            </Link>
             <AssignRoutineButton clientId={rawClient.id} templates={templates} />
           </div>
         </div>
@@ -505,12 +522,17 @@ export default async function ClientDetailPage({
                       <span className="text-sm font-semibold text-[var(--text-primary)]">
                         {activePlan.name}
                       </span>
-                      <span className="text-xs text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded-full">
-                        {activePlan.days_per_week} días/sem
-                      </span>
+                      {activePlan.phase && (
+                        <span className="text-xs text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded-full">
+                          {activePlan.phase}
+                        </span>
+                      )}
                     </div>
-                    <p className="text-xs text-[var(--text-muted)]">
-                      {weeklyWorkoutsCompleted}/{activePlan.days_per_week} entrenamientos esta semana
+                    {activePlan.description && (
+                      <p className="text-xs text-[var(--text-muted)] mt-1">{activePlan.description}</p>
+                    )}
+                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                      {weeklyWorkoutsCompleted} entrenamientos esta semana
                     </p>
                   </>
                 ) : (
@@ -520,6 +542,8 @@ export default async function ClientDetailPage({
             </Card>
           </div>
         </div>
+
+
       </div>
     </PageTransition>
   )

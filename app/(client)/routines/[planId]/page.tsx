@@ -2,10 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { PageTransition } from '@/components/ui/page-transition'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Play } from 'lucide-react'
 import { PlanDayCard } from '@/components/client/plan-day-card'
 import type { DayWithExercises } from '@/components/client/plan-day-card'
-import { StartWorkoutButton } from './start-button'
+import { startWorkoutSession } from './actions'
 import type { Database } from '@/lib/supabase/types'
 
 type PlanRow = Database['public']['Tables']['workout_plans']['Row']
@@ -66,7 +66,7 @@ export default async function PlanDetailPage({
   const rawPlan = rawPlanResult.data
   const hasActiveSession = Boolean(activeSessionResult.data)
 
-  if (!rawPlan || (rawPlan as Pick<PlanRow, 'client_id'>).client_id !== client.id) {
+  if (!rawPlan) {
     notFound()
   }
 
@@ -79,7 +79,6 @@ export default async function PlanDetailPage({
       exercises: [...d.exercises].sort((a, b) => a.order_index - b.order_index),
     }))
 
-  const firstDayId = days[0]?.id ?? ''
   const muscleGroups = [...new Set(days.flatMap((d) => d.exercises.map((e) => e.muscle_group)))]
 
   return (
@@ -117,22 +116,28 @@ export default async function PlanDetailPage({
             <p className="text-sm text-[var(--text-secondary)]">Este plan aún no tiene días configurados</p>
           </div>
         ) : (
-          <div className="space-y-3 stagger">
-            {days.map((day, i) => (
-              <PlanDayCard key={day.id} day={day} index={i} />
-            ))}
+          <div className="space-y-4 stagger">
+            {days.map((day, i) => {
+              const boundAction = startWorkoutSession.bind(null, day.id)
+              return (
+                <div key={day.id}>
+                  <PlanDayCard day={day} index={i} />
+                  <form action={boundAction} className="mt-2">
+                    <button
+                      type="submit"
+                      className="w-full min-h-[44px] bg-[var(--text-primary)] text-[var(--bg-base)] font-semibold text-sm rounded-md flex items-center justify-center gap-2 transition-opacity hover:opacity-80 active:opacity-70"
+                    >
+                      <Play className="w-4 h-4 fill-[var(--bg-base)] stroke-none" />
+                      {hasActiveSession ? 'Reanudar entreno' : `Iniciar ${day.name}`}
+                    </button>
+                  </form>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
 
-      {/* Footer fijo encima del nav */}
-      {days.length > 0 && (
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 pb-20 pt-4 bg-gradient-to-t from-[var(--bg-base)] via-[var(--bg-base)]/95 to-transparent pointer-events-none">
-          <div className="pointer-events-auto">
-            <StartWorkoutButton dayId={firstDayId} hasActiveSession={hasActiveSession} />
-          </div>
-        </div>
-      )}
     </PageTransition>
   )
 }

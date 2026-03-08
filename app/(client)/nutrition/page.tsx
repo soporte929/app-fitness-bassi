@@ -15,7 +15,7 @@ type NutritionLogRow = Database['public']['Tables']['nutrition_logs']['Row']
 type NutritionPlanRow = Database['public']['Tables']['nutrition_plans']['Row']
 type NutritionPlanMealRow = Database['public']['Tables']['nutrition_plan_meals']['Row']
 type NutritionMealLogRow = Database['public']['Tables']['nutrition_meal_logs']['Row']
-type NutritionMealLogStatus = Pick<NutritionMealLogRow, 'meal_id' | 'completed'>
+type NutritionMealLogStatus = Pick<NutritionMealLogRow, 'meal_id' | 'completed' | 'grams'>
 type NutritionPlanWithMeals = NutritionPlanRow & { meals: NutritionPlanMealRow[] }
 
 type MacroTargets = {
@@ -94,11 +94,10 @@ export default async function NutritionPage() {
   try {
     const { data } = await supabase
       .from('clients')
-      .select('*')
+      .select('id, weight_kg, phase, objective, lifestyle')
       .eq('profile_id', user.id)
-      .returns<ClientNutritionData>()
-      .single()
-    client = data
+      .maybeSingle()
+    client = data as ClientNutritionData | null
   } catch (error) {
     console.error('client fetch error:', error)
   }
@@ -117,41 +116,39 @@ export default async function NutritionPage() {
       const [freeLogsRes, planRes, mealLogsRes] = await Promise.all([
         supabase
           .from('nutrition_logs')
-          .select('*')
+          .select('id, client_id, logged_at, meal_name, kcal, protein_g, carbs_g, fat_g')
           .eq('client_id', client.id)
           .gte('logged_at', todayStart)
           .lt('logged_at', tomorrowStart)
-          .order('logged_at', { ascending: true })
-          .returns<NutritionLogRow[]>(),
+          .order('logged_at', { ascending: true }),
         supabase
           .from('nutrition_plans')
           .select('*, meals:nutrition_plan_meals(*)')
           .eq('client_id', client.id)
           .eq('active', true)
-          .returns<NutritionPlanWithMeals>()
-          .single(),
+          .maybeSingle(),
         supabase
           .from('nutrition_meal_logs')
-          .select('meal_id, completed')
+          .select('meal_id, completed, grams')
           .eq('client_id', client.id)
-          .eq('logged_date', currentDateString)
-          .returns<NutritionMealLogStatus[]>(),
+          .eq('logged_date', currentDateString),
       ])
 
-      if (!freeLogsRes.error && freeLogsRes.data) todayLogs = freeLogsRes.data
+      if (!freeLogsRes.error && freeLogsRes.data) todayLogs = freeLogsRes.data as NutritionLogRow[]
 
       if (planRes.data) {
-        const sortedMeals = [...(planRes.data.meals ?? [])].sort(
+        const rawPlan = planRes.data as NutritionPlanWithMeals
+        const sortedMeals = [...(rawPlan.meals ?? [])].sort(
           (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)
         )
         activePlan = {
-          ...planRes.data,
+          ...rawPlan,
           meals: sortedMeals,
         }
       }
 
       if (mealLogsRes.data) {
-        mealLogs = mealLogsRes.data
+        mealLogs = mealLogsRes.data as NutritionMealLogStatus[]
       }
     } catch (error) {
       console.error('nutrition data fetch error:', error)
@@ -174,15 +171,15 @@ export default async function NutritionPage() {
   let consumedFat = todayLogs.reduce((sum, log) => sum + (log.fat_g ?? 0), 0)
 
   if (activePlan) {
-    const completedMealIds = new Set(mealLogs.filter((log) => log.completed).map((log) => log.meal_id))
-    activePlan.meals.forEach((meal) => {
-      if (completedMealIds.has(meal.id)) {
-        consumedKcal += meal.kcal ?? 0
-        consumedProtein += meal.protein_g ?? 0
-        consumedCarbs += meal.carbs_g ?? 0
-        consumedFat += meal.fat_g ?? 0
-      }
-    })
+    for (const meal of activePlan.meals) {
+      const log = mealLogs.find((l) => l.meal_id === meal.id && l.completed)
+      if (!log) continue
+      const g = log.grams ?? meal.default_grams ?? 100
+      consumedKcal += Math.round((meal.kcal_per_100g ?? 0) * g / 100)
+      consumedProtein += Math.round((meal.protein_per_100g ?? 0) * g / 100)
+      consumedCarbs += Math.round((meal.carbs_per_100g ?? 0) * g / 100)
+      consumedFat += Math.round((meal.fat_per_100g ?? 0) * g / 100)
+    }
   }
 
   const cards: MacroSummary[] = targets

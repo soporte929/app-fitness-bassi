@@ -35,7 +35,7 @@ export default async function ProgressPage() {
     supabase
       .from('workout_sessions')
       .select(
-        `id, finished_at,
+        `id, started_at, finished_at,
         set_logs (
           weight_kg, reps,
           exercise:exercises!set_logs_exercise_id_fkey (id, name)
@@ -43,8 +43,7 @@ export default async function ProgressPage() {
       )
       .eq('client_id', client.id)
       .eq('completed', true)
-      .not('finished_at', 'is', null)
-      .order('finished_at', { ascending: true }),
+      .order('started_at', { ascending: true }),
   ])
 
   return (

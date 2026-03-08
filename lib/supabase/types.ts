@@ -451,6 +451,7 @@ export interface Database {
           meal_id: string;
           logged_date: string;
           completed: boolean;
+          grams: number | null;
         };
         Insert: {
           id?: string;
@@ -458,6 +459,7 @@ export interface Database {
           meal_id: string;
           logged_date?: string;
           completed?: boolean;
+          grams?: number | null;
         };
         Update: Partial<Database["public"]["Tables"]["nutrition_meal_logs"]["Insert"]>;
         Relationships: [

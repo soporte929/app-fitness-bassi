@@ -170,6 +170,33 @@ export async function createClientAction(data: {
   return { success: true, id: newClient.id }
 }
 
+export async function assignPlanToClientAction(
+  planId: string,
+  clientId: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  // Deactivate any existing active plan for this client
+  await supabase
+    .from('client_plans')
+    .update({ active: false })
+    .eq('client_id', clientId)
+    .eq('active', true)
+
+  const { error } = await supabase
+    .from('client_plans')
+    .insert({ client_id: clientId, plan_id: planId, active: true })
+
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/clients')
+  revalidatePath(`/clients/${clientId}`)
+  return { success: true }
+}
+
 export async function deleteClientAction(
   id: string
 ): Promise<{ success: boolean; error?: string }> {

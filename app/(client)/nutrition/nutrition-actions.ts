@@ -6,30 +6,35 @@ import { revalidatePath } from 'next/cache'
 
 type NutritionMealLogInsert = Database['public']['Tables']['nutrition_meal_logs']['Insert']
 
-export async function toggleMealLogAction(
+type ActionResult = { success: boolean; message: string; error?: string }
+
+export async function upsertMealLogAction(
   mealId: string,
   clientId: string,
   currentDate: string,
-  currentlyCompleted: boolean
-) {
+  completed: boolean,
+  grams: number
+): Promise<ActionResult> {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthorized')
+  if (!user) return { success: false, message: 'No autenticado', error: 'No autenticado' }
 
   const payload: NutritionMealLogInsert = {
     client_id: clientId,
     meal_id: mealId,
     logged_date: currentDate,
-    completed: !currentlyCompleted,
+    completed,
+    grams,
   }
 
   const { error } = await supabase
     .from('nutrition_meal_logs')
     .upsert(payload, { onConflict: 'client_id,meal_id,logged_date' })
 
-  if (error) throw new Error(error.message)
+  if (error) return { success: false, message: error.message, error: error.message }
 
   revalidatePath('/nutrition')
+  return { success: true, message: 'Guardado' }
 }

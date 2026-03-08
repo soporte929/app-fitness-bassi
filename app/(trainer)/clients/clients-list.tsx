@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import { Card, CardContent } from '@/components/ui/card'
 import { StatusBadge } from '@/components/ui/badge'
 import { Search, ArrowRight, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { PlanPhase, PlanLevel } from '@/lib/supabase/types'
+import { assignPlanToClientAction } from './actions'
+import { AssignPlanDropdown } from '@/components/trainer/assign-plan-dropdown'
 
 export type ClientItem = {
   id: string
@@ -19,13 +18,12 @@ export type ClientItem = {
   lastWorkout: string
   weightKg: number
   alert: string | null
+  activePlanName: string | null
 }
 
-type Plan = {
+export type TemplateItem = {
   id: string
   name: string
-  phase: PlanPhase | null
-  level: PlanLevel | null
 }
 
 type StatusFilter = 'all' | 'green' | 'yellow' | 'red'
@@ -44,11 +42,16 @@ const statusDotColor: Record<StatusFilter, string> = {
   red: 'var(--danger)',
 }
 
-export function ClientsListUI({ clients }: { clients: ClientItem[] }) {
+export function ClientsListUI({
+  clients,
+  templates,
+}: {
+  clients: ClientItem[]
+  templates: TemplateItem[]
+}) {
   const router = useRouter()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
-
   const filtered = clients.filter((c) => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase())
     const matchStatus = statusFilter === 'all' || c.status === statusFilter
@@ -62,36 +65,8 @@ export function ClientsListUI({ clients }: { clients: ClientItem[] }) {
     red: clients.filter((c) => c.status === 'red').length,
   }
 
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const [plans, setPlans] = useState<Plan[]>([])
-  const [loadingPlans, setLoadingPlans] = useState(false)
-
-  useEffect(() => {
-    async function loadPlans() {
-      setLoadingPlans(true)
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoadingPlans(false); return }
-      const { data } = await supabase
-        .from('plans')
-        .select('id, name, phase, level')
-        .eq('trainer_id', user.id)
-        .eq('active', true)
-      setPlans((data ?? []) as Plan[])
-      setLoadingPlans(false)
-    }
-    loadPlans()
-  }, [])
-
-  async function handleAssignPlan(clientId: string, planId: string) {
-    const supabase = createClient()
-    await supabase
-      .from('client_plans')
-      .upsert(
-        { client_id: clientId, plan_id: planId, active: true },
-        { onConflict: 'client_id,plan_id' }
-      )
-    setOpenDropdown(null)
+  async function handleAssign(clientId: string, planId: string): Promise<void> {
+    await assignPlanToClientAction(planId, clientId)
     router.refresh()
   }
 
@@ -154,6 +129,7 @@ export function ClientsListUI({ clients }: { clients: ClientItem[] }) {
         </div>
       ) : (
         <>
+          {/* Desktop table */}
           <div className="hidden md:block bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -163,6 +139,7 @@ export function ClientsListUI({ clients }: { clients: ClientItem[] }) {
                   <th className="px-5 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Estado</th>
                   <th className="px-5 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Último entreno</th>
                   <th className="px-5 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider text-right">Adherencia</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider text-right">Plan</th>
                   <th className="px-5 py-3"></th>
                 </tr>
               </thead>
@@ -215,83 +192,24 @@ export function ClientsListUI({ clients }: { clients: ClientItem[] }) {
                         </p>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
-                        <div className="relative">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setOpenDropdown(openDropdown === client.id ? null : client.id)
-                            }}
-                            className="text-xs px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-                            style={{
-                              background: 'rgba(107,127,163,0.15)',
-                              color: '#6b7fa3',
-                              border: '1px solid rgba(107,127,163,0.3)',
-                            }}
-                          >
-                            Asignar plan
-                          </button>
-
-                          {openDropdown === client.id && (
-                            <>
-                              <div
-                                className="fixed inset-0 z-40"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  setOpenDropdown(null)
-                                }}
-                              />
-                              <div
-                                className="absolute right-0 top-full mt-1 z-50 rounded-xl overflow-hidden cursor-default"
-                                onClick={(e) => e.stopPropagation()}
-                                style={{
-                                  minWidth: '200px',
-                                  maxWidth: '260px',
-                                  background: '#2a2a2a',
-                                  border: '1px solid rgba(255,255,255,0.08)',
-                                  boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
-                                }}
-                              >
-                                <p className="px-3 pt-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#a0a0a0' }}>
-                                  Seleccionar plan
-                                </p>
-                                {loadingPlans ? (
-                                  <p className="px-3 py-3 text-sm" style={{ color: '#a0a0a0' }}>Cargando…</p>
-                                ) : plans.length === 0 ? (
-                                  <p className="px-3 py-3 text-sm" style={{ color: '#a0a0a0' }}>No hay planes disponibles</p>
-                                ) : (
-                                  plans.map((plan, idx) => (
-                                    <button
-                                      key={plan.id}
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleAssignPlan(client.id, plan.id)
-                                      }}
-                                      className="w-full px-3 py-2.5 text-left"
-                                      style={{
-                                        borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                                        color: '#e8e8e6',
-                                      }}
-                                      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
-                                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                                    >
-                                      <p className="text-sm font-medium">{plan.name}</p>
-                                      {(plan.phase || plan.level) && (
-                                        <p className="text-xs mt-0.5" style={{ color: '#a0a0a0' }}>
-                                          {[plan.phase, plan.level].filter(Boolean).join(' · ')}
-                                        </p>
-                                      )}
-                                    </button>
-                                  ))
-                                )}
-                              </div>
-                            </>
-                          )}
+                    <td className="px-5 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                      {client.activePlanName ? (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg" style={{ backgroundColor: 'rgba(52, 211, 153, 0.08)', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
+                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                          <span className="text-xs font-semibold text-emerald-400">
+                            {client.activePlanName}
+                          </span>
                         </div>
-
-                        <ArrowRight className="w-4 h-4 text-[var(--text-muted)] inline-block flex-shrink-0" />
-                      </div>
+                      ) : (
+                        <AssignPlanDropdown
+                          clientId={client.id}
+                          plans={templates}
+                          onAssign={handleAssign}
+                        />
+                      )}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <ArrowRight className="w-4 h-4 text-[var(--text-muted)] inline-block flex-shrink-0" />
                     </td>
                   </tr>
                 ))}
@@ -299,117 +217,50 @@ export function ClientsListUI({ clients }: { clients: ClientItem[] }) {
             </table>
           </div>
 
+          {/* Mobile cards */}
           <div className="block md:hidden space-y-3">
-            {filtered.map(client => (
-              <div key={client.id}
+            {filtered.map((client) => (
+              <div
+                key={client.id}
                 className="rounded-xl p-4"
-                style={{
-                  background: '#212121',
-                  border: '1px solid rgba(255,255,255,0.07)'
-                }}>
+                style={{ background: '#212121', border: '1px solid rgba(255,255,255,0.07)' }}
+              >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-sm"
-                    style={{ color: '#e8e8e6' }}>
+                  <span className="font-medium text-sm" style={{ color: '#e8e8e6' }}>
                     {client.name}
                   </span>
-                  <span className="text-xs px-2 py-1 rounded-full"
-                    style={{
-                      background: 'rgba(107,127,163,0.15)',
-                      color: '#6b7fa3'
-                    }}>
+                  <span
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{ background: 'rgba(107,127,163,0.15)', color: '#6b7fa3' }}
+                  >
                     {client.phase}
                   </span>
                 </div>
                 <p className="text-xs mb-3" style={{ color: '#a0a0a0' }}>
-                  {client.goal || 'Objetivo no especificado'}
+                  {client.goal ?? 'Objetivo no especificado'}
                 </p>
-                <div className="flex gap-2">
-                  <button className="flex-1 py-2 rounded-lg text-xs"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      color: '#e8e8e6'
-                    }}
-                    onClick={() => router.push(`/clients/${client.id}`)}>
+                <div className="flex gap-2 flex-wrap items-center">
+                  <button
+                    className="flex-1 py-2 rounded-lg text-xs"
+                    style={{ background: 'rgba(255,255,255,0.06)', color: '#e8e8e6' }}
+                    onClick={() => router.push(`/clients/${client.id}`)}
+                  >
                     Ver perfil
                   </button>
-                  <button className="flex-1 py-2 rounded-lg text-xs"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      color: '#e8e8e6'
-                    }}>
-                    Editar
-                  </button>
-
-                  <div className="relative flex-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setOpenDropdown(openDropdown === client.id ? null : client.id)
-                      }}
-                      className="w-full py-2 rounded-lg text-xs"
-                      style={{
-                        background: 'rgba(107,127,163,0.15)',
-                        color: '#6b7fa3',
-                        border: '1px solid rgba(107,127,163,0.3)',
-                      }}
-                    >
-                      Asignar plan
-                    </button>
-
-                    {openDropdown === client.id && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-40"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setOpenDropdown(null)
-                          }}
-                        />
-                        <div
-                          className="absolute right-0 bottom-full mb-1 z-50 rounded-xl overflow-hidden cursor-default"
-                          onClick={(e) => e.stopPropagation()}
-                          style={{
-                            minWidth: '200px',
-                            maxWidth: '260px',
-                            background: '#2a2a2a',
-                            border: '1px solid rgba(255,255,255,0.08)',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
-                          }}
-                        >
-                          <p className="px-3 pt-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#a0a0a0' }}>
-                            Seleccionar plan
-                          </p>
-                          {loadingPlans ? (
-                            <p className="px-3 py-3 text-sm" style={{ color: '#a0a0a0' }}>Cargando…</p>
-                          ) : plans.length === 0 ? (
-                            <p className="px-3 py-3 text-sm" style={{ color: '#a0a0a0' }}>No hay planes disponibles</p>
-                          ) : (
-                            plans.map((plan, idx) => (
-                              <button
-                                key={plan.id}
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleAssignPlan(client.id, plan.id)
-                                }}
-                                className="w-full px-3 py-2.5 text-left"
-                                style={{
-                                  borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                                  color: '#e8e8e6',
-                                }}
-                                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
-                                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                              >
-                                <p className="text-sm font-medium">{plan.name}</p>
-                                {(plan.phase || plan.level) && (
-                                  <p className="text-xs mt-0.5" style={{ color: '#a0a0a0' }}>
-                                    {[plan.phase, plan.level].filter(Boolean).join(' · ')}
-                                  </p>
-                                )}
-                              </button>
-                            ))
-                          )}
-                        </div>
-                      </>
+                  <div className="flex-1 flex justify-end">
+                    {client.activePlanName ? (
+                      <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg" style={{ backgroundColor: 'rgba(52, 211, 153, 0.08)', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                        <span className="text-xs font-semibold text-emerald-400">
+                          {client.activePlanName}
+                        </span>
+                      </div>
+                    ) : (
+                      <AssignPlanDropdown
+                        clientId={client.id}
+                        plans={templates}
+                        onAssign={handleAssign}
+                      />
                     )}
                   </div>
                 </div>

@@ -38,6 +38,7 @@ type ClientPlanRaw = {
 type AllClientRaw = {
   id: string
   profile: { full_name: string } | null
+  client_plans: { id: string; active: boolean }[]
 }
 
 export default async function PlanDetailPage({
@@ -85,7 +86,7 @@ export default async function PlanDetailPage({
       .eq('active', true),
     supabase
       .from('clients')
-      .select('id, profile:profiles!clients_profile_id_fkey(full_name)')
+      .select('id, profile:profiles!clients_profile_id_fkey(full_name), client_plans!client_plans_client_id_fkey(id, active)')
       .eq('trainer_id', user.id)
       .eq('active', true)
       .order('created_at', { ascending: false }),
@@ -117,12 +118,13 @@ export default async function PlanDetailPage({
 
   const assignedClientIds = new Set(clientsWithPlan.map((c) => c.id))
   const allClients = (allClientsRes.data ?? []) as unknown as AllClientRaw[]
-  const availableClients = allClients
+  const clientsForDropdown = allClients
+    .filter((c) => !assignedClientIds.has(c.id))
     .map((c) => ({
       id: c.id,
       name: (c.profile as { full_name: string } | null)?.full_name ?? 'Cliente',
+      hasActivePlan: (c.client_plans as { id: string; active: boolean }[]).some((p) => p.active),
     }))
-    .filter((c) => !assignedClientIds.has(c.id))
 
   return (
     <PageTransition>
@@ -182,7 +184,7 @@ export default async function PlanDetailPage({
                   </span>
                 )}
               </div>
-              <AssignClientDropdown planId={planId} availableClients={availableClients} />
+              <AssignClientDropdown planId={planId} clients={clientsForDropdown} />
             </div>
 
             {clientsWithPlan.length === 0 ? (

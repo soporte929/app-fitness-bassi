@@ -35,7 +35,8 @@ export type Measurement = {
 
 export type SessionForProgress = {
   id: string
-  finished_at: string
+  started_at: string
+  finished_at: string | null
   set_logs: {
     weight_kg: number
     reps: number
@@ -46,20 +47,38 @@ export type SessionForProgress = {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const PERIODS = [
+  { label: 'Hoy', days: 0 },
+  { label: '7 días', days: 7 },
   { label: '30 días', days: 30 },
-  { label: '60 días', days: 60 },
-  { label: '90 días', days: 90 },
-  { label: '180 días', days: 180 },
+  { label: '6 meses', days: 180 },
 ] as const
 
 type PeriodDays = (typeof PERIODS)[number]['days']
+type GroupingMode = 'day' | 'week' | 'month' | 'biweek'
+
+const GROUPING_CONFIG: Record<PeriodDays, { mode: GroupingMode; label: string }> = {
+  0: { mode: 'day', label: 'Datos por hora' },
+  7: { mode: 'day', label: 'Datos por día' },
+  30: { mode: 'day', label: 'Datos por día' },
+  180: { mode: 'week', label: 'Datos por semana' },
+}
+
+const VOLUME_SUBTITLE: Record<GroupingMode, string> = {
+  day: 'Suma (peso × reps) por entrenamiento',
+  week: 'Volumen total por semana',
+  month: 'Volumen total por mes',
+  biweek: 'Volumen total por quincena',
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function cutoff(days: number): Date {
-  const d = new Date()
-  d.setDate(d.getDate() - days)
-  return d
+  const now = new Date()
+  const start = new Date(Date.UTC(
+    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()
+  ))
+  start.setUTCDate(start.getUTCDate() - days)
+  return start
 }
 
 function fmtDate(iso: string): string {
@@ -73,6 +92,60 @@ function epleyRM(weight: number, reps: number): number {
 function rangeDelta(arr: number[]): number {
   if (arr.length < 2) return 0
   return Math.round((arr[arr.length - 1] - arr[0]) * 10) / 10
+}
+
+function getBucketKey(iso: string, mode: GroupingMode): string {
+  const d = new Date(iso)
+  if (mode === 'day') {
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  }
+  if (mode === 'week') {
+    const day = d.getDay() // 0 = Sunday
+    const diff = day === 0 ? -6 : 1 - day // offset to Monday
+    const monday = new Date(d)
+    monday.setDate(d.getDate() + diff)
+    return monday.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  }
+  if (mode === 'month') {
+    return d.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })
+  }
+  // biweek: 1-15 / 16-end
+  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+  const half = d.getDate() <= 15 ? '1-15' : `16-${lastDay}`
+  return `${half} ${d.toLocaleDateString('es-ES', { month: 'short' })}`
+}
+
+function groupByBucket(
+  entries: { iso: string; value: number }[],
+  mode: GroupingMode,
+  reduce: 'mean' | 'sum' | 'max',
+): { date: string; value: number }[] {
+  if (mode === 'day') {
+    return entries.map((e) => ({ date: fmtDate(e.iso), value: e.value }))
+  }
+  const buckets = new Map<string, { sortIso: string; values: number[] }>()
+  for (const e of entries) {
+    const key = getBucketKey(e.iso, mode)
+    const existing = buckets.get(key)
+    if (existing) {
+      existing.values.push(e.value)
+    } else {
+      buckets.set(key, { sortIso: e.iso, values: [e.value] })
+    }
+  }
+  return Array.from(buckets.entries())
+    .sort(([, a], [, b]) => a.sortIso.localeCompare(b.sortIso))
+    .map(([key, { values }]) => {
+      let value: number
+      if (reduce === 'mean') {
+        value = Math.round((values.reduce((s, v) => s + v, 0) / values.length) * 10) / 10
+      } else if (reduce === 'sum') {
+        value = values.reduce((s, v) => s + v, 0)
+      } else {
+        value = Math.max(...values)
+      }
+      return { date: key, value }
+    })
 }
 
 // ─── DeltaBadge ──────────────────────────────────────────────────────────────
@@ -163,42 +236,41 @@ interface Props {
 }
 
 export function ProgressCharts({ weightLogs, measurements, sessions, targetWeightKg }: Props) {
-  const [period, setPeriod] = useState<PeriodDays>(90)
+  const [period, setPeriod] = useState<PeriodDays>(7)
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
 
   const since = useMemo(() => cutoff(period), [period])
+  const { mode: groupingMode, label: groupingLabel } = GROUPING_CONFIG[period]
 
-  // Chart 1 — Weight
-  const weightData = useMemo(
-    () =>
-      weightLogs
-        .filter((w) => new Date(w.logged_at) >= since)
-        .map((w) => ({ date: fmtDate(w.logged_at), value: w.weight_kg })),
-    [weightLogs, since]
-  )
+  // Chart 1 — Weight (mean per bucket)
+  const weightData = useMemo(() => {
+    const entries = weightLogs
+      .filter((w) => new Date(w.logged_at) >= since)
+      .map((w) => ({ iso: w.logged_at, value: w.weight_kg }))
+    return groupByBucket(entries, groupingMode, 'mean')
+  }, [weightLogs, since, groupingMode])
 
-  // Chart 3 — Body fat (from weight_logs.body_fat_pct)
-  const bodyFatData = useMemo(
-    () =>
-      weightLogs
-        .filter((w) => new Date(w.logged_at) >= since && w.body_fat_pct !== null)
-        .map((w) => ({ date: fmtDate(w.logged_at), value: w.body_fat_pct as number })),
-    [weightLogs, since]
-  )
+  // Chart 3 — Body fat (mean per bucket)
+  const bodyFatData = useMemo(() => {
+    const entries = weightLogs
+      .filter((w) => new Date(w.logged_at) >= since && w.body_fat_pct !== null)
+      .map((w) => ({ iso: w.logged_at, value: w.body_fat_pct as number }))
+    return groupByBucket(entries, groupingMode, 'mean')
+  }, [weightLogs, since, groupingMode])
 
-  // Chart 2 — Volume per session
-  const volumeData = useMemo(
-    () =>
-      sessions
-        .filter((s) => new Date(s.finished_at) >= since)
-        .map((s) => ({
-          date: fmtDate(s.finished_at),
-          volume: s.set_logs.reduce((sum, l) => sum + l.weight_kg * l.reps, 0),
-        })),
-    [sessions, since]
-  )
+  // Chart 2 — Volume (sum per bucket)
+  const volumeData = useMemo(() => {
+    const entries = sessions
+      .filter((s) => new Date(s.finished_at ?? s.started_at) >= since)
+      .map((s) => ({
+        iso: s.finished_at ?? s.started_at,
+        value: s.set_logs.reduce((sum, l) => sum + l.weight_kg * l.reps, 0),
+      }))
+    const grouped = groupByBucket(entries, groupingMode, 'sum')
+    return grouped.map((d) => ({ date: d.date, volume: d.value }))
+  }, [sessions, since, groupingMode])
 
-  // Chart 4 — RM per exercise
+  // Chart 4 — RM per exercise (max per bucket)
   const exerciseList = useMemo(() => {
     const map = new Map<string, string>()
     for (const s of sessions) {
@@ -215,24 +287,26 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
 
   const rmData = useMemo(() => {
     if (!activeExerciseId) return []
-    const byDate = new Map<string, number>()
+    const perSession: { iso: string; value: number }[] = []
     for (const s of sessions) {
-      if (new Date(s.finished_at) < since) continue
-      const key = fmtDate(s.finished_at)
+      if (new Date(s.finished_at ?? s.started_at) < since) continue
+      let maxRm = 0
       for (const l of s.set_logs) {
         if (l.exercise?.id !== activeExerciseId) continue
         const rm = epleyRM(l.weight_kg, l.reps)
-        if (rm > (byDate.get(key) ?? 0)) byDate.set(key, rm)
+        if (rm > maxRm) maxRm = rm
       }
+      if (maxRm > 0) perSession.push({ iso: s.finished_at ?? s.started_at, value: maxRm })
     }
-    return Array.from(byDate.entries()).map(([date, rm]) => ({ date, rm }))
-  }, [sessions, activeExerciseId, since])
+    const grouped = groupByBucket(perSession, groupingMode, 'max')
+    return grouped.map((d) => ({ date: d.date, rm: d.value }))
+  }, [sessions, activeExerciseId, since, groupingMode])
 
   // Summary stats
   const latestWeight = weightLogs.at(-1)?.weight_kg ?? null
   const latestBf = [...weightLogs].reverse().find((w) => w.body_fat_pct !== null)?.body_fat_pct ?? null
   const latestWaist = measurements.at(-1)?.waist_cm ?? null
-  const sessionCount = sessions.filter((s) => new Date(s.finished_at) >= since).length
+  const sessionCount = sessions.filter((s) => new Date(s.finished_at ?? s.started_at) >= since).length
 
   const wDelta = rangeDelta(weightData.map((d) => d.value))
   const bfDelta = rangeDelta(bodyFatData.map((d) => d.value))
@@ -245,19 +319,23 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
   return (
     <div className="space-y-4">
       {/* Period selector */}
-      <div className="flex bg-[var(--bg-elevated)] rounded-lg p-0.5 gap-0.5">
-        {PERIODS.map((p) => (
-          <button
-            key={p.days}
-            onClick={() => setPeriod(p.days)}
-            className={cn(
-              'flex-1 py-1.5 rounded-md text-xs font-medium transition-all',
-              period === p.days ? 'bg-[var(--bg-base)] text-[var(--text-primary)] shadow-sm border border-[var(--border)]' : 'text-[var(--text-secondary)]'
-            )}
-          >
-            {p.label}
-          </button>
-        ))}
+      <div className="space-y-1.5">
+        <div className="flex bg-[var(--bg-elevated)] rounded-lg p-0.5 gap-0.5">
+          {PERIODS.map((p) => (
+            <button
+              key={p.days}
+              onClick={() => setPeriod(p.days)}
+              className={cn(
+                'flex-1 py-1.5 rounded-md text-xs font-medium transition-all',
+                period === p.days
+                  ? 'bg-[var(--bg-base)] text-[var(--text-primary)] shadow-sm border border-[var(--border)]'
+                  : 'text-[var(--text-secondary)]'
+              )}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Summary stats 2×2 */}
@@ -339,11 +417,11 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
         </CardContent>
       </Card>
 
-      {/* Chart 2 — Volumen por sesión */}
+      {/* Chart 2 — Volumen de entrenamiento */}
       <Card>
         <CardHeader>
-          <p className="text-sm font-semibold text-[var(--text-primary)]">Volumen por sesión</p>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">Suma (peso × reps) por entrenamiento</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)]">Volumen de entrenamiento</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{VOLUME_SUBTITLE[groupingMode]}</p>
         </CardHeader>
         <CardContent className="pt-3 pb-4 px-4">
           {volumeData.length === 0 ? (
