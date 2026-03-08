@@ -36,8 +36,8 @@ export default async function ProgressPage() {
       .from('workout_sessions')
       .select(
         `id, started_at, finished_at,
-        set_logs (
-          weight_kg, reps,
+        set_logs!inner (
+          weight_kg, reps, completed,
           exercise:exercises!set_logs_exercise_id_fkey (id, name)
         )`
       )

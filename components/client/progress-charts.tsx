@@ -40,6 +40,7 @@ export type SessionForProgress = {
   set_logs: {
     weight_kg: number
     reps: number
+    completed: boolean
     exercise: { id: string; name: string } | null
   }[]
 }
@@ -264,7 +265,9 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       .filter((s) => new Date(s.finished_at ?? s.started_at) >= since)
       .map((s) => ({
         iso: s.finished_at ?? s.started_at,
-        value: s.set_logs.reduce((sum, l) => sum + l.weight_kg * l.reps, 0),
+        value: s.set_logs
+          .filter((l) => l.completed === true)
+          .reduce((sum, l) => sum + parseFloat(String(l.weight_kg)) * l.reps, 0),
       }))
     const grouped = groupByBucket(entries, groupingMode, 'sum')
     return grouped.map((d) => ({ date: d.date, volume: d.value }))
@@ -292,8 +295,9 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
       if (new Date(s.finished_at ?? s.started_at) < since) continue
       let maxRm = 0
       for (const l of s.set_logs) {
+        if (!l.completed) continue
         if (l.exercise?.id !== activeExerciseId) continue
-        const rm = epleyRM(l.weight_kg, l.reps)
+        const rm = epleyRM(parseFloat(String(l.weight_kg)), l.reps)
         if (rm > maxRm) maxRm = rm
       }
       if (maxRm > 0) perSession.push({ iso: s.finished_at ?? s.started_at, value: maxRm })
