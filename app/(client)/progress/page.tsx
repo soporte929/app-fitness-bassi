@@ -42,7 +42,6 @@ export default async function ProgressPage() {
         )`
       )
       .eq('client_id', client.id)
-      .eq('completed', true)
       .order('started_at', { ascending: true }),
   ])
 

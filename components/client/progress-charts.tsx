@@ -238,17 +238,6 @@ interface Props {
 }
 
 export function ProgressCharts({ weightLogs, measurements, sessions, targetWeightKg, nowIso }: Props) {
-  console.log('RAW SESSIONS:', JSON.stringify(sessions?.slice(0,2).map((s: any) => ({
-    id: s.id,
-    set_logs_count: s.set_logs?.length,
-    first_3_sets: s.set_logs?.slice(0,3).map((l: any) => ({
-      weight_kg: l.weight_kg,
-      weight_type: typeof l.weight_kg,
-      reps: l.reps,
-      reps_type: typeof l.reps,
-      completed: l.completed
-    }))
-  })), null, 2))
   const [period, setPeriod] = useState<PeriodDays>(7)
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>('')
 
