@@ -136,7 +136,7 @@ export async function createClientAction(data: {
 
   // Crear registro de cliente
   const goal = objectiveToGoal(data.objective, data.phase)
-  const { data: newClient, error: clientError } = await supabase
+  const { data: newClient, error: clientError } = await admin
     .from('clients')
     .insert({
       profile_id: profileId,
