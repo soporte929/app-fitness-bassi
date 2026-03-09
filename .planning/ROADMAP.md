@@ -118,7 +118,12 @@ Plans:
   4. Client can view the history tab of a plan and see a functional, populated history list
   5. Client can open an individual workout entry within the plan history and see the full workout detail
   6. Client can navigate to the nutrition section and interact with their meal checklist without errors
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Trainer routines access and plan routine navigation (ROUT-01, PLAN-01, PLAN-02)
+- [ ] 06-02-PLAN.md — Client plan history and individual workout detail views (PLAN-03, PLAN-04)
+- [ ] 06-03-PLAN.md — Client nutrition section access and meal checklist (NUTR-01)
 
 ### Phase 7: TypeScript Cleanup
 **Goal**: The codebase compiles cleanly — no pre-existing TypeScript errors remain in the profile or client detail pages
@@ -140,5 +145,5 @@ Plans:
 | 3. History & Personal Records | v2.0 | 2/2 | Complete | 2026-03-09 |
 | 4. Login & Trainer UI Polish | 3/3 | Complete   | 2026-03-09 | - |
 | 5. Client Management Fixes | 1/3 | In Progress|  | - |
-| 6. Navigation & Plans | v3.0 | 0/TBD | Not started | - |
+| 6. Navigation & Plans | v3.0 | 0/3 | Planned | - |
 | 7. TypeScript Cleanup | v3.0 | 0/TBD | Not started | - |

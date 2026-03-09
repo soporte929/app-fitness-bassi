@@ -63,17 +63,22 @@ export async function middleware(request: NextRequest) {
   const isTrainerRoute = pathname.startsWith("/dashboard") ||
     pathname.startsWith("/clients") ||
     pathname.startsWith("/routines-templates") ||
+    pathname.startsWith("/plans") ||
+    pathname.startsWith("/nutrition-plans") ||
     pathname.startsWith("/exercises") ||
     pathname.startsWith("/reports") ||
     pathname.startsWith("/settings");
 
   const isClientRoute = pathname.startsWith("/today") ||
+    pathname.startsWith("/history") ||
     pathname.startsWith("/nutrition") ||
     pathname.startsWith("/progress") ||
     pathname.startsWith("/audit") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/routines") ||
-    pathname.startsWith("/workout");
+    pathname.startsWith("/routines/") ||
+    pathname.startsWith("/workout") ||
+    pathname.startsWith("/revisions");
 
   if (isTrainerRoute && profile?.role !== "trainer") {
     return NextResponse.redirect(new URL("/today", request.url));

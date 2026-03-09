@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { X, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { X, Plus, ExternalLink } from 'lucide-react'
 import { addRoutineToPlan, removeRoutineFromPlan } from '../actions'
 
 type AssignedRoutine = {
@@ -58,14 +59,20 @@ export function PlanRoutinesManager({
               key={r.workout_plan_id}
               className="flex items-center justify-between py-3 px-4 bg-[rgba(255,255,255,0.03)] rounded-xl border border-[rgba(255,255,255,0.05)]"
             >
-              <div>
-                <p className="text-sm font-medium text-[#e8e8e6]">{r.name}</p>
+              <Link
+                href={`/routines-templates/${r.workout_plan_id}`}
+                className="flex-1 min-w-0 group"
+              >
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-[#e8e8e6] group-hover:text-[#6b7fa3] transition-colors truncate">{r.name}</p>
+                  <ExternalLink className="w-3 h-3 text-[#a0a0a0] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                </div>
                 <p className="text-xs text-[#a0a0a0] mt-0.5">{r.days_per_week} días/semana</p>
-              </div>
+              </Link>
               <button
                 onClick={() => handleRemove(r.workout_plan_id)}
                 disabled={loading === r.workout_plan_id}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-[#a0a0a0] hover:text-[#ff6b6b] hover:bg-[rgba(255,107,107,0.1)] transition-colors disabled:opacity-40"
+                className="w-7 h-7 flex items-center justify-center rounded-full text-[#a0a0a0] hover:text-[#ff6b6b] hover:bg-[rgba(255,107,107,0.1)] transition-colors disabled:opacity-40 ml-2 flex-shrink-0"
                 aria-label="Quitar rutina"
               >
                 <X className="w-3.5 h-3.5" />
