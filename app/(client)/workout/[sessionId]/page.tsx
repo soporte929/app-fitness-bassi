@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { CheckCircle2 } from 'lucide-react'
 import { finishWorkout } from '@/app/(client)/today/actions'
 import { TodayExercisesProgress } from '@/components/client/today-exercises-progress'
+import { computePRBestsByClient } from '@/lib/pr-detection'
 
 export default async function WorkoutSessionPage({
   params,
@@ -75,9 +76,14 @@ export default async function WorkoutSessionPage({
     : null
   const lastSetLogs = lastSetLogsResult?.data ?? []
 
+  // Fetch all-time best volume per exercise from all prior completed sessions
+  // (current session is not yet completed, so it is excluded automatically)
+  const prBests = await computePRBestsByClient(supabase, client.id)
+
   const exercisesWithSets = exercises.map((ex) => ({
     ...ex,
     set_logs: setLogs.filter((log) => log.exercise_id === ex.id),
+    prBestVolume: prBests.get(ex.id) ?? 0,
   }))
 
   const finishAction = finishWorkout.bind(null, session.id)
