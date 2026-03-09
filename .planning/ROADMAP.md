@@ -101,7 +101,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Workout Session | v1.0 | 2/2 | Complete | 2026-03-09 |
-| 2. Bug Fixes & Type Safety | v2.0 | 0/2 | Not started | - |
+| 2. Bug Fixes & Type Safety | 1/2 | In Progress|  | - |
 | 3. History & Personal Records | v2.0 | 0/TBD | Not started | - |
 | 4. Progress Logging | v2.0 | 0/TBD | Not started | - |
 | 5. Revisiones & Trainer Cleanup | v2.0 | 0/TBD | Not started | - |

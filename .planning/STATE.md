@@ -2,13 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Bassi v2
-status: ready_to_plan
-last_updated: "2026-03-09T00:00:00.000Z"
+status: planning
+stopped_at: Completed 02-bug-fixes-type-safety-02-01-PLAN.md
+last_updated: "2026-03-09T03:53:38.615Z"
+last_activity: 2026-03-09 — Roadmap created for v2.0 (6 phases, 19 requirements mapped)
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
+  percent: 0
 ---
 
 # State
@@ -76,6 +79,7 @@ Progress: [░░░░░░░░░░] 0%
 ## Decisions
 
 All key decisions documented in PROJECT.md Key Decisions table.
+- [Phase 02-bug-fixes-type-safety]: Derive page types from Database Row types rather than redeclaring manually — keeps types in sync with schema
 
 ## Pending Todos
 
@@ -83,6 +87,6 @@ All key decisions documented in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-03-09
-Stopped at: Roadmap created — v2.0 phases 2-7 defined, ready to plan Phase 2
+Last session: 2026-03-09T03:53:38.613Z
+Stopped at: Completed 02-bug-fixes-type-safety-02-01-PLAN.md
 Resume file: None
