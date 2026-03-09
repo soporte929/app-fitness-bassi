@@ -105,8 +105,8 @@ export async function getClientNutritionContextAction(
       .from('food_log')
       .select(`
         *,
-        food:foods(kcal_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g),
-        dish:saved_dishes(kcal_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g)
+        food:foods(id, name, kcal_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g),
+        dish:saved_dishes(id, name, kcal_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g)
       `)
       .eq('client_id', clientId)
       .eq('logged_date', dateStr)
@@ -185,6 +185,70 @@ export async function logPlannedMealAction(
       const { error } = await supabase.from('food_log').insert(inserts)
       if (error) throw error
     }
+
+    revalidatePath('/nutrition')
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Unknown error' }
+  }
+}
+
+export async function searchFoodsAction(query: string) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado', data: [] }
+
+    // Search both foods and saved_dishes
+    const searchTerm = `%${query}%`
+
+    const [foodsRes, dishesRes] = await Promise.all([
+      supabase.from('foods').select('*').ilike('name', searchTerm).limit(10),
+      supabase.from('saved_dishes').select('*').ilike('name', searchTerm).limit(10)
+    ])
+
+    // Combine and mark type
+    const foods = (foodsRes.data || []).map(f => ({ ...f, type: 'food' as const }))
+    const dishes = (dishesRes.data || []).map(d => ({ ...d, type: 'dish' as const }))
+
+    const sorted = [...foods, ...dishes].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 15)
+    return { success: true, data: sorted }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Unknown error', data: [] }
+  }
+}
+
+export async function logFreeFoodAction(
+  clientId: string,
+  itemId: string,
+  type: 'food' | 'dish',
+  grams: number,
+  dateStr: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const { data: ownClient } = await supabase
+      .from('clients')
+      .select('id')
+      .eq('profile_id', user.id)
+      .eq('id', clientId)
+      .maybeSingle()
+
+    if (!ownClient) return { success: false, error: 'Cliente no válido' }
+
+    const { error } = await supabase.from('food_log').insert({
+      client_id: ownClient.id,
+      logged_date: dateStr,
+      meal_number: null, // Specific to free logs, not tied to a planned meal index
+      food_id: type === 'food' ? itemId : null,
+      dish_id: type === 'dish' ? itemId : null,
+      grams
+    })
+
+    if (error) throw error
 
     revalidatePath('/nutrition')
     return { success: true }

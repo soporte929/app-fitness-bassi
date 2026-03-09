@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PageTransition } from '@/components/ui/page-transition'
 import { MacroProgressBars } from '@/components/client/nutrition/MacroProgressBars'
 import { ClientDailyMeals } from '@/components/client/nutrition/ClientDailyMeals'
+import { FoodSearchModal } from '@/components/client/nutrition/FoodSearchModal'
 import { getClientNutritionContextAction } from './actions'
 import type { Database } from '@/lib/supabase/types'
 
@@ -89,17 +90,48 @@ export default async function NutritionPage() {
           )}
         </section>
 
-        <section className="opacity-50">
+        <section className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-medium text-[#6b7fa3] tracking-wide uppercase">
               Registro libre
             </p>
           </div>
-          <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5 text-center">
-            <p className="text-sm text-[#a0a0a0]">Sección en construcción (Próxima actualización en fase 11.3)</p>
-          </div>
+
+          {(() => {
+            const freeLogs = context?.logs?.filter(l => l.meal_number === null) || []
+            if (freeLogs.length === 0) {
+              return (
+                <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-8 text-center flex flex-col items-center justify-center">
+                  <p className="text-sm text-[#a0a0a0] mb-2">No has registrado alimentos libres hoy</p>
+                  <p className="text-xs text-[#6b7fa3]">Usa el botón + para buscar y añadir comidas</p>
+                </div>
+              )
+            }
+            return (
+              <div className="space-y-3">
+                {freeLogs.map((log: any) => {
+                  const item = log.food || log.dish
+                  const name = item?.name || 'Comida'
+                  const kcal = item ? Math.round(item.kcal_per_100g * (log.grams / 100)) : 0
+                  return (
+                    <div key={log.id} className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl p-4 flex justify-between items-center">
+                      <div>
+                        <p className="text-sm font-medium text-[#e8e8e6]">{name}</p>
+                        <p className="text-xs text-[#a0a0a0] mt-0.5">{log.grams}g</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-[#e8e8e6]">{kcal} kcal</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })()}
         </section>
       </div>
+
+      <FoodSearchModal clientId={client.id} dateStr={currentDateString} />
     </PageTransition>
   )
 }
