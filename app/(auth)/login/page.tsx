@@ -79,15 +79,6 @@ export default function LoginPage() {
           50%      { transform: translateY(-5px); }
         }
 
-        @keyframes logoGlowPulse {
-          0%, 100% { 
-            filter: drop-shadow(0 0 4px rgba(245,197,24,0.2)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15)); 
-          }
-          50%      { 
-            filter: drop-shadow(0 0 20px rgba(245,197,24,0.5)) drop-shadow(1px 1px 0px rgba(255,255,255,0.2)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.2)); 
-          }
-        }
-
         @keyframes subtitleReveal {
           0%   { opacity: 0; letter-spacing: 0.08em; }
           100% { opacity: 1; letter-spacing: 0.25em; }
@@ -114,7 +105,7 @@ export default function LoginPage() {
           style={{
             animation: logoPhase === 'enter'
               ? 'logoReveal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both'
-              : 'float 4s ease-in-out infinite, logoGlowPulse 4s ease-in-out infinite',
+              : 'float 4s ease-in-out infinite',
           }}
         >
           <Image
@@ -126,7 +117,7 @@ export default function LoginPage() {
             priority
             style={{
               display: 'block',
-              filter: 'drop-shadow(0 0 0px rgba(255,255,255,0)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15))',
+              filter: 'drop-shadow(0 0 18px rgba(245,197,24,0.45)) drop-shadow(1px 1px 0px rgba(255,255,255,0.2)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.2))',
             }}
           />
         </div>
