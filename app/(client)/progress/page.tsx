@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageTransition } from '@/components/ui/page-transition'
 import { ProgressCharts } from '@/components/client/progress-charts'
+import { LogWeightModal } from '@/components/client/progress/LogWeightModal'
+import { LogMeasurementsModal } from '@/components/client/progress/LogMeasurementsModal'
 import type { WeightLog, Measurement, SessionForProgress } from '@/components/client/progress-charts'
 
 export default async function ProgressPage() {
@@ -59,7 +61,13 @@ export default async function ProgressPage() {
   return (
     <PageTransition>
       <div className="px-4 pt-6 pb-24">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight mb-5">Progreso</h1>
+        <div className="flex items-center justify-between mb-5 items-end">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Progreso</h1>
+          <div className="flex gap-2 items-center">
+            <LogMeasurementsModal clientId={client.id} />
+            <LogWeightModal clientId={client.id} />
+          </div>
+        </div>
 
         <ProgressCharts
           weightLogs={weightLogs}
