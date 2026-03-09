@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-09T02:39:59.736Z"
-last_activity: 2026-03-09 — Roadmap created, Phase 1 ready for planning
+status: executing
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-09T02:43:41.737Z"
+last_activity: 2026-03-09 — Completed 01-01 (startWorkoutSession + /workout/[sessionId] page)
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
   percent: 50
 ---
 
@@ -50,6 +50,7 @@ Progress: [█████░░░░░] 50%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01 P02 | 3m | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Progress: [█████░░░░░] 50%
 - **01-01:** finishWorkout reused from `today/actions.ts` — not duplicated in workout page
 - **01-01:** No back button on `/workout/[sessionId]` — focused workout experience per CONTEXT.md
 - **01-01:** Error fallback on session create failure redirects to `/routines` (not `/today`)
+- [Phase 01]: today/page.tsx simplified — all workout rendering removed as dead code after redirect added
+- [Phase 01]: Banner hide guard uses pathname.startsWith('/workout') to cover all /workout/* sub-paths
 
 ## Pending Todos
 
@@ -90,6 +93,6 @@ Progress: [█████░░░░░] 50%
 
 ## Session Continuity
 
-Last session: 2026-03-09T02:39:59.733Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-09T02:43:41.735Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

@@ -14,8 +14,8 @@ Requirements for milestone v1.0. Each maps to roadmap phases.
 - [x] **WORKOUT-03**: User can log sets (weight, reps, RIR) and mark them complete within the workout page
 - [x] **WORKOUT-04**: A rest timer appears automatically after completing a set
 - [x] **WORKOUT-05**: User can finish the workout from the workout page (session marked complete, redirects to history)
-- [ ] **WORKOUT-06**: Active session banner links to `/workout/[sessionId]` instead of `/today`
-- [ ] **WORKOUT-07**: `today/page.tsx` redirects to `/workout/[sessionId]` when an active session exists (making the dedicated page the canonical workout URL)
+- [x] **WORKOUT-06**: Active session banner links to `/workout/[sessionId]` instead of `/today`
+- [x] **WORKOUT-07**: `today/page.tsx` redirects to `/workout/[sessionId]` when an active session exists (making the dedicated page the canonical workout URL)
 
 ## v2 Requirements
 
@@ -50,8 +50,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WORKOUT-03 | Phase 1 — Workout Session | Complete |
 | WORKOUT-04 | Phase 1 — Workout Session | Complete |
 | WORKOUT-05 | Phase 1 — Workout Session | Complete |
-| WORKOUT-06 | Phase 1 — Workout Session | Pending |
-| WORKOUT-07 | Phase 1 — Workout Session | Pending |
+| WORKOUT-06 | Phase 1 — Workout Session | Complete |
+| WORKOUT-07 | Phase 1 — Workout Session | Complete |
 
 **Coverage:**
 - v1 requirements: 7 total

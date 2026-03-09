@@ -10,7 +10,7 @@ Milestone v1.0 completes the workout tracking loop by building the dedicated wor
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Workout Session** - Dedicated `/workout/[sessionId]` page with full set logging, rest timer, finish flow, and correct routing from Today and the active session banner
+- [x] **Phase 1: Workout Session** - Dedicated `/workout/[sessionId]` page with full set logging, rest timer, finish flow, and correct routing from Today and the active session banner (completed 2026-03-09)
 
 ## Phase Details
 
@@ -37,4 +37,4 @@ Phases execute in numeric order: 1
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Workout Session | 1/2 | In Progress|  |
+| 1. Workout Session | 2/2 | Complete   | 2026-03-09 |
