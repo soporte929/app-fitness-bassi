@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Bassi v2
-status: planning
+status: ready_to_plan
 last_updated: "2026-03-09T00:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,13 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-09 after v2.0 milestone started)
 
 **Core value:** The workout tracking loop must work end-to-end — start session, log sets, finish, review in history.
-**Current focus:** Planning milestone v2.0 — Bassi v2
+**Current focus:** Phase 2 — Bug Fixes & Type Safety
 
 ## Current Position
 
-Phase: —
-Status: Defining requirements for v2.0
-Last activity: 2026-03-09 — Milestone v2.0 started
+Phase: 2 of 7 (Bug Fixes & Type Safety)
+Plan: — of — in current phase
+Status: Ready to plan
+Last activity: 2026-03-09 — Roadmap created for v2.0 (6 phases, 19 requirements mapped)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -32,6 +35,11 @@ Last activity: 2026-03-09 — Milestone v2.0 started
 - Plans completed: 2
 - Average duration: ~2.5m per plan
 - Total execution time: ~5m
+
+**v2.0 Velocity:**
+- Plans completed: 0
+- Average duration: —
+- Total execution time: —
 
 ## Accumulated Context
 
@@ -41,37 +49,29 @@ Last activity: 2026-03-09 — Milestone v2.0 started
 - All Supabase joins use explicit FK hints to avoid ambiguous FK failures
 - `params` is a Promise in Next.js 16: always `params: Promise<{ id: string }>` with `await params`
 - Global (dateless) collision check for session uniqueness: `.eq('completed', false).maybeSingle()`
-- `pathname.startsWith('/route')` for hide guards on dynamic sub-paths
-- Dark design system: CSS vars `--bg-base`, `--bg-surface`, `--bg-elevated`, `--accent`, `--text-primary`, `--text-secondary`, `--text-muted`, `--border`
+- Dark design system: CSS vars `--bg-base`, `--bg-surface`, `--bg-elevated`, `--accent`
 
 ### Known Gotchas
-- `revisions`, `revision_measurements`, `revision_photos` tables missing from types.ts — workaround with `(supabase as any)` — MUST FIX in v2
-- `nutrition_plans` / `nutrition_plan_meals` types incomplete in types.ts (use `as any` workaround)
+- `revisions`, `revision_measurements`, `revision_photos` tables missing from types.ts — BUG-02 (Phase 2)
 - Dev auth bypass active in middleware.ts (`NODE_ENV === 'development'`) — remove before production
 - Recharts formatter: `(value: number | undefined, name: string | undefined)` to avoid type errors
-- Column ambiguity in `.eq()`: if parent + child both have same column, remove from child select
-- Pre-existing TypeScript errors (3): `profile/page.tsx` + `clients/[id]/page.tsx` — pre-date v1.0
-- "Reanudar entreno" bug: `routines/[planId]/page.tsx` shows "Reanudar entreno" text but still calls `startWorkoutSession` creating a new session — must redirect to existing session instead
+- Column ambiguity in `.eq()`: remove duplicate-named column from child select
+- "Reanudar entreno" bug in `routines/[planId]/page.tsx` — BUG-01 (Phase 2)
+- `isPR` prop in ExerciseCard is wired but never set to true — PR-01 (Phase 3)
 
 ### Useful Files
 - `lib/supabase/types.ts` — all Database types (1200+ lines)
-- `components/client/rest-timer.tsx` — listens to `startRestTimer` custom event
-- `components/client/exercise-card.tsx` — set logging (weight, reps, RIR, mark complete), has `isPR` prop wired but never set
-- `components/client/today-exercises-progress.tsx` — wraps ExerciseCards for a session
-- `components/client/active-session-banner.tsx` — session polling, links to /workout/[sessionId]
-- `app/(client)/today/actions.ts` — `saveSetLog` and `finishWorkout` (reusable across routes)
-- `app/(client)/workout/[sessionId]/page.tsx` — active workout session page (v1.0 built)
-- `app/(client)/routines/[planId]/actions.ts` — `startWorkoutSession` (global collision check)
-- `app/(client)/history/page.tsx` — history feed (partially implemented)
-- `app/(client)/history/[sessionId]/page.tsx` — session detail (partially implemented)
-- `app/(client)/revisions/page.tsx` — client revisions (uses `supabase as any`)
-- `app/(trainer)/clients/[id]/revisions/page.tsx` — trainer revisions (uses `supabase as any`)
-- `app/(client)/nutrition/NutritionFreeLogSheet.tsx` — free log bottom sheet (UI done, no AI yet)
-- `components/trainer/sidebar.tsx` — has dead links: /exercises, /reports, /settings
+- `components/client/exercise-card.tsx` — has `isPR` prop wired, never set
+- `app/(client)/today/actions.ts` — `saveSetLog` and `finishWorkout` (reusable)
+- `app/(client)/history/page.tsx` — partially implemented (Phase 3 starting point)
+- `app/(client)/history/[sessionId]/page.tsx` — partially implemented (Phase 3)
+- `app/(client)/revisions/page.tsx` — uses `supabase as any` (Phase 5)
+- `app/(client)/nutrition/NutritionFreeLogSheet.tsx` — UI done, no AI yet (Phase 6)
+- `components/trainer/sidebar.tsx` — has dead links: /exercises, /reports, /settings (Phase 5, 7)
 
 ### Blockers/Concerns
-- revisions tables not in types.ts — all revision pages use `supabase as any`
-- No PR detection logic exists — `isPR` prop in ExerciseCard is never set to true
+- revisions tables not in types.ts — all revision pages blocked until Phase 2 fixes BUG-02
+- PR detection has no query logic yet — Phase 3 must build from scratch
 
 ## Decisions
 
@@ -84,5 +84,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: v2.0 milestone started — requirements defined, spawning roadmapper
+Stopped at: Roadmap created — v2.0 phases 2-7 defined, ready to plan Phase 2
 Resume file: None
