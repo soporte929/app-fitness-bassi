@@ -57,6 +57,7 @@
 - [ ] **Phase 12: Progress Logging** — Client registers body weight and measurements from /progress; target weight reference line on chart
 - [ ] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback
 - [ ] **Phase 14: Trainer Completar** — Exercises library page, client history link, and dead sidebar links resolved
+- [ ] **Phase 15: Bug Fixes & Logic Corrections** — UI/UX polish, form state persistence, chart margins, and flow logic corrections (Routine vs Plan assignment)
 
 </details>
 
@@ -163,9 +164,22 @@ Plans:
 **Plans**: TBD
 
 
+### Phase 15: Bug Fixes & Logic Corrections
+**Goal**: Resolve accumulated UI bugs, state persistence issues, and ensure business logic flow (Plans vs Routines) is strictly enforced across the application
+**Depends on**: Phases 8-14 (should be done as a final polish step)
+**Requirements**: BUG-01, BUG-02, BUG-03, BUG-04, LOGIC-01
+**Success Criteria** (what must be TRUE):
+  1. BUG-01: The food search input in `/nutrition-plans` retains focus between keystrokes.
+  2. BUG-02: `Adherencia por cliente` and `Progreso de peso` charts in `/dashboard` have correct margins and content is fully visible.
+  3. BUG-03: Form state in `/routines-templates/new` persists when navigating between steps (days and client selections are not lost).
+  4. BUG-04: The dropdown for assignment in the client detail page has correct margins and text is not cut off.
+  5. LOGIC-01: UI enforces correct assignment flow: Clients are assigned Plans (not Routines). "Asignar rutina" buttons are removed/updated to accurately reflect assigning a Plan, and routines remain strictly as templates.
+**Plans**: TBD
+
+
 ## Progress
 
-**v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14
+**v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -184,3 +198,4 @@ Plans:
 | 12. Progress Logging | v4.0 | 0/? | Not started | - |
 | 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |
 | 14. Trainer Completar | v4.0 | 0/? | Not started | - |
+| 15. Bug Fixes & Logic Corrections | v4.0 | 0/? | Not started | - |

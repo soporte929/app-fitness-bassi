@@ -373,6 +373,9 @@ export interface Database {
           protein_target_g: number | null;
           carbs_target_g: number | null;
           fat_target_g: number | null;
+          diet_type: "A" | "B" | "C" | null;
+          meals_count: number | null;
+          is_template: boolean | null;
           active: boolean;
           created_at: string;
         };
@@ -385,6 +388,9 @@ export interface Database {
           protein_target_g?: number | null;
           carbs_target_g?: number | null;
           fat_target_g?: number | null;
+          diet_type?: "A" | "B" | "C" | null;
+          meals_count?: number | null;
+          is_template?: boolean | null;
           active?: boolean;
           created_at?: string;
         };

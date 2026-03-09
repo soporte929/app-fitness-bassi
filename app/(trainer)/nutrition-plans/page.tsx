@@ -10,7 +10,7 @@ import { CreateTemplateModal } from './create-template-modal'
 type ClientRow = {
   id: string
   profile: { full_name: string } | null
-  nutrition_plans: Array<{ id: string; kcal_target: number | null }> | null
+  nutrition_plans: Array<{ id: string; kcal_target: number | null; active: boolean }> | null
 }
 
 type RawTrainerTemplateRow = {
@@ -21,10 +21,10 @@ type RawTrainerTemplateRow = {
   carbs_target_g: number | null
   fat_target_g: number | null
   nutrition_plan_meals:
-    | Array<{
-        plan_id: string
-      }>
-    | null
+  | Array<{
+    plan_id: string
+  }>
+  | null
 }
 
 export default async function NutritionPlansPage() {
@@ -39,7 +39,7 @@ export default async function NutritionPlansPage() {
     .select(
       `id,
       profile:profiles!clients_profile_id_fkey(full_name),
-      nutrition_plans(id, kcal_target)`
+      nutrition_plans(id, kcal_target, active)`
     )
     .eq('trainer_id', user.id)
     .eq('active', true)
@@ -57,7 +57,7 @@ export default async function NutritionPlansPage() {
     .returns<RawTrainerTemplateRow[]>()
 
   const clients = ((rawClients ?? []) as unknown as ClientRow[]).map((c) => {
-    const activePlan = c.nutrition_plans?.[0] ?? null
+    const activePlan = c.nutrition_plans?.find((p) => p.active) ?? null
     return {
       id: c.id,
       name: (c.profile as { full_name: string } | null)?.full_name ?? 'Cliente',

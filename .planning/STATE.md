@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Progress Bar
 
 ```
-v4.0 Progress: [███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 28% (2/7 phases)
+v4.0 Progress: [██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 25% (2/8 phases)
 Phase 8:  [x] Database Foundation + Formulas
 Phase 9:  [x] Trainer Plan Creator
 Phase 10: [x] Trainer Plan Meals + Assignment
@@ -40,6 +40,7 @@ Phase 11: [ ] Client Nutrition View
 Phase 12: [ ] Progress Logging
 Phase 13: [ ] AI Nutrition Parsing
 Phase 14: [ ] Trainer Completar
+Phase 15: [ ] Bug Fixes & Logic Corrections
 ```
 
 ## Performance Metrics

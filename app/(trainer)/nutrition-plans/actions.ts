@@ -58,6 +58,8 @@ async function assignTemplateToClient(params: {
   protein_target_g: number | null
   carbs_target_g: number | null
   fat_target_g: number | null
+  diet_type?: 'A' | 'B' | 'C' | null
+  meals_count?: number | null
   meals: CreateTemplateMealInput[]
 }): Promise<ActionResult> {
   const supabase = await createClient()
@@ -78,6 +80,8 @@ async function assignTemplateToClient(params: {
     protein_target_g: params.protein_target_g,
     carbs_target_g: params.carbs_target_g,
     fat_target_g: params.fat_target_g,
+    diet_type: params.diet_type ?? 'A',
+    meals_count: params.meals_count ?? params.meals.length,
     active: true,
     is_template: false,
   } as unknown as NutritionPlanInsertCompat
@@ -163,7 +167,7 @@ export async function assignOwnNutritionTemplateAction(
 
   const { data: templatePlan, error: templatePlanError } = await supabase
     .from('nutrition_plans')
-    .select('id, name, trainer_id, kcal_target, protein_target_g, carbs_target_g, fat_target_g, is_template')
+    .select('id, name, trainer_id, kcal_target, protein_target_g, carbs_target_g, fat_target_g, diet_type, meals_count, is_template')
     .eq('id', templatePlanId)
     .eq('trainer_id', user.id)
     .single<{
@@ -174,6 +178,8 @@ export async function assignOwnNutritionTemplateAction(
       protein_target_g: number | null
       carbs_target_g: number | null
       fat_target_g: number | null
+      diet_type: 'A' | 'B' | 'C' | null
+      meals_count: number | null
       is_template: boolean
     }>()
 
@@ -216,6 +222,8 @@ export async function assignOwnNutritionTemplateAction(
     protein_target_g: templatePlan.protein_target_g,
     carbs_target_g: templatePlan.carbs_target_g,
     fat_target_g: templatePlan.fat_target_g,
+    diet_type: templatePlan.diet_type,
+    meals_count: templatePlan.meals_count,
     meals: rawMeals ?? [],
   })
 }
@@ -272,7 +280,10 @@ export async function assignNutritionPlanAction(
     protein_target_g: input.proteinTargetG,
     carbs_target_g: input.carbsTargetG,
     fat_target_g: input.fatTargetG,
+    diet_type: input.dietType,
+    meals_count: input.mealsCount,
     active: true,
+    is_template: false,
     // Store start_date as created_at so it's visible in the DB
     created_at: new Date(input.startDate).toISOString(),
   }
@@ -361,6 +372,8 @@ export async function createNutritionTemplateAction(
     protein_target_g: input.protein_target_g,
     carbs_target_g: input.carbs_target_g,
     fat_target_g: input.fat_target_g,
+    diet_type: 'A', // Assuming predefined templates format is structured normally without options
+    meals_count: input.meals.length,
     active: true,
     is_template: true,
   } as unknown as NutritionPlanInsertCompat
