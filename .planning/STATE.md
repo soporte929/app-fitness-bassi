@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Módulo Nutrición
-status: Roadmap created — ready to plan Phase 8
-stopped_at: Roadmap created for v4.0 (Phases 8-14)
-last_updated: "2026-03-09T00:00:00.000Z"
-last_activity: 2026-03-09 — Roadmap v4.0 created (7 phases, 31 requirements)
+status: Phase 8 executing — Wave 1 complete (08-02 done, 08-01 at checkpoint)
+stopped_at: Plan 08-01 checkpoint — user must run SQL migration in Supabase
+last_updated: "2026-03-09T01:00:00.000Z"
+last_activity: 2026-03-09 — Phase 8 Wave 1 executing: 08-02 complete, 08-01 at checkpoint
 progress:
   total_phases: 7
   completed_phases: 0
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 8 — Database Foundation + Formulas (next to plan)
 
 ## Current Position
-- **Phase**: 8 (not started)
-- **Plan**: —
-- **Status**: Roadmap created — ready to plan Phase 8
-- **Last activity**: 2026-03-09 — Roadmap v4.0 created (7 phases, 31 requirements mapped)
+- **Phase**: 8 (executing)
+- **Plan**: 08-01 (checkpoint — awaiting user SQL execution), 08-02 (complete)
+- **Status**: Wave 1 executing — 08-01 at checkpoint, 08-02 done
+- **Last activity**: 2026-03-09 — Phase 8 Wave 1: 08-02 formulas complete, 08-01 pending SQL execution
 
 ## Progress Bar
 
