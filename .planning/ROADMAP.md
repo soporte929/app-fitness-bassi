@@ -37,7 +37,11 @@
   1. Tapping "Reanudar entreno" on a routine with an active session opens the existing session instead of creating a duplicate
   2. All code that previously used `supabase as any` for revisions tables compiles with strict TypeScript types
   3. A client with no assigned nutrition plan sees their calculated macro targets (not zeros or placeholder values) on the nutrition page
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Add revisions table types to lib/supabase/types.ts and remove all `supabase as any` casts (BUG-02)
+- [ ] 02-02-PLAN.md — Fix global session check for "Reanudar entreno" and always-show calculated macro targets (BUG-01, BUG-03)
 
 ### Phase 3: History & Personal Records
 **Goal**: Clients can review their entire workout history and see when they hit personal records, both live during a session and as badges on past history cards
@@ -97,7 +101,7 @@
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Workout Session | v1.0 | 2/2 | Complete | 2026-03-09 |
-| 2. Bug Fixes & Type Safety | v2.0 | 0/TBD | Not started | - |
+| 2. Bug Fixes & Type Safety | v2.0 | 0/2 | Not started | - |
 | 3. History & Personal Records | v2.0 | 0/TBD | Not started | - |
 | 4. Progress Logging | v2.0 | 0/TBD | Not started | - |
 | 5. Revisiones & Trainer Cleanup | v2.0 | 0/TBD | Not started | - |
