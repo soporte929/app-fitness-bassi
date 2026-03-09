@@ -117,3 +117,109 @@ export function calculateNutrition(input: NutritionInput): NutritionResult {
 }
 
 export { ACTIVITY_LABELS, ACTIVITY_FACTORS };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Módulo v4.0 — Nuevas funciones de cálculo nutricional
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type NutritionPhase = "deficit" | "recomposition" | "volume" | "maintenance";
+export type Sex = "male" | "female";
+
+export interface TMBInput {
+  weightKg: number;
+  fatPercent?: number;  // Si se pasa → Katch-McArdle. Si no → Mifflin-St Jeor
+  heightCm?: number;    // Requerido si no hay fatPercent
+  age?: number;         // Requerido si no hay fatPercent
+  sex?: Sex;            // Requerido si no hay fatPercent, default 'male'
+}
+
+export interface MacrosResult {
+  protein: { g: number; kcal: number };
+  fat: { g: number; kcal: number };
+  carbs: { g: number; kcal: number };
+}
+
+/**
+ * Calcula la Tasa Metabólica Basal (TMB).
+ * - Con fatPercent: usa Katch-McArdle → 370 + (21.6 × FFM)
+ * - Sin fatPercent: usa Mifflin-St Jeor
+ */
+export function calculateTMB(input: TMBInput): number {
+  if (input.fatPercent !== undefined) {
+    // Katch-McArdle: 370 + 21.6 × FFM
+    const ffm = input.weightKg * (1 - input.fatPercent / 100);
+    return Math.round(370 + 21.6 * ffm);
+  } else {
+    // Mifflin-St Jeor
+    const { weightKg, heightCm = 170, age = 30, sex = "male" } = input;
+    const base = 10 * weightKg + 6.25 * heightCm - 5 * age;
+    return Math.round(sex === "male" ? base + 5 : base - 161);
+  }
+}
+
+/**
+ * Calcula el Gasto Energético Total Diario (TDEE).
+ * TDEE = TMB × factor de actividad
+ */
+export function calculateTDEE(tmb: number, activityLevel: ActivityLevel): number {
+  return Math.round(tmb * ACTIVITY_FACTORS[activityLevel]);
+}
+
+// Factores de ajuste calórico según fase (uso interno)
+const GOAL_FACTORS: Record<NutritionPhase, number> = {
+  deficit: 0.85,
+  maintenance: 1.0,
+  recomposition: 1.0,  // Mismas kcal que mantenimiento, distinto reparto de macros
+  volume: 1.075,
+};
+
+/**
+ * Calcula las calorías objetivo según fase nutricional.
+ * - deficit: TDEE × 0.85
+ * - maintenance / recomposition: TDEE × 1.0
+ * - volume: TDEE × 1.075
+ */
+export function calculateTargetCalories(tdee: number, phase: NutritionPhase): number {
+  return Math.round(tdee * GOAL_FACTORS[phase]);
+}
+
+// Factores de proteína por kg de peso (uso interno)
+const PROTEIN_FACTORS: Record<NutritionPhase, number> = {
+  deficit: 2.2,
+  recomposition: 2.0,
+  volume: 1.8,
+  maintenance: 2.0,
+};
+
+// Factores de grasa por kg de peso (uso interno)
+const FAT_FACTORS: Record<NutritionPhase, number> = {
+  deficit: 0.8,
+  recomposition: 0.9,
+  volume: 1.0,
+  maintenance: 0.9,
+};
+
+/**
+ * Calcula la distribución de macronutrientes.
+ * - Proteínas: factor × weightKg (varía por fase)
+ * - Grasas: factor × weightKg (varía por fase)
+ * - Carbohidratos: calorías restantes / 4
+ */
+export function calculateMacros(
+  weightKg: number,
+  phase: NutritionPhase,
+  targetCalories: number
+): MacrosResult {
+  const proteinG = Math.round(PROTEIN_FACTORS[phase] * weightKg);
+  const fatG = Math.round(FAT_FACTORS[phase] * weightKg);
+  const proteinKcal = proteinG * 4;
+  const fatKcal = fatG * 9;
+  const carbsKcal = Math.max(0, targetCalories - proteinKcal - fatKcal);
+  const carbsG = Math.round(carbsKcal / 4);
+
+  return {
+    protein: { g: proteinG, kcal: proteinKcal },
+    fat: { g: fatG, kcal: fatKcal },
+    carbs: { g: carbsG, kcal: carbsKcal },
+  };
+}
