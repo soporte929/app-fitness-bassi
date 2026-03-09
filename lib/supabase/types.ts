@@ -574,6 +574,109 @@ export interface Database {
           }
         ];
       };
+
+      revisions: {
+        Row: {
+          id: string;
+          client_id: string;
+          trainer_id: string;
+          revision_date: string;
+          notes: string | null;
+          trainer_feedback: string | null;
+          next_revision_date: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          client_id: string;
+          trainer_id: string;
+          revision_date: string;
+          notes?: string | null;
+          trainer_feedback?: string | null;
+          next_revision_date?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["revisions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "revisions_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "revisions_trainer_id_fkey";
+            columns: ["trainer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      revision_measurements: {
+        Row: {
+          id: string;
+          revision_id: string;
+          weight_kg: number | null;
+          body_fat_pct: number | null;
+          waist_cm: number | null;
+          hip_cm: number | null;
+          chest_cm: number | null;
+          arm_cm: number | null;
+          thigh_cm: number | null;
+          kcal_target: number | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          revision_id: string;
+          weight_kg?: number | null;
+          body_fat_pct?: number | null;
+          waist_cm?: number | null;
+          hip_cm?: number | null;
+          chest_cm?: number | null;
+          arm_cm?: number | null;
+          thigh_cm?: number | null;
+          kcal_target?: number | null;
+          notes?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["revision_measurements"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "revision_measurements_revision_id_fkey";
+            columns: ["revision_id"];
+            isOneToOne: false;
+            referencedRelation: "revisions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      revision_photos: {
+        Row: {
+          id: string;
+          revision_id: string;
+          photo_url: string;
+          angle: string | null;
+          created_at: string;
+        };
+        Insert: {
+          revision_id: string;
+          photo_url: string;
+          angle?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["revision_photos"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "revision_photos_revision_id_fkey";
+            columns: ["revision_id"];
+            isOneToOne: false;
+            referencedRelation: "revisions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
