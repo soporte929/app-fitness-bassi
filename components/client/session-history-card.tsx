@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Trophy } from 'lucide-react'
 
 export type SessionData = {
   id: string
@@ -11,6 +12,7 @@ export type SessionData = {
   totalVolume: number
   completedSets: number
   trainedMuscles: string[]
+  hasPR?: boolean
 }
 
 const volumeFormatter = new Intl.NumberFormat('es-ES', {
@@ -50,7 +52,14 @@ export function SessionHistoryCard({ session, index }: Props) {
       >
         <div className="px-5 pt-4 pb-3">
           <p className="text-xs font-medium text-[var(--text-secondary)] capitalize mb-1">{dateLabel}</p>
-          <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight text-lg">{dayName}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight text-lg">{dayName}</h2>
+            {session.hasPR && (
+              <span className="flex items-center gap-0.5 text-[10px] font-semibold text-[var(--warning)] bg-[var(--warning)]/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                <Trophy className="w-2.5 h-2.5" /> PR
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="px-5 py-3 border-t border-[var(--border)] space-y-2">

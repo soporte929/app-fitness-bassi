@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Trophy } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 
 export type SessionDetailSet = {
@@ -27,6 +28,7 @@ export type SessionDetailExerciseGroup = {
   targetRir: number
   volume: number
   bestSet: SessionDetailBestSet | null
+  isPR?: boolean
   sets: SessionDetailSet[]
 }
 
@@ -143,7 +145,14 @@ export function SessionDetail({ session }: { session: SessionDetailViewModel }) 
             >
               <div className="px-5 py-4">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-base font-semibold text-[var(--text-primary)]">{exercise.name}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-[var(--text-primary)]">{exercise.name}</h2>
+                    {exercise.isPR && (
+                      <span className="flex items-center gap-0.5 text-[10px] font-semibold text-[var(--warning)] bg-[var(--warning)]/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                        <Trophy className="w-2.5 h-2.5" /> PR
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[11px] font-medium text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded-full whitespace-nowrap">
                     {exercise.muscleGroup}
                   </span>
