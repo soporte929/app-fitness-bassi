@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Bassi v2
 status: planning
-stopped_at: Completed 02-bug-fixes-type-safety-02-01-PLAN.md
-last_updated: "2026-03-09T03:53:38.615Z"
-last_activity: 2026-03-09 — Roadmap created for v2.0 (6 phases, 19 requirements mapped)
+stopped_at: Completed 02-bug-fixes-type-safety-02-02-PLAN.md
+last_updated: "2026-03-09T04:00:00.000Z"
+last_activity: 2026-03-09 — BUG-01 and BUG-03 fixed (routines session check + nutrition macro targets)
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -59,8 +59,9 @@ Progress: [░░░░░░░░░░] 0%
 - Dev auth bypass active in middleware.ts (`NODE_ENV === 'development'`) — remove before production
 - Recharts formatter: `(value: number | undefined, name: string | undefined)` to avoid type errors
 - Column ambiguity in `.eq()`: remove duplicate-named column from child select
-- "Reanudar entreno" bug in `routines/[planId]/page.tsx` — BUG-01 (Phase 2)
+- ~~"Reanudar entreno" bug in `routines/[planId]/page.tsx` — BUG-01~~ FIXED in 02-02
 - `isPR` prop in ExerciseCard is wired but never set to true — PR-01 (Phase 3)
+- Pre-existing TS errors in profile/page.tsx (href union) and clients/[id]/page.tsx (Phase type) — out of scope for Phase 2
 
 ### Useful Files
 - `lib/supabase/types.ts` — all Database types (1200+ lines)
@@ -80,6 +81,10 @@ Progress: [░░░░░░░░░░] 0%
 
 All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 02-bug-fixes-type-safety]: Derive page types from Database Row types rather than redeclaring manually — keeps types in sync with schema
+- [02-02 BUG-01]: Global session check (no date bounds) matches actions.ts collision guard — prevents label mismatch across days
+- [02-02 BUG-01]: Capture activeSession.id in page query; resume via <Link> not server action — eliminates round-trip
+- [02-02 BUG-03]: calculateNutrition() replaces hardcoded getKcalByPhase/buildTargets — body_fat_pct ?? 20 fallback gives real FFM-based macros
+- [02-02 BUG-03]: targets: MacroTargets never null — always falls back to calculated targets; cards always rendered
 
 ## Pending Todos
 
@@ -87,6 +92,6 @@ All key decisions documented in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-03-09T03:53:38.613Z
-Stopped at: Completed 02-bug-fixes-type-safety-02-01-PLAN.md
+Last session: 2026-03-09T04:00:00.000Z
+Stopped at: Completed 02-bug-fixes-type-safety-02-02-PLAN.md
 Resume file: None

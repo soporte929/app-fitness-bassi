@@ -9,9 +9,9 @@ Requirements for milestone v2.0 — Bassi v2. Each maps to roadmap phases.
 
 ### Bugs & Technical Quality
 
-- [ ] **BUG-01**: "Reanudar entreno" button redirects to the existing active session instead of starting a new one
+- [x] **BUG-01**: "Reanudar entreno" button redirects to the existing active session instead of starting a new one
 - [x] **BUG-02**: `revisions`, `revision_measurements`, `revision_photos` tables are fully typed in `lib/supabase/types.ts` (no more `supabase as any`)
-- [ ] **BUG-03**: Nutrition macro targets for clients without an active nutrition plan use a correct calculated formula (not zeros/placeholders)
+- [x] **BUG-03**: Nutrition macro targets for clients without an active nutrition plan use a correct calculated formula (not zeros/placeholders)
 
 ### History & Personal Records
 
@@ -80,9 +80,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 2 | Pending |
+| BUG-01 | Phase 2 | Complete |
 | BUG-02 | Phase 2 | Complete |
-| BUG-03 | Phase 2 | Pending |
+| BUG-03 | Phase 2 | Complete |
 | HIST-01 | Phase 3 | Pending |
 | HIST-02 | Phase 3 | Pending |
 | PR-01 | Phase 3 | Pending |
@@ -107,4 +107,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 — traceability mapped after roadmap creation*
+*Last updated: 2026-03-09 — BUG-01 and BUG-03 closed by 02-02-PLAN execution*

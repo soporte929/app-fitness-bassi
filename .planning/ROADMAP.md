@@ -20,7 +20,7 @@
 
 **Milestone Goal:** Fix critical bugs, complete the client experience (history, PRs, progress logging, revisiones), add AI nutrition parsing, and close all dead trainer links.
 
-- [ ] **Phase 2: Bug Fixes & Type Safety** — Eliminate the "Reanudar" bug, fully type the revisions tables, and fix nutrition macro calculations
+- [x] **Phase 2: Bug Fixes & Type Safety** — Eliminate the "Reanudar" bug, fully type the revisions tables, and fix nutrition macro calculations
 - [ ] **Phase 3: History & Personal Records** — Complete the workout history feed and surface PR detection during sessions and in history
 - [ ] **Phase 4: Progress Logging** — Let clients log weight and body measurements from the progress page with chart reference line
 - [ ] **Phase 5: Revisiones & Trainer Cleanup** — Add revisiones to client nav, fix trainer sidebar dead links, and wire trainer's "Ver historial" button
@@ -40,8 +40,8 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Add revisions table types to lib/supabase/types.ts and remove all `supabase as any` casts (BUG-02)
-- [ ] 02-02-PLAN.md — Fix global session check for "Reanudar entreno" and always-show calculated macro targets (BUG-01, BUG-03)
+- [x] 02-01-PLAN.md — Add revisions table types to lib/supabase/types.ts and remove all `supabase as any` casts (BUG-02)
+- [x] 02-02-PLAN.md — Fix global session check for "Reanudar entreno" and always-show calculated macro targets (BUG-01, BUG-03)
 
 ### Phase 3: History & Personal Records
 **Goal**: Clients can review their entire workout history and see when they hit personal records, both live during a session and as badges on past history cards
@@ -101,7 +101,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Workout Session | v1.0 | 2/2 | Complete | 2026-03-09 |
-| 2. Bug Fixes & Type Safety | 1/2 | In Progress|  | - |
+| 2. Bug Fixes & Type Safety | v2.0 | 2/2 | Complete | 2026-03-09 |
 | 3. History & Personal Records | v2.0 | 0/TBD | Not started | - |
 | 4. Progress Logging | v2.0 | 0/TBD | Not started | - |
 | 5. Revisiones & Trainer Cleanup | v2.0 | 0/TBD | Not started | - |
