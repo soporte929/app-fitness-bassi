@@ -70,7 +70,7 @@ export default function LoginPage() {
           100% {
             opacity: 1;
             transform: scale(1);
-            filter: blur(0px) drop-shadow(0 0 6px rgba(245,197,24,0.2)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15));
+            filter: blur(0px) drop-shadow(0 0 0px rgba(245,197,24,0)) drop-shadow(1px 1px 0px rgba(255,255,255,0.15)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.15));
           }
         }
 
@@ -139,8 +139,8 @@ export default function LoginPage() {
             textTransform: 'uppercase',
             color: 'rgba(255,255,255,0.35)',
             textAlign: 'center',
-            marginTop: '6px',
-            marginBottom: '32px',
+            marginTop: '2px',
+            marginBottom: '24px',
             opacity: 0,
             animation: 'subtitleReveal 0.7s ease-out 1.1s forwards',
           }}
@@ -246,32 +246,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Separador */}
-        <div
-          className="mt-4"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-        />
-
-        {/* Botón Demo */}
-        <button
-          type="button"
-          className="w-full py-2.5 mt-4 text-sm cursor-pointer"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#a0a0a0",
-            transition: "color 150ms ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = "#e8e8e6";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = "#a0a0a0";
-          }}
-          onClick={() => router.push("/dashboard")}
-        >
-          Entrar como Entrenador (Demo)
-        </button>
       </div>
 
       {/* ── Footer ── */}
