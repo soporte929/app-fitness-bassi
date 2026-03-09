@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card'
 import { MealSlot } from './meal-slot'
 import { assignNutritionPlanAction } from '../actions'
+import type { Database } from '@/lib/supabase/types'
 
 export type DietType = 'A' | 'B' | 'C'
 
@@ -23,11 +24,16 @@ export type ClientOption = {
     name: string
 }
 
+type Food = Database['public']['Tables']['foods']['Row']
+type SavedDish = Database['public']['Tables']['saved_dishes']['Row']
+
 interface CreatePlanFormProps {
     clients: ClientOption[]
+    foods: Food[]
+    dishes: SavedDish[]
 }
 
-export function CreatePlanForm({ clients }: CreatePlanFormProps) {
+export function CreatePlanForm({ clients, foods, dishes }: CreatePlanFormProps) {
     const [sex, setSex] = useState<Sex>('male')
     const [age, setAge] = useState<number>(30)
     const [weightKg, setWeightKg] = useState<number>(75)
@@ -294,6 +300,8 @@ export function CreatePlanForm({ clients }: CreatePlanFormProps) {
                                     mealNumber={i + 1}
                                     dietType={dietType}
                                     targetMacros={mealMacros}
+                                    foods={foods}
+                                    dishes={dishes}
                                 />
                             ))}
                         </div>

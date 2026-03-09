@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T16:46:05.954Z"
+last_updated: "2026-03-09T17:21:47.726Z"
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 7
+  completed_phases: 1
+  total_plans: 4
+  completed_plans: 3
 ---
 
 # State
@@ -21,21 +21,21 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 8 — Database Foundation + Formulas (next to plan)
 
 ## Current Position
-- **Phase**: 9
-- **Plan**: Planning complete
-- **Status**: Ready for execution
-- **Last activity**: 2026-03-09 — Phase 9 planned (2 plans created)
+- **Phase**: 10
+- **Plan**: 1 of 2 complete
+- **Status**: In progress
+- **Last activity**: 2026-03-09 — Plan 10-01 executed (nutrition plan assignment + persistence)
 
 ## Next Steps
-1. /execute 9
+1. /execute 10 (plan 02)
 
 ## Progress Bar
 
 ```
-v4.0 Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0% (0/7 phases)
-Phase 8:  [ ] Database Foundation + Formulas
-Phase 9:  [ ] Trainer Plan Creator
-Phase 10: [ ] Trainer Plan Meals + Assignment
+v4.0 Progress: [███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 28% (2/7 phases)
+Phase 8:  [x] Database Foundation + Formulas
+Phase 9:  [x] Trainer Plan Creator
+Phase 10: [~] Trainer Plan Meals + Assignment (1/2 plans done)
 Phase 11: [ ] Client Nutrition View
 Phase 12: [ ] Progress Logging
 Phase 13: [ ] AI Nutrition Parsing
@@ -119,3 +119,6 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 08-01]: client_measurements is a new standalone table separate from revision_measurements — canonical daily-log for Phase 12 progress tracking
 - [Phase 08-01]: food_log uses single table with nullable food_id/dish_id FK columns + CHECK constraint (exactly one non-null) — avoids join complexity in Phase 11
 - [Phase 08-03]: Script seed usa service role key para bypass RLS; onConflict: 'name' como clave idempotente; Node 20+ --env-file en vez de dotenv
+- [Phase 10]: start_date stored as created_at in nutrition_plans (no dedicated column in schema)
+- [Phase 10]: Server component parent fetches clients, passes to 'use client' form as props — avoids client-side Supabase fetch
+- [Phase 10]: Deactivate existing active plans before inserting new one (deactivate-then-insert pattern)

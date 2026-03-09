@@ -98,7 +98,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. The trainer can select a client from a list and set a start date, then save the nutrition plan — the client immediately has an active nutrition plan associated to their account
   2. The trainer can create a saved dish by combining multiple foods with quantities, see the summed macro total, name the dish, and save it for reuse in future plans
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 10-01-PLAN.md — Nutrition Plan Assignment & Persistence
+- [ ] 10-02-PLAN.md — Saved Dishes (Platos Guardados)
 
 ### Phase 11: Client Nutrition View
 **Goal**: The client has a complete daily nutrition dashboard where they can track their macros, see their planned meals, swap equivalents, log food, and get a weekly shopping list
@@ -160,7 +163,7 @@ Plans:
 | 7. TypeScript Cleanup | v3.0 | 1/1 | Complete | 2026-03-09 |
 | 8. Database Foundation + Formulas | 3/3 | Complete   | 2026-03-09 | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
-| 10. Trainer Plan Meals + Assignment | v4.0 | 0/? | Not started | - |
+| 10. Trainer Plan Meals + Assignment | 1/2 | In Progress|  | - |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
 | 12. Progress Logging | v4.0 | 0/? | Not started | - |
 | 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |
