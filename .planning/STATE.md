@@ -21,10 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 8 — Database Foundation + Formulas (next to plan)
 
 ## Current Position
-- **Phase**: 8 (complete — all 3 plans done)
-- **Plan**: 08-01 (complete), 08-02 (complete), 08-03 (complete — checkpoint:human-verify pending)
-- **Status**: Phase 8 complete — seed script created; awaiting human verification (run seed + confirm 13 rows in Supabase)
-- **Last activity**: 2026-03-09 — 08-03 seed script created and committed; Phase 9 next
+- **Phase**: 9
+- **Plan**: Planning complete
+- **Status**: Ready for execution
+- **Last activity**: 2026-03-09 — Phase 9 planned (2 plans created)
+
+## Next Steps
+1. /execute 9
 
 ## Progress Bar
 
