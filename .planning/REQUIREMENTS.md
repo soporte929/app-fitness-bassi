@@ -25,16 +25,16 @@ Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
 ### Login
 
 - [x] **LOGIN-01**: El glow del logo en login es estático y fijo (sin animación en bucle)
-- [ ] **LOGIN-02**: Los márgenes entre el logo y el subtítulo "tu entrenador de bolsillo" son correctos
-- [ ] **LOGIN-03**: El botón "Entrar como entrenador" (demo) está eliminado del login
+- [x] **LOGIN-02**: Los márgenes entre el logo y el subtítulo "tu entrenador de bolsillo" son correctos
+- [x] **LOGIN-03**: El botón "Entrar como entrenador" (demo) está eliminado del login
 
 ### Trainer UI
 
 - [x] **TRNUI-01**: El sidebar del trainer carga el logo (/2.png) correctamente en todas las páginas del trainer
 - [x] **TRNUI-02**: El toggle dark/light mode (icono luna) del dashboard funciona
-- [ ] **TRNUI-03**: Los KPIs del dashboard tienen márgenes correctos
-- [ ] **TRNUI-04**: Las alertas del dashboard tienen márgenes correctos
-- [ ] **TRNUI-05**: El logo en la barra superior izquierda del trainer usa el icono correcto
+- [x] **TRNUI-03**: Los KPIs del dashboard tienen márgenes correctos
+- [x] **TRNUI-04**: Las alertas del dashboard tienen márgenes correctos
+- [x] **TRNUI-05**: El logo en la barra superior izquierda del trainer usa el icono correcto
 
 ### Client Management
 
@@ -112,13 +112,13 @@ Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
 | PR-01 | Phase 3 | Complete |
 | PR-02 | Phase 3 | Complete |
 | LOGIN-01 | Phase 4 | Complete |
-| LOGIN-02 | Phase 4 | Pending |
-| LOGIN-03 | Phase 4 | Pending |
+| LOGIN-02 | Phase 4 | Complete |
+| LOGIN-03 | Phase 4 | Complete |
 | TRNUI-01 | Phase 4 | Complete |
 | TRNUI-02 | Phase 4 | Complete |
-| TRNUI-03 | Phase 4 | Pending |
-| TRNUI-04 | Phase 4 | Pending |
-| TRNUI-05 | Phase 4 | Pending |
+| TRNUI-03 | Phase 4 | Complete |
+| TRNUI-04 | Phase 4 | Complete |
+| TRNUI-05 | Phase 4 | Complete |
 | CLNT-01 | Phase 5 | Pending |
 | CLNT-02 | Phase 5 | Pending |
 | CLNT-03 | Phase 5 | Pending |

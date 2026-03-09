@@ -36,7 +36,7 @@
 
 **Milestone Goal:** Resolver todos los bugs de producción, polish de UI y fiabilidad en login, trainer dashboard, gestión de clientes, rutinas, planes y nutrición — además de eliminar errores de TypeScript pre-existentes.
 
-- [ ] **Phase 4: Login & Trainer UI Polish** — Visual fixes for login page and trainer dashboard sidebar/KPIs/alerts/logos
+- [x] **Phase 4: Login & Trainer UI Polish** — Visual fixes for login page and trainer dashboard sidebar/KPIs/alerts/logos (completed 2026-03-09)
 - [ ] **Phase 5: Client Management Fixes** — Resolve production error on client creation and fix all form bugs/legacy fields
 - [ ] **Phase 6: Navigation & Plans** — Restore access to trainer routines, plan summaries, and client nutrition section
 - [ ] **Phase 7: TypeScript Cleanup** — Eliminate pre-existing TS errors in profile and client detail pages
@@ -100,7 +100,12 @@ Plans:
   4. Trainer notes field appears at the bottom of the client creation form (after all other fields)
   5. Transitioning a client to an objective preserves all field values without compatibility errors
   6. Legacy fields no longer appear in the client form
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Fix admin client INSERT for createClientAction and remove debug code (CLNT-01, CLNT-02)
+- [ ] 05-02-PLAN.md — Remove legacy Compatibilidad section and fix trainer notes field order in forms (CLNT-03, CLNT-04, CLNT-05, CLNT-06)
+- [ ] 05-03-PLAN.md — Visual verification checkpoint for all Phase 5 requirements (CLNT-01 through CLNT-06)
 
 ### Phase 6: Navigation & Plans
 **Goal**: The trainer can access the routines section and navigate plan details without errors; the client can reach the nutrition section and see plan history and individual workout views
@@ -133,7 +138,7 @@ Plans:
 | 1. Workout Session | v1.0 | 2/2 | Complete | 2026-03-09 |
 | 2. Bug Fixes & Type Safety | v2.0 | 2/2 | Complete | 2026-03-09 |
 | 3. History & Personal Records | v2.0 | 2/2 | Complete | 2026-03-09 |
-| 4. Login & Trainer UI Polish | 2/3 | In Progress|  | - |
-| 5. Client Management Fixes | v3.0 | 0/TBD | Not started | - |
+| 4. Login & Trainer UI Polish | 3/3 | Complete   | 2026-03-09 | - |
+| 5. Client Management Fixes | v3.0 | 0/3 | Not started | - |
 | 6. Navigation & Plans | v3.0 | 0/TBD | Not started | - |
 | 7. TypeScript Cleanup | v3.0 | 0/TBD | Not started | - |
