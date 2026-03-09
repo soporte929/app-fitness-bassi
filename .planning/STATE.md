@@ -2,16 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Bassi v2
-status: planning
-stopped_at: Completed 02-bug-fixes-type-safety-02-02-PLAN.md
-last_updated: "2026-03-09T04:00:00.000Z"
-last_activity: 2026-03-09 — BUG-01 and BUG-03 fixed (routines session check + nutrition macro targets)
+status: unknown
+last_updated: "2026-03-09T04:04:07.879Z"
 progress:
-  total_phases: 6
-  completed_phases: 0
+  total_phases: 1
+  completed_phases: 1
   total_plans: 2
   completed_plans: 2
-  percent: 0
 ---
 
 # State
