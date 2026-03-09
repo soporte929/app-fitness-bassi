@@ -9,11 +9,11 @@ Requirements for milestone v1.0. Each maps to roadmap phases.
 
 ### Workout Session
 
-- [ ] **WORKOUT-01**: User can start a workout session from a routine plan day — creates session and redirects to `/workout/[sessionId]`
-- [ ] **WORKOUT-02**: User sees all exercises for the day on the workout page, with set targets and previous session's weights as hints
-- [ ] **WORKOUT-03**: User can log sets (weight, reps, RIR) and mark them complete within the workout page
-- [ ] **WORKOUT-04**: A rest timer appears automatically after completing a set
-- [ ] **WORKOUT-05**: User can finish the workout from the workout page (session marked complete, redirects to history)
+- [x] **WORKOUT-01**: User can start a workout session from a routine plan day — creates session and redirects to `/workout/[sessionId]`
+- [x] **WORKOUT-02**: User sees all exercises for the day on the workout page, with set targets and previous session's weights as hints
+- [x] **WORKOUT-03**: User can log sets (weight, reps, RIR) and mark them complete within the workout page
+- [x] **WORKOUT-04**: A rest timer appears automatically after completing a set
+- [x] **WORKOUT-05**: User can finish the workout from the workout page (session marked complete, redirects to history)
 - [ ] **WORKOUT-06**: Active session banner links to `/workout/[sessionId]` instead of `/today`
 - [ ] **WORKOUT-07**: `today/page.tsx` redirects to `/workout/[sessionId]` when an active session exists (making the dedicated page the canonical workout URL)
 
@@ -45,11 +45,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WORKOUT-01 | Phase 1 — Workout Session | Pending |
-| WORKOUT-02 | Phase 1 — Workout Session | Pending |
-| WORKOUT-03 | Phase 1 — Workout Session | Pending |
-| WORKOUT-04 | Phase 1 — Workout Session | Pending |
-| WORKOUT-05 | Phase 1 — Workout Session | Pending |
+| WORKOUT-01 | Phase 1 — Workout Session | Complete |
+| WORKOUT-02 | Phase 1 — Workout Session | Complete |
+| WORKOUT-03 | Phase 1 — Workout Session | Complete |
+| WORKOUT-04 | Phase 1 — Workout Session | Complete |
+| WORKOUT-05 | Phase 1 — Workout Session | Complete |
 | WORKOUT-06 | Phase 1 — Workout Session | Pending |
 | WORKOUT-07 | Phase 1 — Workout Session | Pending |
 

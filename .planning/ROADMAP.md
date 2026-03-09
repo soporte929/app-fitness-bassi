@@ -37,4 +37,4 @@ Phases execute in numeric order: 1
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Workout Session | 0/2 | Not started | - |
+| 1. Workout Session | 1/2 | In Progress|  |
