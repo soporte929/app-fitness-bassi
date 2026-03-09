@@ -29,7 +29,7 @@ Requirements para milestone v4.0 — Módulo Nutrición.
 - [ ] **TPLAN-05**: En dieta tipo B, cada comida tiene 2-3 alternativas equivalentes configurables
 - [ ] **TPLAN-06**: En dieta tipo C, el plan solo muestra los macros diarios objetivo sin comidas fijas
 - [x] **TPLAN-07**: El entrenador puede asignar el plan a un cliente con fecha de inicio
-- [ ] **TPLAN-08**: El entrenador puede crear y guardar platos compuestos (`saved_dishes`) con suma de macros
+- [x] **TPLAN-08**: El entrenador puede crear y guardar platos compuestos (`saved_dishes`) con suma de macros
 
 ### Vista Cliente — Nutrición (CNUTR)
 
@@ -121,12 +121,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CALC-05 | Phase 8 | Pending |
 | TPLAN-01 | Phase 9 | Pending |
 | TPLAN-02 | Phase 9 | Pending |
-| TPLAN-03 | Phase 9 | Pending |
+| TPLAN-03 | Phase 10.1 | Pending |
 | TPLAN-04 | Phase 9 | Pending |
 | TPLAN-05 | Phase 9 | Pending |
-| TPLAN-06 | Phase 9 | Pending |
+| TPLAN-06 | Phase 10.1 | Pending |
 | TPLAN-07 | Phase 10 | Complete |
-| TPLAN-08 | Phase 10 | Pending |
+| TPLAN-08 | Phase 10 | Complete |
 | CNUTR-01 | Phase 11 | Pending |
 | CNUTR-02 | Phase 11 | Pending |
 | CNUTR-03 | Phase 11 | Pending |
