@@ -72,7 +72,11 @@
   3. Calling `calculateTMB({ weight, fatPercent })` returns the Katch-McArdle result; calling it without `fatPercent` returns the Mifflin-St Jeor result
   4. Calling `calculateTDEE(tmb, activityLevel)` returns the correct TDEE for all five activity multipliers (1.2 / 1.375 / 1.55 / 1.725 / 1.9)
   5. Calling `calculateMacros({ weight, phase, targetCalories })` returns protein, fat, and carb grams matching the per-phase formula (déficit 2.2g/kg protein, etc.)
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 08-01-PLAN.md — SQL migration (6 tablas) + TypeScript types en lib/supabase/types.ts
+- [ ] 08-02-PLAN.md — Formulas de calculo nutricional (Katch-McArdle, Mifflin, TDEE, macros)
+- [ ] 08-03-PLAN.md — Seed script para 13 alimentos base en tabla foods
 
 ### Phase 9: Trainer Plan Creator
 **Goal**: The trainer can fill a nutrition plan form and instantly see the full calorie and macro breakdown update in real time, then select the diet type that determines how the client will interact with the plan
@@ -154,7 +158,7 @@
 | 5. Client Management Fixes | v3.0 | 3/3 | Complete | 2026-03-09 |
 | 6. Navigation & Plans | v3.0 | 3/3 | Complete | 2026-03-09 |
 | 7. TypeScript Cleanup | v3.0 | 1/1 | Complete | 2026-03-09 |
-| 8. Database Foundation + Formulas | v4.0 | 0/? | Not started | - |
+| 8. Database Foundation + Formulas | v4.0 | 0/3 | Not started | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
 | 10. Trainer Plan Meals + Assignment | v4.0 | 0/? | Not started | - |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
