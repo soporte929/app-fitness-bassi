@@ -40,10 +40,10 @@ Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
 
 - [x] **CLNT-01**: El error de producción al crear un cliente (Digest 2112945886) está resuelto
 - [x] **CLNT-02**: Todo código de debug está eliminado de la sección de clientes
-- [ ] **CLNT-03**: La fórmula de % grasa corporal en el formulario de cliente es correcta
-- [ ] **CLNT-04**: Las notas del trainer aparecen al final del formulario de creación de cliente
-- [ ] **CLNT-05**: Los campos son compatibles al pasar el cliente a objetivos
-- [ ] **CLNT-06**: Los campos legacy están eliminados del formulario de cliente
+- [x] **CLNT-03**: La fórmula de % grasa corporal en el formulario de cliente es correcta
+- [x] **CLNT-04**: Las notas del trainer aparecen al final del formulario de creación de cliente
+- [x] **CLNT-05**: Los campos son compatibles al pasar el cliente a objetivos
+- [x] **CLNT-06**: Los campos legacy están eliminados del formulario de cliente
 
 ### Routines
 
@@ -121,10 +121,10 @@ Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
 | TRNUI-05 | Phase 4 | Complete |
 | CLNT-01 | Phase 5 | Complete |
 | CLNT-02 | Phase 5 | Complete |
-| CLNT-03 | Phase 5 | Pending |
-| CLNT-04 | Phase 5 | Pending |
-| CLNT-05 | Phase 5 | Pending |
-| CLNT-06 | Phase 5 | Pending |
+| CLNT-03 | Phase 5 | Complete |
+| CLNT-04 | Phase 5 | Complete |
+| CLNT-05 | Phase 5 | Complete |
+| CLNT-06 | Phase 5 | Complete |
 | ROUT-01 | Phase 6 | Pending |
 | PLAN-01 | Phase 6 | Pending |
 | PLAN-02 | Phase 6 | Pending |
