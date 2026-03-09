@@ -12,8 +12,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [logoPhase, setLogoPhase] = useState<"enter" | "float">("enter");
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -74,11 +72,6 @@ export default function LoginPage() {
           }
         }
 
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50%      { transform: translateY(-5px); }
-        }
-
         @keyframes subtitleReveal {
           0%   { opacity: 0; letter-spacing: 0.08em; }
           100% { opacity: 1; letter-spacing: 0.25em; }
@@ -99,13 +92,8 @@ export default function LoginPage() {
         }}
       >
         <div
-          onAnimationEnd={() => {
-            if (logoPhase === 'enter') setLogoPhase('float')
-          }}
           style={{
-            animation: logoPhase === 'enter'
-              ? 'logoReveal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both'
-              : 'float 4s ease-in-out infinite',
+            animation: 'logoReveal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both',
           }}
         >
           <Image
