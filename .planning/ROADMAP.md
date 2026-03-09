@@ -52,6 +52,7 @@
 - [x] **Phase 8: Database Foundation + Formulas** — New nutrition tables in Supabase with full TypeScript types, seed data, and all calculation formulas (Katch-McArdle, Mifflin, TDEE, macros) (completed 2026-03-09)
 - [ ] **Phase 9: Trainer Plan Creator** — Trainer form with real-time calculation preview and support for diet types A, B, and C
 - [x] **Phase 10: Trainer Plan Meals + Assignment** — Assign finalized plans to clients with start date and saved dishes builder (completed 2026-03-09)
+- [ ] **Phase 10.1: Persist Plan Metadata** — Gap closure: persist diet_type, meals_count, and is_template to nutrition_plans so Phase 11 can reconstruct any plan's structure
 - [ ] **Phase 11: Client Nutrition View** — Client sees daily calorie/macro progress bars, meal list with equivalents, food logging, and weekly shopping list
 - [ ] **Phase 12: Progress Logging** — Client registers body weight and measurements from /progress; target weight reference line on chart
 - [ ] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback
@@ -103,6 +104,19 @@ Plans:
 - [ ] 10-01-PLAN.md — Nutrition Plan Assignment & Persistence
 - [ ] 10-02-PLAN.md — Saved Dishes (Platos Guardados)
 - [ ] 10-03-PLAN.md — Gap closure: wirear selecciones de MealSlot al action (food_id/grams reales en meal_plan_items)
+
+### Phase 10.1: Persist Plan Metadata
+**Goal**: Every saved `nutrition_plans` row contains `diet_type`, `meals_count`, and `is_template` so Phase 11 can reconstruct any plan's structure without guessing
+**Depends on**: Phase 10 (nutrition_plans table and assignNutritionPlanAction must exist)
+**Requirements**: TPLAN-03, TPLAN-06
+**Success Criteria** (what must be TRUE):
+  1. A `nutrition_plans` row saved from the trainer form has `diet_type` = 'A', 'B', or 'C' — queryable from any component without ambiguity
+  2. A `nutrition_plans` row saved for diet type C has `meals_count` reflecting the trainer's selection — no data loss after save
+  3. The TypeScript type for `nutrition_plans` includes `diet_type`, `meals_count`, and `is_template` — no `as unknown` casts needed
+  4. The `nutrition-plans` listing page (`/nutrition-plans`) correctly filters templates vs. client-assigned plans using `is_template`
+**Plans**: 1 plan
+Plans:
+- [ ] 10.1-01-PLAN.md — SQL migration + TS types + persist diet_type/meals_count/is_template in actions
 
 ### Phase 11: Client Nutrition View
 **Goal**: The client has a complete daily nutrition dashboard where they can track their macros, see their planned meals, swap equivalents, log food, and get a weekly shopping list
@@ -165,6 +179,7 @@ Plans:
 | 8. Database Foundation + Formulas | 3/3 | Complete   | 2026-03-09 | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
 | 10. Trainer Plan Meals + Assignment | 3/3 | Complete    | 2026-03-09 | - |
+| 10.1. Persist Plan Metadata | v4.0 | 0/1 | Not started | - |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
 | 12. Progress Logging | v4.0 | 0/? | Not started | - |
 | 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |
