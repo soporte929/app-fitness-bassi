@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     ActivityLevel,
     calculateMacros,
@@ -13,7 +13,7 @@ import {
 } from '@/lib/calculations/nutrition'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { MealSlot } from './meal-slot'
+import { MealSlot, SelectedItem } from './meal-slot'
 import { assignNutritionPlanAction } from '../actions'
 import type { Database } from '@/lib/supabase/types'
 
@@ -51,9 +51,25 @@ export function CreatePlanForm({ clients, foods, dishes }: CreatePlanFormProps) 
     const [dietType, setDietType] = useState<DietType>('C')
     const [mealsCount, setMealsCount] = useState<number>(4)
 
+    // Meal items state: [mealIndex][optionIndex] = SelectedItem[]
+    const [mealItems, setMealItems] = useState<SelectedItem[][][]>([])
+
     // Saving state
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [saveError, setSaveError] = useState<string | null>(null)
+
+    // Reset mealItems when dietType or mealsCount changes
+    useEffect(() => {
+        setMealItems([])
+    }, [dietType, mealsCount])
+
+    function handleMealChange(mealIndex: number, options: SelectedItem[][]) {
+        setMealItems((prev) => {
+            const next = [...prev]
+            next[mealIndex] = options
+            return next
+        })
+    }
 
     // Live calculations
     const tmb = calculateTMB({
@@ -100,6 +116,7 @@ export function CreatePlanForm({ clients, foods, dishes }: CreatePlanFormProps) 
                 proteinTargetG: macros.protein.g,
                 carbsTargetG: macros.carbs.g,
                 fatTargetG: macros.fat.g,
+                mealItems,
             })
 
             if (!result.success) {
@@ -302,6 +319,7 @@ export function CreatePlanForm({ clients, foods, dishes }: CreatePlanFormProps) 
                                     targetMacros={mealMacros}
                                     foods={foods}
                                     dishes={dishes}
+                                    onMealChange={handleMealChange}
                                 />
                             ))}
                         </div>
