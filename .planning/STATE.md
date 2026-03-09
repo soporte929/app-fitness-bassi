@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T17:24:44.518Z"
+last_updated: "2026-03-09T17:43:26.400Z"
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # State
@@ -22,9 +22,9 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Phase**: 10
-- **Plan**: 2 of 2 complete (Phase 10 DONE)
+- **Plan**: 3 of 3 complete (Phase 10 DONE)
 - **Status**: Phase 10 complete — ready for Phase 11
-- **Last activity**: 2026-03-09 — Plan 10-02 executed (saved dishes builder + MealSlot food search)
+- **Last activity**: 2026-03-09 — Plan 10-03 executed (wire MealSlot selections to server — real meal_plan_items INSERT)
 
 ## Next Steps
 1. /execute 11 (Client Nutrition View)
@@ -124,3 +124,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 10]: Deactivate existing active plans before inserting new one (deactivate-then-insert pattern)
 - [Phase 10-02]: saved_dishes stored as per-100g macros normalized from ingredient weights — consistent with foods schema so MealSlot treats dishes exactly like foods
 - [Phase 10-02]: FoodSearchSlot is a local-state-only component — no server action at authoring time, DB insert happens when plan is saved
+- [Phase 10-03]: MealSelectedItem defined locally in actions.ts — cannot import 'use client' types in server actions
+- [Phase 10-03]: mealItems optional in AssignNutritionPlanInput — plans without food selections are valid; no empty rows inserted
