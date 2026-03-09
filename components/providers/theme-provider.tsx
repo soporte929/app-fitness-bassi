@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 type Theme = 'light' | 'dark'
 
@@ -38,6 +38,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   function toggleTheme() {
     setTheme(theme === 'dark' ? 'light' : 'dark')
   }
+
+  useEffect(() => {
+    let saved: Theme = 'dark'
+    try { saved = (localStorage.getItem('theme') as Theme | null) ?? 'dark' } catch { /* ignore */ }
+    applyTheme(saved)
+    setThemeState(saved)
+  }, [])
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
