@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { NUTRITION_TEMPLATES } from './templates'
 import type { Database } from '@/lib/supabase/types'
 
@@ -217,6 +218,106 @@ export async function assignOwnNutritionTemplateAction(
     fat_target_g: templatePlan.fat_target_g,
     meals: rawMeals ?? [],
   })
+}
+
+type AssignNutritionPlanInput = {
+  clientId: string
+  startDate: string
+  planName: string
+  dietType: 'A' | 'B' | 'C'
+  mealsCount: number
+  kcalTarget: number
+  proteinTargetG: number
+  carbsTargetG: number
+  fatTargetG: number
+}
+
+export async function assignNutritionPlanAction(
+  input: AssignNutritionPlanInput
+): Promise<ActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  if (!input.clientId) return { success: false, error: 'Debes seleccionar un cliente' }
+  if (!input.startDate) return { success: false, error: 'Debes indicar una fecha de inicio' }
+
+  // Deactivate any existing active nutrition plan for this client
+  await supabase
+    .from('nutrition_plans')
+    .update({ active: false })
+    .eq('client_id', input.clientId)
+    .eq('active', true)
+
+  // Insert the new nutrition plan
+  const planInsertPayload = {
+    client_id: input.clientId,
+    trainer_id: user.id,
+    name: input.planName.trim() || 'Plan Sin Título',
+    kcal_target: input.kcalTarget,
+    protein_target_g: input.proteinTargetG,
+    carbs_target_g: input.carbsTargetG,
+    fat_target_g: input.fatTargetG,
+    active: true,
+    // Store start_date as created_at so it's visible in the DB
+    created_at: new Date(input.startDate).toISOString(),
+  }
+
+  const { data: newPlan, error: planError } = await supabase
+    .from('nutrition_plans')
+    .insert(planInsertPayload)
+    .select('id')
+    .single<{ id: string }>()
+
+  if (planError || !newPlan) {
+    return { success: false, error: planError?.message ?? 'No se pudo crear el plan' }
+  }
+
+  // For structured (A) or options (B) diet types, insert meal_plan_items placeholders
+  if (input.dietType !== 'C' && input.mealsCount > 0) {
+    type MealPlanItemInsert = Database['public']['Tables']['meal_plan_items']['Insert']
+
+    const itemsToInsert: MealPlanItemInsert[] = []
+
+    if (input.dietType === 'A') {
+      // One placeholder item per meal slot
+      for (let i = 1; i <= input.mealsCount; i++) {
+        itemsToInsert.push({
+          plan_id: newPlan.id,
+          meal_number: i,
+          food_id: null,
+          dish_id: null,
+          option_slot: null,
+          grams: 0,
+        })
+      }
+    } else {
+      // Diet type B: one placeholder per meal slot (option A by default)
+      for (let i = 1; i <= input.mealsCount; i++) {
+        itemsToInsert.push({
+          plan_id: newPlan.id,
+          meal_number: i,
+          food_id: null,
+          dish_id: null,
+          option_slot: 'A',
+          grams: 0,
+        })
+      }
+    }
+
+    if (itemsToInsert.length > 0) {
+      const { error: itemsError } = await supabase
+        .from('meal_plan_items')
+        .insert(itemsToInsert)
+      if (itemsError) return { success: false, error: itemsError.message }
+    }
+  }
+
+  revalidatePath('/nutrition-plans')
+  revalidatePath(`/clients/${input.clientId}`)
+  redirect('/nutrition-plans')
 }
 
 export async function createNutritionTemplateAction(
