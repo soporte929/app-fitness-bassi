@@ -37,7 +37,6 @@ export default async function ClientsPage() {
     .eq('trainer_id', user.id)
     .eq('active', true)
     .order('joined_date', { ascending: false })
-  if (clientsError) console.error('CLIENTS ERROR:', clientsError)
 
   const clients = (rawClients ?? []) as unknown as RawClientWithPlans[]
 
@@ -48,7 +47,6 @@ export default async function ClientsPage() {
     .eq('trainer_id', user.id)
     .eq('active', true)
     .order('name', { ascending: true })
-  if (templatesError) console.error('TEMPLATES ERROR:', templatesError)
 
   const templates: TemplateItem[] = (rawTemplates ?? []).map((t) => ({
     id: t.id,
@@ -68,7 +66,6 @@ export default async function ClientsPage() {
         .in('client_id', clientIds)
         .gte('started_at', thirtyDaysAgo.toISOString())
       : { data: [] as { client_id: string; started_at: string; completed: boolean }[], error: null }
-  if (sessionsError) console.error('SESSIONS ERROR:', sessionsError)
 
   const allSessions = sessions ?? []
   const now = new Date()
@@ -145,10 +142,6 @@ export default async function ClientsPage() {
               Clientes
             </h1>
             <p className="text-[var(--text-secondary)] text-sm mt-0.5">{clients.length} clientes activos</p>
-            {clientsError && <p className="text-red-500 text-xs mt-1">DEBUG clients: {clientsError.message}</p>}
-            {templatesError && <p className="text-red-500 text-xs mt-1">DEBUG templates: {templatesError.message}</p>}
-            {sessionsError && <p className="text-red-500 text-xs mt-1">DEBUG sessions: {sessionsError.message}</p>}
-            <p className="text-yellow-400 text-xs mt-1">DEBUG: rawClients={rawClients === null ? 'NULL' : `array(${rawClients?.length})`} user.id={user.id}</p>
           </div>
           <NewClientButton />
         </div>
