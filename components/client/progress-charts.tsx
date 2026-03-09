@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  ReferenceLine,
 } from 'recharts'
 import { cn } from '@/lib/utils'
 import { TrendingDown, TrendingUp, Minus, Scale, Dumbbell, Activity } from 'lucide-react'
@@ -402,6 +403,9 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
                     {...tooltipStyle}
                     formatter={(value: number | undefined) => [`${value ?? 0} kg`, '']}
                   />
+                  {targetWeightKg && (
+                    <ReferenceLine y={targetWeightKg} stroke="var(--success)" strokeDasharray="5 5" />
+                  )}
                   <Line
                     type="monotone"
                     dataKey="value"
@@ -412,11 +416,6 @@ export function ProgressCharts({ weightLogs, measurements, sessions, targetWeigh
                   />
                 </LineChart>
               </ResponsiveContainer>
-              {targetWeightKg && (
-                <p className="text-[10px] text-[var(--text-secondary)] mt-1">
-                  Objetivo: {targetWeightKg} kg
-                </p>
-              )}
             </>
           )}
         </CardContent>

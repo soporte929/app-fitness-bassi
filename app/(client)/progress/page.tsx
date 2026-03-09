@@ -19,16 +19,10 @@ export default async function ProgressPage() {
 
   if (!client) redirect('/login')
 
-  const [weightResult, measurementsResult, sessionsResult] = await Promise.all([
+  const [measurementsResult, sessionsResult] = await Promise.all([
     supabase
-      .from('weight_logs')
-      .select('weight_kg, body_fat_pct, logged_at')
-      .eq('client_id', client.id)
-      .order('logged_at', { ascending: true }),
-
-    supabase
-      .from('measurements')
-      .select('waist_cm, hip_cm, chest_cm, arm_cm, thigh_cm, measured_at')
+      .from('client_measurements')
+      .select('measured_at, weight_kg, body_fat_pct, waist_cm, hip_cm, chest_cm, arm_cm, thigh_cm')
       .eq('client_id', client.id)
       .order('measured_at', { ascending: true }),
 
@@ -45,14 +39,31 @@ export default async function ProgressPage() {
       .order('started_at', { ascending: true }),
   ])
 
+  const rawMeasurements = measurementsResult.data ?? []
+
+  const weightLogs = rawMeasurements
+    .filter((m) => m.weight_kg !== null)
+    .map((m) => ({
+      weight_kg: m.weight_kg!,
+      body_fat_pct: m.body_fat_pct,
+      logged_at: m.measured_at,
+    })) as WeightLog[]
+
+  const measurements = rawMeasurements
+    .filter((m) => m.waist_cm !== null || m.hip_cm !== null || m.chest_cm !== null || m.arm_cm !== null || m.thigh_cm !== null)
+    .map((m) => ({
+      ...m,
+      measured_at: m.measured_at,
+    })) as Measurement[]
+
   return (
     <PageTransition>
       <div className="px-4 pt-6 pb-24">
         <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight mb-5">Progreso</h1>
 
         <ProgressCharts
-          weightLogs={(weightResult.data ?? []) as WeightLog[]}
-          measurements={(measurementsResult.data ?? []) as Measurement[]}
+          weightLogs={weightLogs}
+          measurements={measurements}
           sessions={(sessionsResult.data ?? []) as unknown as SessionForProgress[]}
           targetWeightKg={client.target_weight_kg}
           nowIso={new Date().toISOString()}
