@@ -4,11 +4,12 @@ import { PageTransition } from '@/components/ui/page-transition'
 import { AddMealFab } from './add-meal-fab'
 import { deleteNutritionLogAction } from './actions'
 import { NutritionChecklist } from './nutrition-checklist'
-import type { Database, Phase } from '@/lib/supabase/types'
+import { calculateNutrition } from '@/lib/calculations/nutrition'
+import type { Database } from '@/lib/supabase/types'
 
 type ClientNutritionData = Pick<
   Database['public']['Tables']['clients']['Row'],
-  'id' | 'weight_kg' | 'phase' | 'objective' | 'lifestyle'
+  'id' | 'weight_kg' | 'body_fat_pct' | 'phase' | 'objective' | 'lifestyle' | 'activity_level' | 'daily_steps' | 'goal'
 >
 
 type NutritionLogRow = Database['public']['Tables']['nutrition_logs']['Row']
@@ -30,27 +31,6 @@ type MacroSummary = {
   consumed: number
   target: number
   unit: string
-}
-
-function getKcalByPhase(phase: Phase): number {
-  if (phase === 'deficit') return 1800
-  if (phase === 'surplus') return 2800
-  return 2400
-}
-
-function buildTargets(client: ClientNutritionData | null): MacroTargets {
-  const weight = client?.weight_kg ?? 70
-
-  // Placeholder adjustments until trainer custom targets are implemented.
-  const objectiveAdjustment = client?.objective ? 0 : 0
-  const lifestyleAdjustment = client?.lifestyle ? 0 : 0
-
-  const protein = Math.round(weight * 2.2)
-  const fat = Math.round(weight * 1)
-  const kcal = getKcalByPhase(client?.phase ?? 'maintenance') + objectiveAdjustment + lifestyleAdjustment
-  const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4))
-
-  return { kcal, protein, carbs, fat }
 }
 
 function getDayString(date: Date) {
@@ -94,7 +74,7 @@ export default async function NutritionPage() {
   try {
     const { data } = await supabase
       .from('clients')
-      .select('id, weight_kg, phase, objective, lifestyle')
+      .select('id, weight_kg, body_fat_pct, phase, objective, lifestyle, activity_level, daily_steps, goal')
       .eq('profile_id', user.id)
       .maybeSingle()
     client = data as ClientNutritionData | null
@@ -155,15 +135,31 @@ export default async function NutritionPage() {
     }
   }
 
-  const fallbackTargets = buildTargets(client)
-  const targets = activePlan
+  const fallbackTargets: MacroTargets = (() => {
+    if (!client) return { kcal: 2000, protein: 150, carbs: 200, fat: 70 }
+    const result = calculateNutrition({
+      weightKg: client.weight_kg,
+      bodyFatPct: client.body_fat_pct ?? 20,
+      activityLevel: client.activity_level,
+      dailySteps: client.daily_steps ?? 7000,
+      goal: client.goal,
+    })
+    return {
+      kcal: result.targetCalories,
+      protein: result.macros.protein.g,
+      carbs: result.macros.carbs.g,
+      fat: result.macros.fat.g,
+    }
+  })()
+
+  const targets: MacroTargets = activePlan
     ? {
         kcal: activePlan.kcal_target ?? fallbackTargets.kcal,
         protein: activePlan.protein_target_g ?? fallbackTargets.protein,
         carbs: activePlan.carbs_target_g ?? fallbackTargets.carbs,
         fat: activePlan.fat_target_g ?? fallbackTargets.fat,
       }
-    : null
+    : fallbackTargets
 
   let consumedKcal = todayLogs.reduce((sum, log) => sum + (log.kcal ?? 0), 0)
   let consumedProtein = todayLogs.reduce((sum, log) => sum + (log.protein_g ?? 0), 0)
@@ -182,14 +178,12 @@ export default async function NutritionPage() {
     }
   }
 
-  const cards: MacroSummary[] = targets
-    ? [
-        { label: 'Kcal', consumed: consumedKcal, target: targets.kcal, unit: 'kcal' },
-        { label: 'Proteína', consumed: consumedProtein, target: targets.protein, unit: 'g' },
-        { label: 'Carbos', consumed: consumedCarbs, target: targets.carbs, unit: 'g' },
-        { label: 'Grasa', consumed: consumedFat, target: targets.fat, unit: 'g' },
-      ]
-    : []
+  const cards: MacroSummary[] = [
+    { label: 'Kcal', consumed: consumedKcal, target: targets.kcal, unit: 'kcal' },
+    { label: 'Proteína', consumed: consumedProtein, target: targets.protein, unit: 'g' },
+    { label: 'Carbos', consumed: consumedCarbs, target: targets.carbs, unit: 'g' },
+    { label: 'Grasa', consumed: consumedFat, target: targets.fat, unit: 'g' },
+  ]
 
   const dateLabel = now.toLocaleDateString('es-ES', {
     weekday: 'long',
@@ -206,35 +200,34 @@ export default async function NutritionPage() {
         </div>
 
         <section className="mb-6">
-          {cards.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3">
-              {cards.map((card) => (
-                <div
-                  key={card.label}
-                  className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-4"
-                >
-                  <p className="text-xs text-[#a0a0a0]">{card.label}</p>
-                  <div className="mt-2 flex items-end gap-1.5">
-                    <p className="text-2xl leading-none font-[family-name:var(--font-geist-mono)] text-[#e8e8e6]">
-                      {formatValue(card.consumed)}
-                    </p>
-                    <p className="text-xs text-[#a0a0a0] pb-0.5">
-                      / {formatValue(card.target, 0)} {card.unit}
-                    </p>
-                  </div>
-                  <div className="mt-3 h-[3px] bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-[#6b7fa3]"
-                      style={{ width: `${clampProgress(card.consumed, card.target)}%` }}
-                    />
-                  </div>
+          <div className="grid grid-cols-2 gap-3">
+            {cards.map((card) => (
+              <div
+                key={card.label}
+                className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-4"
+              >
+                <p className="text-xs text-[#a0a0a0]">{card.label}</p>
+                <div className="mt-2 flex items-end gap-1.5">
+                  <p className="text-2xl leading-none font-[family-name:var(--font-geist-mono)] text-[#e8e8e6]">
+                    {formatValue(card.consumed)}
+                  </p>
+                  <p className="text-xs text-[#a0a0a0] pb-0.5">
+                    / {formatValue(card.target, 0)} {card.unit}
+                  </p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-6 text-center">
-              <p className="text-sm text-[#a0a0a0]">Tu entrenador aún no ha configurado tu plan nutricional</p>
-            </div>
+                <div className="mt-3 h-[3px] bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[#6b7fa3]"
+                    style={{ width: `${clampProgress(card.consumed, card.target)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          {!activePlan && (
+            <p className="text-xs text-[#a0a0a0] mt-3 text-center">
+              Objetivos estimados · Tu entrenador puede asignarte un plan personalizado
+            </p>
           )}
         </section>
 
