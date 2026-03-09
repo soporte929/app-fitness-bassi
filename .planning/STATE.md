@@ -1,17 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.0
-milestone_name: Módulo Nutrición
-status: Phase 8 executing — Wave 1 complete (08-02 done, 08-01 at checkpoint)
-stopped_at: Plan 08-01 checkpoint — user must run SQL migration in Supabase
-last_updated: "2026-03-09T01:00:00.000Z"
-last_activity: 2026-03-09 — Phase 8 Wave 1 executing: 08-02 complete, 08-01 at checkpoint
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-03-09T16:28:25.092Z"
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 0
 ---
 
 # State
@@ -25,9 +22,9 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Phase**: 8 (executing)
-- **Plan**: 08-01 (checkpoint — awaiting user SQL execution), 08-02 (complete)
-- **Status**: Wave 1 executing — 08-01 at checkpoint, 08-02 done
-- **Last activity**: 2026-03-09 — Phase 8 Wave 1: 08-02 formulas complete, 08-01 pending SQL execution
+- **Plan**: 08-01 (complete), 08-02 (complete), 08-03 (next)
+- **Status**: Wave 1 done — 08-01 DB foundation complete, 08-02 formulas complete; Wave 2 (08-03) next
+- **Last activity**: 2026-03-09 — Phase 8 Wave 1 complete: DB migration + TypeScript types + nutrition formulas done
 
 ## Progress Bar
 
@@ -74,7 +71,7 @@ Phase 14: [ ] Trainer Completar
 - Recharts formatter: `(value: number | undefined, name: string | undefined)` to avoid type errors
 - Column ambiguity in `.eq()`: remove duplicate-named column from child select
 - FK hints required on all embedded joins — PostgREST picks wrong direction otherwise
-- Existing nutrition tables: `nutrition_plans`, `nutrition_plan_meals` have incomplete types — workaround with `as any`; will be superseded by Phase 8 INFRA work
+- 6 new nutrition tables added to types.ts (08-01): foods, food_equivalences, saved_dishes, meal_plan_items, food_log, client_measurements — full type safety, no `as any` needed
 - `Views` and `Functions` must be `{ [_ in never]: never }` NOT `Record<string, never>` in types.ts
 
 ### Useful Files
@@ -93,11 +90,11 @@ Phase 14: [ ] Trainer Completar
 - DB tables to create: foods, food_equivalences, saved_dishes, meal_plan_items, food_log, client_measurements
 - Seed: 13 alimentos base (pollo, huevos, atún, ternera, salmón, arroz, pasta, patata, avena, pan, aceite oliva, aguacate, frutos secos)
 
-### Phase 8 Context (next)
-- Extend `lib/calculations/nutrition.ts` with Katch-McArdle, Mifflin-St Jeor, TDEE, target calories, macro distribution
-- Add all 6 new tables to `lib/supabase/types.ts` — each needs Relationships: [] field
-- Run SQL migration in Supabase + seed script for 13 foods
-- Test formula output against spec values before proceeding to Phase 9
+### Phase 8 Context (Wave 1 complete)
+- DB migration executed: foods, food_equivalences, saved_dishes, meal_plan_items, food_log, client_measurements — all live in Supabase with RLS
+- TypeScript types added for all 6 tables in `lib/supabase/types.ts` — full type safety, no `as any`
+- `lib/calculations/nutrition.ts` extended with Katch-McArdle, Mifflin-St Jeor, TDEE, macros (08-02)
+- Wave 2 (08-03): seed script for 13 base foods + formula validation tests — NEXT
 
 ## Pending Todos
 
@@ -116,3 +113,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 05-client-management-fixes]: activity_level hardcoded to 'moderate' default in create modal
 - [v4.0 roadmap]: Phase 10 (Meals + Assignment) kept separate from Phase 9 (Plan Creator) — assignment requires plan ID from Phase 9, natural delivery boundary
 - [v4.0 roadmap]: Phase 14 (Trainer Completar) has no dependency on Phase 13 (AI) — can execute in parallel or at end
+- [Phase 08-01]: client_measurements is a new standalone table separate from revision_measurements — canonical daily-log for Phase 12 progress tracking
+- [Phase 08-01]: food_log uses single table with nullable food_id/dish_id FK columns + CHECK constraint (exactly one non-null) — avoids join complexity in Phase 11

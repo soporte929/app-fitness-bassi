@@ -158,7 +158,7 @@ Plans:
 | 5. Client Management Fixes | v3.0 | 3/3 | Complete | 2026-03-09 |
 | 6. Navigation & Plans | v3.0 | 3/3 | Complete | 2026-03-09 |
 | 7. TypeScript Cleanup | v3.0 | 1/1 | Complete | 2026-03-09 |
-| 8. Database Foundation + Formulas | v4.0 | 0/3 | Not started | - |
+| 8. Database Foundation + Formulas | 2/3 | In Progress|  | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
 | 10. Trainer Plan Meals + Assignment | v4.0 | 0/? | Not started | - |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
