@@ -288,3 +288,12 @@ Tablas: `weight_logs`, `measurements`, `nutrition_logs`, `clients`
 - [ ] Colores y componentes del design system
 - [ ] Loading state + empty state implementados
 - [ ] Probado con user `client` Y `trainer`
+## Comportamiento
+- Responde siempre en español
+- Sé conciso, sin explicaciones innecesarias
+- Solo lo esencial
+```
+
+Y en GSD específicamente, en `.claude/config.json` puedes cambiar el perfil:
+```
+/gsd:set-profile budget
