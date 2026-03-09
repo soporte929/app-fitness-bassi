@@ -52,14 +52,6 @@ const trainingDaysOpts: Array<{ value: TrainingDays; label: string }> = [
   { value: '6', label: 'Muy activo — 6 días' },
 ]
 
-const activityOpts: Array<{ value: ActivityLevel; label: string }> = [
-  { value: 'sedentary', label: 'Sedentario (legacy)' },
-  { value: 'light', label: 'Ligero (legacy)' },
-  { value: 'moderate', label: 'Moderado (legacy)' },
-  { value: 'active', label: 'Activo (legacy)' },
-  { value: 'very_active', label: 'Muy activo' },
-]
-
 const inputCls =
   'w-full rounded-xl px-4 py-3 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)] transition-all'
 const sectionCls = 'text-xs font-medium text-[#6b7fa3] tracking-wide uppercase mt-6 mb-3'
@@ -371,22 +363,6 @@ export function EditClientPanel({ clientId, clientName, initial }: Props) {
                 />
                 {errors.body_fat_pct && <p className="text-xs text-[var(--danger)] mt-1">{errors.body_fat_pct}</p>}
               </div>
-            </div>
-
-            <p className={sectionCls}>Compatibilidad</p>
-            <div>
-              <label className={labelCls}>Nivel de actividad (legacy)</label>
-              <select
-                value={f.activity_level}
-                onChange={(e) => setField('activity_level', e.target.value as ActivityLevel)}
-                className={inputCls}
-              >
-                {activityOpts.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
             </div>
 
             <div className="flex items-center justify-between pt-1 gap-2">
