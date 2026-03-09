@@ -130,7 +130,12 @@ Plans:
   4. For plans with type B, the client can tap an "Equivalente" button on any food and select an alternative — the macro bars update to reflect the swap
   5. The client can open a food logging flow, enter a food and quantity, and see the macros added to the day's totals in real time
   6. The client can navigate to a shopping list view that shows all foods needed for the current week derived automatically from their plan
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 11-01-PLAN.md — Client Dashboard Layout & Macro Progress Bars
+- [ ] 11-02-PLAN.md — Client Meals List & Equivalent Swapping
+- [ ] 11-03-PLAN.md — Free Food Logging & Diary
+- [ ] 11-04-PLAN.md — Weekly Shopping List Generation
 
 ### Phase 12: Progress Logging
 **Goal**: The client can record their current body weight and measurements directly from the progress page, and see their target weight as a reference on the chart
@@ -204,7 +209,7 @@ Plans:
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
 | 10. Trainer Plan Meals + Assignment | 3/3 | Complete    | 2026-03-09 | - |
 | 10.1. Persist Plan Metadata | v4.0 | 1/1 | Complete | 2026-03-09 |
-| 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
+| 11. Client Nutrition View | v4.0 | 0/4 | Planned | - |
 | 12. Progress Logging | v4.0 | 0/? | Not started | - |
 | 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |
 | 14. Trainer Completar | v4.0 | 0/? | Not started | - |
