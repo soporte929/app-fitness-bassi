@@ -220,6 +220,17 @@ export async function assignOwnNutritionTemplateAction(
   })
 }
 
+type MealSelectedItem = {
+  id: string
+  kind: 'food' | 'dish'
+  name: string
+  grams: number
+  kcal_per_100g: number
+  protein_per_100g: number
+  carbs_per_100g: number
+  fat_per_100g: number
+}
+
 type AssignNutritionPlanInput = {
   clientId: string
   startDate: string
@@ -230,6 +241,7 @@ type AssignNutritionPlanInput = {
   proteinTargetG: number
   carbsTargetG: number
   fatTargetG: number
+  mealItems?: MealSelectedItem[][][] // [mealIndex][optionIndex][itemIndex]
 }
 
 export async function assignNutritionPlanAction(
@@ -275,35 +287,44 @@ export async function assignNutritionPlanAction(
     return { success: false, error: planError?.message ?? 'No se pudo crear el plan' }
   }
 
-  // For structured (A) or options (B) diet types, insert meal_plan_items placeholders
-  if (input.dietType !== 'C' && input.mealsCount > 0) {
+  // For structured (A) or options (B) diet types, insert real meal_plan_items
+  if (input.dietType !== 'C') {
     type MealPlanItemInsert = Database['public']['Tables']['meal_plan_items']['Insert']
-
     const itemsToInsert: MealPlanItemInsert[] = []
 
-    if (input.dietType === 'A') {
-      // One placeholder item per meal slot
-      for (let i = 1; i <= input.mealsCount; i++) {
-        itemsToInsert.push({
-          plan_id: newPlan.id,
-          meal_number: i,
-          food_id: null,
-          dish_id: null,
-          option_slot: null,
-          grams: 0,
-        })
-      }
-    } else {
-      // Diet type B: one placeholder per meal slot (option A by default)
-      for (let i = 1; i <= input.mealsCount; i++) {
-        itemsToInsert.push({
-          plan_id: newPlan.id,
-          meal_number: i,
-          food_id: null,
-          dish_id: null,
-          option_slot: 'A',
-          grams: 0,
-        })
+    for (let mealIdx = 0; mealIdx < input.mealsCount; mealIdx++) {
+      const mealNumber = mealIdx + 1
+      const mealOptions = input.mealItems?.[mealIdx] ?? []
+
+      if (input.dietType === 'A') {
+        // Single option (no option_slot)
+        const items = mealOptions[0] ?? []
+        for (const item of items) {
+          itemsToInsert.push({
+            plan_id: newPlan.id,
+            meal_number: mealNumber,
+            food_id: item.kind === 'food' ? item.id : null,
+            dish_id: item.kind === 'dish' ? item.id : null,
+            option_slot: null,
+            grams: item.grams,
+          })
+        }
+      } else {
+        // Diet type B: options A, B, C
+        const optionLabels = ['A', 'B', 'C']
+        for (let optIdx = 0; optIdx < mealOptions.length; optIdx++) {
+          const items = mealOptions[optIdx] ?? []
+          for (const item of items) {
+            itemsToInsert.push({
+              plan_id: newPlan.id,
+              meal_number: mealNumber,
+              food_id: item.kind === 'food' ? item.id : null,
+              dish_id: item.kind === 'dish' ? item.id : null,
+              option_slot: optionLabels[optIdx] ?? 'A',
+              grams: item.grams,
+            })
+          }
+        }
       }
     }
 
@@ -313,6 +334,7 @@ export async function assignNutritionPlanAction(
         .insert(itemsToInsert)
       if (itemsError) return { success: false, error: itemsError.message }
     }
+    // If no items were added to any meal slot, no rows are inserted — plan is valid without items
   }
 
   revalidatePath('/nutrition-plans')
