@@ -3,142 +3,152 @@
 **Defined:** 2026-03-09
 **Core Value:** El loop de entrenamiento funciona de extremo a extremo — si esto falla, nada más importa.
 
-## v2 Requirements (completed)
+## v4 Requirements
 
-### Bugs & Technical Quality
+Requirements para milestone v4.0 — Módulo Nutrición.
 
-- [x] **BUG-01**: "Reanudar entreno" button redirects to the existing active session instead of starting a new one
-- [x] **BUG-02**: `revisions`, `revision_measurements`, `revision_photos` tables are fully typed in `lib/supabase/types.ts` (no more `supabase as any`)
-- [x] **BUG-03**: Nutrition macro targets for clients without an active nutrition plan use a correct calculated formula (not zeros/placeholders)
+### Infraestructura BD (INFRA)
 
-### History & Personal Records
+- [ ] **INFRA-01**: Las tablas `foods`, `food_equivalences`, `saved_dishes`, `meal_plan_items`, `food_log` y `client_measurements` existen en Supabase con types completos en `lib/supabase/types.ts`
+- [ ] **INFRA-02**: La tabla `foods` contiene seed inicial con 13 alimentos base (pollo, huevos, atún, ternera, salmón, arroz, pasta, patata, avena, pan, aceite oliva, aguacate, frutos secos)
 
-- [x] **HIST-01**: Client can see a chronological feed of all their completed workout sessions at `/history`
-- [x] **HIST-02**: Client can tap a past session and see full detail — day name, duration, total volume, all sets per exercise
-- [x] **PR-01**: During a workout, app detects when a logged set beats the client's all-time best weight×reps for that exercise and shows a PR badge
-- [x] **PR-02**: History feed cards indicate which sessions contain at least one PR
+### Cálculo Nutricional (CALC)
 
-## v3 Requirements
+- [ ] **CALC-01**: El sistema calcula TMB con Katch-McArdle (`370 + 21.6×FFM`) cuando hay % grasa disponible
+- [ ] **CALC-02**: El sistema calcula TMB con Mifflin-St Jeor cuando no hay % grasa
+- [ ] **CALC-03**: El sistema calcula TDEE = TMB × factor actividad (1.2 / 1.375 / 1.55 / 1.725 / 1.9)
+- [ ] **CALC-04**: El sistema calcula calorías objetivo: déficit ×0.85, mantenimiento ×1.0, volumen ×1.075
+- [ ] **CALC-05**: El sistema distribuye macros según fase (proteínas por peso: déficit 2.2g/kg, recomposición 2.0g/kg, volumen 1.8g/kg; grasas: déficit 0.8g/kg, recomposición 0.9g/kg, volumen 1.0g/kg; carbos del resto)
 
-Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
+### Panel Entrenador — Planes Nutricionales (TPLAN)
 
-### Login
+- [ ] **TPLAN-01**: El entrenador puede crear un plan nutricional con formulario (peso, altura, edad, sexo, %grasa opcional, actividad, objetivo)
+- [ ] **TPLAN-02**: Los cálculos TMB → TDEE → calorías → macros se actualizan en tiempo real al rellenar el formulario
+- [ ] **TPLAN-03**: El entrenador puede elegir tipo de dieta: A (Estructurada), B (Opciones A/B/C), C (Flexible)
+- [ ] **TPLAN-04**: En dieta tipo A, las comidas se generan automáticamente con porciones calculadas por macros (3, 4 o 5 comidas)
+- [ ] **TPLAN-05**: En dieta tipo B, cada comida tiene 2-3 alternativas equivalentes configurables
+- [ ] **TPLAN-06**: En dieta tipo C, el plan solo muestra los macros diarios objetivo sin comidas fijas
+- [ ] **TPLAN-07**: El entrenador puede asignar el plan a un cliente con fecha de inicio
+- [ ] **TPLAN-08**: El entrenador puede crear y guardar platos compuestos (`saved_dishes`) con suma de macros
 
-- [x] **LOGIN-01**: El glow del logo en login es estático y fijo (sin animación en bucle)
-- [x] **LOGIN-02**: Los márgenes entre el logo y el subtítulo "tu entrenador de bolsillo" son correctos
-- [x] **LOGIN-03**: El botón "Entrar como entrenador" (demo) está eliminado del login
+### Vista Cliente — Nutrición (CNUTR)
 
-### Trainer UI
+- [ ] **CNUTR-01**: El cliente ve sus calorías diarias consumidas vs objetivo con barra de progreso
+- [ ] **CNUTR-02**: El cliente ve barras de progreso para proteínas, grasas y carbohidratos del día
+- [ ] **CNUTR-03**: El cliente ve la lista de comidas del día con alimentos, cantidades y macros por comida
+- [ ] **CNUTR-04**: El cliente puede seleccionar una alternativa equivalente para cada alimento (planes tipo B)
+- [ ] **CNUTR-05**: El cliente puede registrar un alimento en su diario alimentario con cantidad en tiempo real
+- [ ] **CNUTR-06**: El cliente puede ver una lista de la compra semanal generada automáticamente desde su plan
 
-- [x] **TRNUI-01**: El sidebar del trainer carga el logo (/2.png) correctamente en todas las páginas del trainer
-- [x] **TRNUI-02**: El toggle dark/light mode (icono luna) del dashboard funciona
-- [x] **TRNUI-03**: Los KPIs del dashboard tienen márgenes correctos
-- [x] **TRNUI-04**: Las alertas del dashboard tienen márgenes correctos
-- [x] **TRNUI-05**: El logo en la barra superior izquierda del trainer usa el icono correcto
+### Progress Logging (PROG)
 
-### Client Management
+- [ ] **PROG-01**: El cliente puede registrar su peso actual desde la página `/progress`
+- [ ] **PROG-02**: El peso objetivo del cliente aparece como línea de referencia en la gráfica de peso
+- [ ] **PROG-03**: El cliente puede registrar medidas corporales (cintura, cadera, pecho, brazo, muslo) desde `/progress`
 
-- [x] **CLNT-01**: El error de producción al crear un cliente (Digest 2112945886) está resuelto
-- [x] **CLNT-02**: Todo código de debug está eliminado de la sección de clientes
-- [x] **CLNT-03**: La fórmula de % grasa corporal en el formulario de cliente es correcta
-- [x] **CLNT-04**: Las notas del trainer aparecen al final del formulario de creación de cliente
-- [x] **CLNT-05**: Los campos son compatibles al pasar el cliente a objetivos
-- [x] **CLNT-06**: Los campos legacy están eliminados del formulario de cliente
+### AI Nutrition — Claude API (AI)
 
-### Routines
+- [ ] **AI-01**: El cliente puede abrir un modal y escribir una descripción libre de un alimento
+- [ ] **AI-02**: La app llama a Claude API server-side y devuelve los macros estimados del alimento descrito
+- [ ] **AI-03**: El cliente ve los macros estimados en un paso de confirmación antes de guardarlos en su diario
+- [ ] **AI-04**: Si Claude no puede interpretar el alimento, el cliente ve un fallback para entrada manual de macros
 
-- [ ] **ROUT-01**: La sección de rutinas del trainer es accesible sin errores
+### Trainer — Completar (TRN)
 
-### Plans
+- [ ] **TRN-01**: El entrenador puede navegar y gestionar la librería de ejercicios desde `/exercises`
+- [ ] **TRN-02**: El botón "Ver historial" en el detalle de un cliente navega al historial de sesiones de ese cliente
+- [ ] **TRN-03**: Los links muertos del sidebar del trainer (`/reports`, `/settings`) están eliminados o redirigidos
 
-- [ ] **PLAN-01**: El trainer ve un resumen de rutinas dentro del plan (vista genérica)
-- [ ] **PLAN-02**: El trainer puede acceder a las rutinas individuales dentro del plan
-- [ ] **PLAN-03**: La vista de historial del plan de un cliente es funcional
-- [ ] **PLAN-04**: La vista de entrenamiento individual del plan de un cliente es correcta
+## Completed Requirements
 
-### Nutrition
+### v2 — Bug Fixes & History
 
-- [ ] **NUTR-01**: La sección de nutrición del cliente es accesible y funcional
+- [x] **BUG-01**: "Reanudar entreno" redirige a la sesión activa existente (no crea duplicado)
+- [x] **BUG-02**: Tablas `revisions`, `revision_measurements`, `revision_photos` tipadas en `lib/supabase/types.ts`
+- [x] **BUG-03**: Macro targets calculados correctamente para clientes sin plan de nutrición asignado
+- [x] **HIST-01**: Cliente ve feed cronológico de sesiones completadas en `/history`
+- [x] **HIST-02**: Cliente puede ver detalle completo de una sesión pasada
+- [x] **PR-01**: Durante sesión, la app detecta PR (mejor peso×reps histórico) y muestra badge
+- [x] **PR-02**: Cards del historial indican qué sesiones contienen al menos un PR
 
-### TypeScript
+### v3 — Fixes & Polish
 
-- [x] **TS-01**: Los errores de TypeScript pre-existentes en `profile/page.tsx` están resueltos
-- [x] **TS-02**: Los errores de TypeScript pre-existentes en `clients/[id]/page.tsx` están resueltos
-
-## v4 Requirements (deferred)
-
-### Progress Logging
-
-- **PROG-01**: Client can log their current weight from the `/progress` page
-- **PROG-02**: Client's target weight is shown as a reference line on the weight chart
-- **PROG-03**: Client can log body measurements (waist, hip, chest, arm, thigh) from the `/progress` page
-
-### Revisiones
-
-- **REV-01**: Client can access their revisiones from the bottom nav
-- **REV-02**: Client can see all their revisiones with date, metrics, trainer feedback, and photos
-
-### AI Nutrition
-
-- **AI-01**: Client can tap a button and type a free-text food description
-- **AI-02**: App calls Claude API server-side and returns estimated macros
-- **AI-03**: Client sees the parsed macros in a confirmation step before saving
-- **AI-04**: If Claude cannot parse the food, client sees a fallback for manual entry
-
-### Trainer — Completar
-
-- **TRN-01**: Trainer can browse and manage the exercise library from `/exercises`
-- **TRN-02**: "Ver historial" button in client detail navigates to that client's session history
-- **TRN-03**: Dead sidebar links (`/reports`, `/settings`) are removed or implemented
+- [x] **LOGIN-01**: Glow del logo en login es estático (sin animación en bucle)
+- [x] **LOGIN-02**: Márgenes entre logo y subtítulo correctos
+- [x] **LOGIN-03**: Botón "Entrar como entrenador" (demo) eliminado
+- [x] **TRNUI-01**: Sidebar del trainer carga logo (/2.png) correctamente
+- [x] **TRNUI-02**: Toggle dark/light mode funciona
+- [x] **TRNUI-03**: KPIs del dashboard con márgenes correctos
+- [x] **TRNUI-04**: Alertas del dashboard con márgenes correctos
+- [x] **TRNUI-05**: Logo en barra superior del trainer es el icono correcto
+- [x] **CLNT-01**: Error de producción al crear cliente (Digest 2112945886) resuelto
+- [x] **CLNT-02**: Código de debug eliminado de la sección de clientes
+- [x] **CLNT-03**: Fórmula % grasa corporal correcta en formulario de cliente
+- [x] **CLNT-04**: Notas del trainer al final del formulario de creación
+- [x] **CLNT-05**: Campos compatibles al pasar cliente a objetivos
+- [x] **CLNT-06**: Campos legacy eliminados del formulario
+- [x] **ROUT-01**: Sección rutinas del trainer accesible sin errores
+- [x] **PLAN-01**: Resumen de rutinas visible dentro del plan
+- [x] **PLAN-02**: Acceso a rutinas individuales dentro del plan
+- [x] **PLAN-03**: Vista historial del plan cliente funcional
+- [x] **PLAN-04**: Vista entrenamiento individual del plan cliente correcta
+- [x] **NUTR-01**: Sección nutrición del cliente accesible y funcional
+- [x] **TS-01**: Errores TS pre-existentes en `profile/page.tsx` resueltos
+- [x] **TS-02**: Errores TS pre-existentes en `clients/[id]/page.tsx` resueltos
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
 | Offline workout support | Too complex; requires IndexedDB |
-| Push notifications | Infrastructure not set up |
-| Real-time sync | Supabase Realtime not yet integrated |
+| Push notifications | Infrastructure not set up — deferred |
+| Real-time sync (trainer watching session live) | Supabase Realtime not yet integrated |
 | Mobile native app | Web-first approach |
+| Revisiones tab (client) | Deferred past v4.0 — complex media upload |
 
 ## Traceability
 
+Which phases cover which requirements. Updated during roadmap creation.
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 2 | Complete |
-| BUG-02 | Phase 2 | Complete |
-| BUG-03 | Phase 2 | Complete |
-| HIST-01 | Phase 3 | Complete |
-| HIST-02 | Phase 3 | Complete |
-| PR-01 | Phase 3 | Complete |
-| PR-02 | Phase 3 | Complete |
-| LOGIN-01 | Phase 4 | Complete |
-| LOGIN-02 | Phase 4 | Complete |
-| LOGIN-03 | Phase 4 | Complete |
-| TRNUI-01 | Phase 4 | Complete |
-| TRNUI-02 | Phase 4 | Complete |
-| TRNUI-03 | Phase 4 | Complete |
-| TRNUI-04 | Phase 4 | Complete |
-| TRNUI-05 | Phase 4 | Complete |
-| CLNT-01 | Phase 5 | Complete |
-| CLNT-02 | Phase 5 | Complete |
-| CLNT-03 | Phase 5 | Complete |
-| CLNT-04 | Phase 5 | Complete |
-| CLNT-05 | Phase 5 | Complete |
-| CLNT-06 | Phase 5 | Complete |
-| ROUT-01 | Phase 6 | Pending |
-| PLAN-01 | Phase 6 | Pending |
-| PLAN-02 | Phase 6 | Pending |
-| PLAN-03 | Phase 6 | Pending |
-| PLAN-04 | Phase 6 | Pending |
-| NUTR-01 | Phase 6 | Pending |
-| TS-01 | Phase 7 | Complete |
-| TS-02 | Phase 7 | Complete |
+| INFRA-01 | Phase 8 | Pending |
+| INFRA-02 | Phase 8 | Pending |
+| CALC-01 | Phase 8 | Pending |
+| CALC-02 | Phase 8 | Pending |
+| CALC-03 | Phase 8 | Pending |
+| CALC-04 | Phase 8 | Pending |
+| CALC-05 | Phase 8 | Pending |
+| TPLAN-01 | TBD | Pending |
+| TPLAN-02 | TBD | Pending |
+| TPLAN-03 | TBD | Pending |
+| TPLAN-04 | TBD | Pending |
+| TPLAN-05 | TBD | Pending |
+| TPLAN-06 | TBD | Pending |
+| TPLAN-07 | TBD | Pending |
+| TPLAN-08 | TBD | Pending |
+| CNUTR-01 | TBD | Pending |
+| CNUTR-02 | TBD | Pending |
+| CNUTR-03 | TBD | Pending |
+| CNUTR-04 | TBD | Pending |
+| CNUTR-05 | TBD | Pending |
+| CNUTR-06 | TBD | Pending |
+| PROG-01 | TBD | Pending |
+| PROG-02 | TBD | Pending |
+| PROG-03 | TBD | Pending |
+| AI-01 | TBD | Pending |
+| AI-02 | TBD | Pending |
+| AI-03 | TBD | Pending |
+| AI-04 | TBD | Pending |
+| TRN-01 | TBD | Pending |
+| TRN-02 | TBD | Pending |
+| TRN-03 | TBD | Pending |
 
 **Coverage:**
-- v3 requirements: 22 total
-- Mapped to phases: 22
-- Unmapped: 0 ✓
+- v4 requirements: 31 total
+- Mapped to phases: 7 (INFRA/CALC in Phase 8; rest TBD by roadmapper)
+- Unmapped: 24 — roadmapper will assign
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after v3.0 milestone definition*
+*Last updated: 2026-03-09 after v4.0 milestone definition*
