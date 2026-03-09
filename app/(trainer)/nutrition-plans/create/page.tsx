@@ -1,3 +1,5 @@
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { PageTransition } from '@/components/ui/page-transition'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -7,7 +9,33 @@ export const metadata = {
     title: 'Nuevo Plan Nutricional | Fitness Bassi',
 }
 
-export default function CreatePlanPage() {
+type ClientOption = {
+    id: string
+    name: string
+}
+
+export default async function CreatePlanPage() {
+    const supabase = await createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) redirect('/login')
+
+    const { data: rawClients } = await supabase
+        .from('clients')
+        .select('id, profile:profiles!clients_profile_id_fkey(full_name)')
+        .eq('trainer_id', user.id)
+        .eq('active', true)
+        .order('created_at', { ascending: false })
+
+    const clients: ClientOption[] = ((rawClients ?? []) as unknown as Array<{
+        id: string
+        profile: { full_name: string } | null
+    }>).map((c) => ({
+        id: c.id,
+        name: c.profile?.full_name ?? 'Sin nombre',
+    }))
+
     return (
         <PageTransition>
             <div className="p-6 xl:p-8 w-full max-w-6xl mx-auto">
@@ -28,7 +56,7 @@ export default function CreatePlanPage() {
                     </div>
                 </div>
 
-                <CreatePlanForm />
+                <CreatePlanForm clients={clients} />
             </div>
         </PageTransition>
     )

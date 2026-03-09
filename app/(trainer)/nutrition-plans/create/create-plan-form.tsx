@@ -14,10 +14,20 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
 import { MealSlot } from './meal-slot'
+import { assignNutritionPlanAction } from '../actions'
 
 export type DietType = 'A' | 'B' | 'C'
 
-export function CreatePlanForm() {
+export type ClientOption = {
+    id: string
+    name: string
+}
+
+interface CreatePlanFormProps {
+    clients: ClientOption[]
+}
+
+export function CreatePlanForm({ clients }: CreatePlanFormProps) {
     const [sex, setSex] = useState<Sex>('male')
     const [age, setAge] = useState<number>(30)
     const [weightKg, setWeightKg] = useState<number>(75)
@@ -26,10 +36,18 @@ export function CreatePlanForm() {
     const [activityLevel, setActivityLevel] = useState<ActivityLevel>('moderate')
     const [phase, setPhase] = useState<NutritionPhase>('maintenance')
 
+    // Assignment state
+    const [clientId, setClientId] = useState<string>('')
+    const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0])
+
     // Diet structure state
     const [planName, setPlanName] = useState<string>('')
     const [dietType, setDietType] = useState<DietType>('C')
     const [mealsCount, setMealsCount] = useState<number>(4)
+
+    // Saving state
+    const [isSaving, setIsSaving] = useState<boolean>(false)
+    const [saveError, setSaveError] = useState<string | null>(null)
 
     // Live calculations
     const tmb = calculateTMB({
@@ -52,27 +70,41 @@ export function CreatePlanForm() {
         kcal: Math.round(targetCalories / mealsCount),
     }
 
-    const handleSaveDraft = () => {
-        // Generate Draft payload matching Supabase structure
-        const payload = {
-            nutrition_plans: {
-                name: planName || 'Plan Sin Título',
-                kcal_target: targetCalories,
-                protein_target_g: macros.protein.g,
-                carbs_target_g: macros.carbs.g,
-                fat_target_g: macros.fat.g,
-            },
-            meal_plan_items: dietType === 'C' ? [] : Array.from({ length: mealsCount }).map((_, i) => ({
-                meal_number: i + 1,
-                food_id: null,
-                dish_id: null,
-                option_slot: dietType === 'B' ? 'A' : null,
-                grams: 0
-            }))
+    const handleSavePlan = async () => {
+        setSaveError(null)
+
+        if (!clientId) {
+            setSaveError('Selecciona un cliente para asignar el plan.')
+            return
         }
-        console.log("=== PLAN DRAFT ===")
-        console.log(JSON.stringify(payload, null, 2))
-        alert("Plan generado en consola (Draft mode).")
+        if (!startDate) {
+            setSaveError('Indica la fecha de inicio del plan.')
+            return
+        }
+
+        setIsSaving(true)
+        try {
+            const result = await assignNutritionPlanAction({
+                clientId,
+                startDate,
+                planName: planName || 'Plan Sin Título',
+                dietType,
+                mealsCount,
+                kcalTarget: targetCalories,
+                proteinTargetG: macros.protein.g,
+                carbsTargetG: macros.carbs.g,
+                fatTargetG: macros.fat.g,
+            })
+
+            if (!result.success) {
+                setSaveError(result.error ?? 'Error desconocido al guardar el plan.')
+                setIsSaving(false)
+            }
+            // On success, the action redirects — no need to reset state
+        } catch {
+            setSaveError('Error inesperado al guardar el plan.')
+            setIsSaving(false)
+        }
     }
 
     return (
@@ -80,10 +112,51 @@ export function CreatePlanForm() {
             {/* Forms column */}
             <div className="xl:col-span-2 space-y-8">
 
+                {/* Assignment section */}
+                <div className="space-y-6 bg-[var(--bg-surface)] border border-[var(--border)] p-6 rounded-2xl shadow-sm">
+                    <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                        1. Asignar a Cliente
+                    </h2>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium leading-none text-[var(--text-primary)]">
+                                Cliente
+                            </label>
+                            {clients.length === 0 ? (
+                                <p className="text-sm text-[var(--text-muted)] italic">No hay clientes activos.</p>
+                            ) : (
+                                <Select value={clientId} onValueChange={setClientId}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccionar cliente..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {clients.map((c) => (
+                                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium leading-none text-[var(--text-primary)]">
+                                Fecha de Inicio
+                            </label>
+                            <input
+                                type="date"
+                                className="flex h-10 w-full rounded-md border border-[var(--border)] bg-[var(--bg-base)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+                                value={startDate}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* Configuration Form */}
                 <div className="space-y-6 bg-[var(--bg-surface)] border border-[var(--border)] p-6 rounded-2xl shadow-sm">
                     <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-                        1. Parámetros del Cliente
+                        2. Parámetros del Cliente
                     </h2>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -162,7 +235,7 @@ export function CreatePlanForm() {
 
                 {/* Plan Structure settings */}
                 <div className="space-y-6 bg-[var(--bg-surface)] border border-[var(--border)] p-6 rounded-2xl shadow-sm">
-                    <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">2. Estructura de Dieta</h2>
+                    <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">3. Estructura de Dieta</h2>
 
                     <div className="space-y-4">
                         <div className="space-y-2">
@@ -213,7 +286,7 @@ export function CreatePlanForm() {
                 {/* Meals UI */}
                 {dietType !== 'C' && (
                     <div className="space-y-6 bg-[var(--bg-surface)] border border-[var(--border)] p-6 rounded-2xl shadow-sm">
-                        <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">3. Generador de Comidas</h2>
+                        <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">4. Generador de Comidas</h2>
                         <div className="space-y-6">
                             {Array.from({ length: mealsCount }).map((_, i) => (
                                 <MealSlot
@@ -279,13 +352,20 @@ export function CreatePlanForm() {
                             </div>
                         </div>
 
+                        {saveError && (
+                            <div className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
+                                {saveError}
+                            </div>
+                        )}
+
                         <div className="pt-4 border-t border-[var(--border)]">
                             <button
                                 type="button"
-                                onClick={handleSaveDraft}
-                                className="w-full bg-[var(--accent)] hover:brightness-110 text-black font-bold py-3 px-4 rounded-xl transition-all"
+                                onClick={handleSavePlan}
+                                disabled={isSaving}
+                                className="w-full bg-[var(--accent)] hover:brightness-110 text-black font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                Guardar como plantilla
+                                {isSaving ? 'Guardando...' : 'Guardar Plan'}
                             </button>
                         </div>
                     </div>
