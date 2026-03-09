@@ -97,7 +97,6 @@ export function ExerciseCard({
           rir: parseInt(updatedSet.rir) || 0,
           completed: true,
         })
-        console.log('saveSetLog result:', JSON.stringify(result))
         setSavingIdx(null)
       })
     }

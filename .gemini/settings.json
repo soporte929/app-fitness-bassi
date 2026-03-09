@@ -1,22 +1,24 @@
 {
-  "autoAcceptEdits": true,
+  "experimental": {
+    "enableAgents": true
+  },
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-check-update.js"
+            "command": "node .gemini/hooks/gsd-check-update.js"
           }
         ]
       }
     ],
-    "PostToolUse": [
+    "AfterTool": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-context-monitor.js"
+            "command": "node .gemini/hooks/gsd-context-monitor.js"
           }
         ]
       }
@@ -24,6 +26,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "node .claude/hooks/gsd-statusline.js"
+    "command": "node .gemini/hooks/gsd-statusline.js"
   }
 }

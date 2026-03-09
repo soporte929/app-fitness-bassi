@@ -38,7 +38,6 @@ export async function saveSetLog({
     { onConflict: 'session_id,exercise_id,set_number' }
   )
 
-  console.log('saveSetLog error:', JSON.stringify(error))
   return { success: !error }
 }
 
