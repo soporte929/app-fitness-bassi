@@ -17,7 +17,8 @@ export type ExerciseWithSets = Pick<
     SetLogRow,
     'id' | 'exercise_id' | 'set_number' | 'weight_kg' | 'reps' | 'rir' | 'completed'
   >[]
-  isPR?: boolean
+  isPR?: boolean          // keep for backward compat (static override)
+  prBestVolume?: number   // all-time best weight_kg * reps from prior sessions (0 if no prior)
 }
 
 export type LastSetLog = {
@@ -72,6 +73,14 @@ export function ExerciseCard({
   const [sets, setSets] = useState<SetState[]>(initialSets)
   const [expanded, setExpanded] = useState(true)
   const [isPending, startTransition] = useTransition()
+
+  const isPR = exercise.prBestVolume !== undefined
+    ? sets.some((s) => {
+        if (!s.done) return false
+        const vol = (parseFloat(s.weight) || 0) * (parseInt(s.reps) || 0)
+        return vol > 0 && vol > exercise.prBestVolume!
+      })
+    : (exercise.isPR ?? false) // fallback to static prop if prBestVolume not provided
   const [savingIdx, setSavingIdx] = useState<number | null>(null)
 
   const completedSets = sets.filter((s) => s.done).length
@@ -186,7 +195,7 @@ export function ExerciseCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{exercise.name}</p>
-            {exercise.isPR && (
+            {isPR && (
               <span className="flex-shrink-0 flex items-center gap-0.5 text-[10px] font-semibold text-[var(--warning)] bg-[var(--warning)]/10 px-1.5 py-0.5 rounded-full">
                 <Trophy className="w-2.5 h-2.5" /> PR
               </span>
