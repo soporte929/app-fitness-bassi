@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { PageTransition } from '@/components/ui/page-transition'
 import { HistoryFilters } from '@/components/client/history-filters'
 import type { SessionData } from '@/components/client/session-history-card'
+import { detectSessionPRs } from '@/lib/pr-detection'
 import { History } from 'lucide-react'
 
 type SessionSetLogRow = {
@@ -10,6 +11,7 @@ type SessionSetLogRow = {
   reps: number
   completed: boolean
   exercises: {
+    id: string
     muscle_group: string | null
   } | null
 }
@@ -59,6 +61,7 @@ export default async function HistoryPage() {
       set_logs (
         weight_kg, reps, completed,
         exercises (
+          id,
           muscle_group
         )
       )`
@@ -68,7 +71,26 @@ export default async function HistoryPage() {
     .order('finished_at', { ascending: false })
 
   const sessionsFromDb = (rawSessions ?? []) as SessionRow[]
-  const sessions: SessionData[] = sessionsFromDb.map((session) => {
+
+  // Collect unique exercise IDs per session for PR detection
+  const sessionExerciseIds = sessionsFromDb.map((session) =>
+    Array.from(
+      new Set(
+        (session.set_logs ?? [])
+          .map((l) => l.exercises?.id)
+          .filter((id): id is string => Boolean(id))
+      )
+    )
+  )
+
+  // Detect PRs per session in parallel
+  const prResults = await Promise.all(
+    sessionsFromDb.map((session, i) =>
+      detectSessionPRs(supabase, client.id, session.id, sessionExerciseIds[i])
+    )
+  )
+
+  const sessions: SessionData[] = sessionsFromDb.map((session, i) => {
     const completedLogs = (session.set_logs ?? []).filter((log) => log.completed)
     const totalVolume = completedLogs.reduce((sum, log) => sum + log.weight_kg * log.reps, 0)
     const trainedMuscles = Array.from(
@@ -88,6 +110,7 @@ export default async function HistoryPage() {
       totalVolume,
       completedSets: completedLogs.length,
       trainedMuscles,
+      hasPR: prResults[i].size > 0,
     }
   })
 

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageTransition } from '@/components/ui/page-transition'
 import { SessionDetail, type SessionDetailViewModel } from '@/components/client/session-detail'
+import { detectSessionPRs } from '@/lib/pr-detection'
 
 type SessionQuerySetLog = {
   id: string
@@ -171,6 +172,19 @@ export default async function SessionDetailPage({
   }
 
   const exercises = Array.from(groupedByExercise.values())
+
+  const prExerciseIds = await detectSessionPRs(
+    supabase,
+    client.id,
+    session.id,
+    exercises.map((e) => e.exerciseId)
+  )
+
+  const exercisesWithPR = exercises.map((ex) => ({
+    ...ex,
+    isPR: prExerciseIds.has(ex.exerciseId),
+  }))
+
   const totalVolume = sortedSetLogs.reduce((sum, log) => sum + log.weight_kg * log.reps, 0)
   const completedSets = sortedSetLogs.filter((log) => log.completed).length
   const trainedMuscles = Array.from(
@@ -189,11 +203,11 @@ export default async function SessionDetailPage({
     dayName: session.workout_day?.name ?? 'Entrenamiento',
     durationLabel: formatDuration(session.started_at, session.finished_at),
     totalVolume,
-    exerciseCount: exercises.length,
+    exerciseCount: exercisesWithPR.length,
     completedSets,
     totalSets: sortedSetLogs.length,
     trainedMuscles,
-    exercises,
+    exercises: exercisesWithPR,
   }
 
   return (
