@@ -62,8 +62,8 @@ Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
 
 ### TypeScript
 
-- [ ] **TS-01**: Los errores de TypeScript pre-existentes en `profile/page.tsx` están resueltos
-- [ ] **TS-02**: Los errores de TypeScript pre-existentes en `clients/[id]/page.tsx` están resueltos
+- [x] **TS-01**: Los errores de TypeScript pre-existentes en `profile/page.tsx` están resueltos
+- [x] **TS-02**: Los errores de TypeScript pre-existentes en `clients/[id]/page.tsx` están resueltos
 
 ## v4 Requirements (deferred)
 
@@ -131,8 +131,8 @@ Requirements para milestone v3.0 — Bassi v3 Fixes & Polish.
 | PLAN-03 | Phase 6 | Pending |
 | PLAN-04 | Phase 6 | Pending |
 | NUTR-01 | Phase 6 | Pending |
-| TS-01 | Phase 7 | Pending |
-| TS-02 | Phase 7 | Pending |
+| TS-01 | Phase 7 | Complete |
+| TS-02 | Phase 7 | Complete |
 
 **Coverage:**
 - v3 requirements: 22 total

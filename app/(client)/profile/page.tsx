@@ -43,15 +43,15 @@ function calcStreak(sessions: { started_at: string }[]): number {
   return streak;
 }
 
-interface SettingsItem {
-  label: string;
-  icon: LucideIcon;
-  href?: string;
+type MenuItem = {
+  label: string
+  icon: React.ElementType
+  href?: string
 }
 
-interface SettingsSection {
-  title: string;
-  items: SettingsItem[];
+type SettingsSection = {
+  title: string
+  items: MenuItem[]
 }
 
 const settingsSections: SettingsSection[] = [

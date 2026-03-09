@@ -1,3 +1,5 @@
+import type { Database } from '@/lib/supabase/types';
+
 export type AlertLevel = "info" | "warning" | "critical";
 
 export interface Alert {
@@ -7,12 +9,14 @@ export interface Alert {
   action?: string;
 }
 
+type Phase = Database['public']['Tables']['clients']['Row']['phase'];
+
 export interface ClientAlertInput {
   adherencePct: number;
   daysSinceLastWorkout: number;
   weightDeltaKg: number;        // últimas 2 semanas (+ = subiendo)
   waistDeltaCm: number;         // últimas 2 semanas (+ = subiendo)
-  phase: "deficit" | "surplus" | "maintenance" | "recomposition" | "volume";
+  phase: Phase;
   weeklyWorkoutsCompleted: number;
   weeklyWorkoutsTarget: number;
 }
@@ -99,7 +103,7 @@ export function computeAlerts(input: ClientAlertInput): Alert[] {
 }
 
 export const alertColors: Record<AlertLevel, { bg: string; border: string; text: string; icon: string }> = {
-  info:     { bg: "#0071e3/8",  border: "#0071e3/20", text: "#0071e3",  icon: "#0071e3" },
-  warning:  { bg: "#ff9f0a/8",  border: "#ff9f0a/20", text: "#b36200",  icon: "#ff9f0a" },
-  critical: { bg: "#ff375f/8",  border: "#ff375f/20", text: "#cc0022",  icon: "#ff375f" },
+  info: { bg: "#0071e3/8", border: "#0071e3/20", text: "#0071e3", icon: "#0071e3" },
+  warning: { bg: "#ff9f0a/8", border: "#ff9f0a/20", text: "#b36200", icon: "#ff9f0a" },
+  critical: { bg: "#ff375f/8", border: "#ff375f/20", text: "#cc0022", icon: "#ff375f" },
 };

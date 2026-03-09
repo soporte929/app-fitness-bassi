@@ -108,6 +108,7 @@ Plans:
 - [ ] 05-03-PLAN.md — Visual verification checkpoint for all Phase 5 requirements (CLNT-01 through CLNT-06)
 
 ### Phase 6: Navigation & Plans
+**Status**: ✅ Complete
 **Goal**: The trainer can access the routines section and navigate plan details without errors; the client can reach the nutrition section and see plan history and individual workout views
 **Depends on**: Phase 4
 **Requirements**: ROUT-01, PLAN-01, PLAN-02, PLAN-03, PLAN-04, NUTR-01
@@ -121,9 +122,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Trainer routines access and plan routine navigation (ROUT-01, PLAN-01, PLAN-02)
-- [ ] 06-02-PLAN.md — Client plan history and individual workout detail views (PLAN-03, PLAN-04)
-- [ ] 06-03-PLAN.md — Client nutrition section access and meal checklist (NUTR-01)
+- [x] 06-01-PLAN.md — Trainer routines access and plan routine navigation (ROUT-01, PLAN-01, PLAN-02)
+- [x] 06-02-PLAN.md — Client plan history and individual workout detail views (PLAN-03, PLAN-04)
+- [x] 06-03-PLAN.md — Client nutrition section access and meal checklist (NUTR-01)
 
 ### Phase 7: TypeScript Cleanup
 **Goal**: The codebase compiles cleanly — no pre-existing TypeScript errors remain in the profile or client detail pages
@@ -132,7 +133,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `app/(client)/profile/page.tsx` compiles with zero TypeScript errors (href union type resolved)
   2. `app/(trainer)/clients/[id]/page.tsx` compiles with zero TypeScript errors (Phase type resolved)
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [x] 07-01-PLAN.md — Fix type errors in client profile mapping and client alert phase typing (TS-01, TS-02)
 
 ## Progress
 
@@ -145,5 +149,5 @@ Plans:
 | 3. History & Personal Records | v2.0 | 2/2 | Complete | 2026-03-09 |
 | 4. Login & Trainer UI Polish | 3/3 | Complete   | 2026-03-09 | - |
 | 5. Client Management Fixes | 1/3 | In Progress|  | - |
-| 6. Navigation & Plans | v3.0 | 0/3 | Planned | - |
-| 7. TypeScript Cleanup | v3.0 | 0/TBD | Not started | - |
+| 6. Navigation & Plans | v3.0 | 3/3 | Complete | 2026-03-09 |
+| 7. TypeScript Cleanup | v3.0 | 0/1 | Planned | - |
