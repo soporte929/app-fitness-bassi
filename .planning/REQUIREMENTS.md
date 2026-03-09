@@ -45,13 +45,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WORKOUT-01 | Phase 1 | Pending |
-| WORKOUT-02 | Phase 1 | Pending |
-| WORKOUT-03 | Phase 1 | Pending |
-| WORKOUT-04 | Phase 1 | Pending |
-| WORKOUT-05 | Phase 1 | Pending |
-| WORKOUT-06 | Phase 1 | Pending |
-| WORKOUT-07 | Phase 1 | Pending |
+| WORKOUT-01 | Phase 1 — Workout Session | Pending |
+| WORKOUT-02 | Phase 1 — Workout Session | Pending |
+| WORKOUT-03 | Phase 1 — Workout Session | Pending |
+| WORKOUT-04 | Phase 1 — Workout Session | Pending |
+| WORKOUT-05 | Phase 1 — Workout Session | Pending |
+| WORKOUT-06 | Phase 1 — Workout Session | Pending |
+| WORKOUT-07 | Phase 1 — Workout Session | Pending |
 
 **Coverage:**
 - v1 requirements: 7 total
@@ -60,4 +60,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after initial definition*
+*Last updated: 2026-03-09 — Roadmap created, traceability confirmed*

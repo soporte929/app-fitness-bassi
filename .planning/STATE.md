@@ -5,14 +5,35 @@
 See: .planning/PROJECT.md (updated 2026-03-09)
 
 **Core value:** The workout tracking loop must work end-to-end — start session, log sets, finish, review in history.
-**Current focus:** Milestone v1.0 — Workout Loop Completion
+**Current focus:** Phase 1 — Workout Session
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-09 — Milestone v1.0 started
+Phase: 1 of 1 (Workout Session)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-03-09 — Roadmap created, Phase 1 ready for planning
+
+Progress: [░░░░░░░░░░] 0%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: —
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
+
+**Recent Trend:**
+- Last 5 plans: —
+- Trend: —
+
+*Updated after each plan completion*
 
 ## Accumulated Context
 
@@ -30,13 +51,22 @@ Last activity: 2026-03-09 — Milestone v1.0 started
 
 ### Useful Files
 - `lib/supabase/types.ts` — all Database types (1200+ lines)
-- `lib/alerts.ts` — trainer alert computation
-- `lib/calculations/nutrition.ts` — macro formulas
-- `components/client/rest-timer.tsx` — rest timer already built
-- `components/client/exercise-card.tsx` — set logging already built
-- `components/client/session-history-card.tsx` — history card already exists (may be stub)
-- `components/client/session-detail.tsx` — session detail already exists (may be stub)
+- `components/client/rest-timer.tsx` — rest timer already built (listens to `startRestTimer` custom event)
+- `components/client/exercise-card.tsx` — set logging already built (weight, reps, RIR, mark complete)
+- `components/client/today-exercises-progress.tsx` — wraps ExerciseCards for a session (already exists)
+- `components/client/active-session-banner.tsx` — needs small update to link to `/workout/[sessionId]`
+- `app/(client)/today/actions.ts` — has `saveSetLog` and `finishWorkout` (reuse from workout page)
+- `app/(client)/routines/[planId]/page.tsx` — imports `startWorkoutSession` from `./actions` but actions.ts MISSING
+
+### Blockers/Concerns
+- `app/(client)/routines/[planId]/actions.ts` does not exist — must be created in Phase 1 before routines page compiles
 
 ## Pending Todos
 
-(none — starting fresh milestone)
+(none)
+
+## Session Continuity
+
+Last session: 2026-03-09
+Stopped at: Roadmap created — ready to run /gsd:plan-phase 1
+Resume file: None
