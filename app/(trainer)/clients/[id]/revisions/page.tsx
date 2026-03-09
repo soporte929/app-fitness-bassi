@@ -4,34 +4,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Plus } from 'lucide-react'
 import { FeedbackEditor } from './feedback-editor'
+import type { Database } from '@/lib/supabase/types'
 
-type RevisionPhoto = {
-  id: string
-  photo_url: string
-  angle: string | null
-}
-
-type RevisionMeasurement = {
-  id: string
-  weight_kg: number | null
-  body_fat_pct: number | null
-  waist_cm: number | null
-  hip_cm: number | null
-  chest_cm: number | null
-  arm_cm: number | null
-  thigh_cm: number | null
-  kcal_target: number | null
-  notes: string | null
-}
-
-type Revision = {
-  id: string
-  revision_date: string
-  notes: string | null
-  trainer_feedback: string | null
-  next_revision_date: string | null
-  revision_measurements: RevisionMeasurement[]
-  revision_photos: RevisionPhoto[]
+type RevisionRow = Database['public']['Tables']['revisions']['Row']
+type RevisionMeasurementRow = Database['public']['Tables']['revision_measurements']['Row']
+type RevisionPhotoRow = Database['public']['Tables']['revision_photos']['Row']
+type Revision = RevisionRow & {
+  revision_measurements: RevisionMeasurementRow[]
+  revision_photos: RevisionPhotoRow[]
 }
 
 function fmtDate(iso: string) {
@@ -67,7 +47,7 @@ export default async function TrainerClientRevisionsPage({
   const profile = rawClient.profile as { full_name: string } | null
   const clientName = profile?.full_name ?? 'Cliente'
 
-  const { data: rawRevisions } = await (supabase as any)
+  const { data: rawRevisions } = await supabase
     .from('revisions')
     .select('*, revision_measurements(*), revision_photos(*)')
     .eq('client_id', id)

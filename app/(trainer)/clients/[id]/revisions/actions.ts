@@ -3,6 +3,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import type { Database } from '@/lib/supabase/types'
+
+type RevisionInsert = Database['public']['Tables']['revisions']['Insert']
+type RevisionMeasurementInsert = Database['public']['Tables']['revision_measurements']['Insert']
 
 const TRAINER_ID = '8f500a88-a31d-45c5-9470-9cd09a2f793a'
 
@@ -14,16 +18,18 @@ export async function createRevision(clientId: string, formData: FormData): Prom
   const notes = (formData.get('notes') as string) || null
   const trainer_feedback = (formData.get('trainer_feedback') as string) || null
 
-  const { data: revision, error } = await (supabase as any)
+  const revisionInsert: RevisionInsert = {
+    client_id: clientId,
+    trainer_id: TRAINER_ID,
+    revision_date,
+    notes,
+    trainer_feedback,
+    next_revision_date,
+  }
+
+  const { data: revision, error } = await supabase
     .from('revisions')
-    .insert({
-      client_id: clientId,
-      trainer_id: TRAINER_ID,
-      revision_date,
-      notes,
-      trainer_feedback,
-      next_revision_date,
-    })
+    .insert(revisionInsert)
     .select('id')
     .single()
 
@@ -40,7 +46,7 @@ export async function createRevision(clientId: string, formData: FormData): Prom
     'kcal_target',
   ] as const
 
-  const measurementData: Record<string, number | string> = { revision_id: revision.id }
+  const measurementData: RevisionMeasurementInsert = { revision_id: revision.id }
   let hasMeasurements = false
 
   for (const field of measurementFields) {
@@ -53,12 +59,12 @@ export async function createRevision(clientId: string, formData: FormData): Prom
 
   const measurementNotes = (formData.get('measurement_notes') as string) || null
   if (measurementNotes) {
-    measurementData['notes'] = measurementNotes
+    measurementData.notes = measurementNotes
     hasMeasurements = true
   }
 
   if (hasMeasurements) {
-    await (supabase as any).from('revision_measurements').insert(measurementData)
+    await supabase.from('revision_measurements').insert(measurementData)
   }
 
   redirect(`/clients/${clientId}/revisions`)
@@ -70,7 +76,7 @@ export async function updateTrainerFeedback(
 ): Promise<void> {
   const supabase = await createClient()
 
-  await (supabase as any)
+  await supabase
     .from('revisions')
     .update({ trainer_feedback: feedback })
     .eq('id', revisionId)
