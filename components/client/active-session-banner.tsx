@@ -123,12 +123,12 @@ export function ActiveSessionBanner() {
     return () => clearInterval(id)
   }, [restActive])
 
-  if (!activeSession || pathname === '/today') return null
+  if (!activeSession || pathname === '/today' || pathname.startsWith('/workout')) return null
 
   return (
     <button
       type="button"
-      onClick={() => router.push('/today')}
+      onClick={() => router.push(`/workout/${activeSession.id}`)}
       className="fixed left-1/2 -translate-x-1/2 w-full max-w-[430px] px-4 z-50 flex items-center gap-3 py-3 rounded-xl bg-[var(--bg-surface)] border border-green-500/30 shadow-lg animate-slide-up"
       style={{ bottom: '72px' }}
     >
