@@ -119,36 +119,36 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CALC-03 | Phase 8 | Pending |
 | CALC-04 | Phase 8 | Pending |
 | CALC-05 | Phase 8 | Pending |
-| TPLAN-01 | TBD | Pending |
-| TPLAN-02 | TBD | Pending |
-| TPLAN-03 | TBD | Pending |
-| TPLAN-04 | TBD | Pending |
-| TPLAN-05 | TBD | Pending |
-| TPLAN-06 | TBD | Pending |
-| TPLAN-07 | TBD | Pending |
-| TPLAN-08 | TBD | Pending |
-| CNUTR-01 | TBD | Pending |
-| CNUTR-02 | TBD | Pending |
-| CNUTR-03 | TBD | Pending |
-| CNUTR-04 | TBD | Pending |
-| CNUTR-05 | TBD | Pending |
-| CNUTR-06 | TBD | Pending |
-| PROG-01 | TBD | Pending |
-| PROG-02 | TBD | Pending |
-| PROG-03 | TBD | Pending |
-| AI-01 | TBD | Pending |
-| AI-02 | TBD | Pending |
-| AI-03 | TBD | Pending |
-| AI-04 | TBD | Pending |
-| TRN-01 | TBD | Pending |
-| TRN-02 | TBD | Pending |
-| TRN-03 | TBD | Pending |
+| TPLAN-01 | Phase 9 | Pending |
+| TPLAN-02 | Phase 9 | Pending |
+| TPLAN-03 | Phase 9 | Pending |
+| TPLAN-04 | Phase 9 | Pending |
+| TPLAN-05 | Phase 9 | Pending |
+| TPLAN-06 | Phase 9 | Pending |
+| TPLAN-07 | Phase 10 | Pending |
+| TPLAN-08 | Phase 10 | Pending |
+| CNUTR-01 | Phase 11 | Pending |
+| CNUTR-02 | Phase 11 | Pending |
+| CNUTR-03 | Phase 11 | Pending |
+| CNUTR-04 | Phase 11 | Pending |
+| CNUTR-05 | Phase 11 | Pending |
+| CNUTR-06 | Phase 11 | Pending |
+| PROG-01 | Phase 12 | Pending |
+| PROG-02 | Phase 12 | Pending |
+| PROG-03 | Phase 12 | Pending |
+| AI-01 | Phase 13 | Pending |
+| AI-02 | Phase 13 | Pending |
+| AI-03 | Phase 13 | Pending |
+| AI-04 | Phase 13 | Pending |
+| TRN-01 | Phase 14 | Pending |
+| TRN-02 | Phase 14 | Pending |
+| TRN-03 | Phase 14 | Pending |
 
 **Coverage:**
 - v4 requirements: 31 total
-- Mapped to phases: 7 (INFRA/CALC in Phase 8; rest TBD by roadmapper)
-- Unmapped: 24 — roadmapper will assign
+- Mapped to phases: 31/31 (100%)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after v4.0 milestone definition*
+*Last updated: 2026-03-09 — Traceability complete after v4.0 roadmap creation*
