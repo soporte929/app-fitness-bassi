@@ -31,14 +31,6 @@ export default async function PlanDetailPage({
 
   if (!client) redirect('/login')
 
-  const now = new Date()
-  const todayStart = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
-  ).toISOString()
-  const todayEnd = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999)
-  ).toISOString()
-
   const [rawPlanResult, activeSessionResult] = await Promise.all([
     supabase
       .from('workout_plans')
@@ -58,13 +50,12 @@ export default async function PlanDetailPage({
       .select('id')
       .eq('client_id', client.id)
       .eq('completed', false)
-      .gte('started_at', todayStart)
-      .lte('started_at', todayEnd)
       .maybeSingle(),
   ])
 
   const rawPlan = rawPlanResult.data
-  const hasActiveSession = Boolean(activeSessionResult.data)
+  const activeSession = activeSessionResult.data as { id: string } | null
+  const hasActiveSession = Boolean(activeSession)
 
   if (!rawPlan) {
     notFound()
@@ -122,15 +113,25 @@ export default async function PlanDetailPage({
               return (
                 <div key={day.id}>
                   <PlanDayCard day={day} index={i} />
-                  <form action={boundAction} className="mt-2">
-                    <button
-                      type="submit"
-                      className="w-full min-h-[44px] bg-[var(--text-primary)] text-[var(--bg-base)] font-semibold text-sm rounded-md flex items-center justify-center gap-2 transition-opacity hover:opacity-80 active:opacity-70"
+                  {hasActiveSession && activeSession ? (
+                    <Link
+                      href={`/workout/${activeSession.id}`}
+                      className="w-full min-h-[44px] bg-[var(--text-primary)] text-[var(--bg-base)] font-semibold text-sm rounded-md flex items-center justify-center gap-2 transition-opacity hover:opacity-80 active:opacity-70 mt-2"
                     >
                       <Play className="w-4 h-4 fill-[var(--bg-base)] stroke-none" />
-                      {hasActiveSession ? 'Reanudar entreno' : `Iniciar ${day.name}`}
-                    </button>
-                  </form>
+                      Reanudar entreno
+                    </Link>
+                  ) : (
+                    <form action={boundAction} className="mt-2">
+                      <button
+                        type="submit"
+                        className="w-full min-h-[44px] bg-[var(--text-primary)] text-[var(--bg-base)] font-semibold text-sm rounded-md flex items-center justify-center gap-2 transition-opacity hover:opacity-80 active:opacity-70"
+                      >
+                        <Play className="w-4 h-4 fill-[var(--bg-base)] stroke-none" />
+                        {`Iniciar ${day.name}`}
+                      </button>
+                    </form>
+                  )}
                 </div>
               )
             })}
