@@ -677,6 +677,233 @@ export interface Database {
           }
         ];
       };
+
+      foods: {
+        Row: {
+          id: string;
+          name: string;
+          category: string;
+          kcal_per_100g: number;
+          protein_per_100g: number;
+          carbs_per_100g: number;
+          fat_per_100g: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          category: string;
+          kcal_per_100g: number;
+          protein_per_100g: number;
+          carbs_per_100g: number;
+          fat_per_100g: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["foods"]["Insert"]>;
+        Relationships: [];
+      };
+
+      food_equivalences: {
+        Row: {
+          id: string;
+          food_id: string;
+          equivalent_food_id: string;
+          factor: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          food_id: string;
+          equivalent_food_id: string;
+          factor?: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["food_equivalences"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "food_equivalences_food_id_fkey";
+            columns: ["food_id"];
+            isOneToOne: false;
+            referencedRelation: "foods";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "food_equivalences_equivalent_food_id_fkey";
+            columns: ["equivalent_food_id"];
+            isOneToOne: false;
+            referencedRelation: "foods";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      saved_dishes: {
+        Row: {
+          id: string;
+          trainer_id: string;
+          name: string;
+          kcal_per_100g: number;
+          protein_per_100g: number;
+          carbs_per_100g: number;
+          fat_per_100g: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          trainer_id: string;
+          name: string;
+          kcal_per_100g: number;
+          protein_per_100g: number;
+          carbs_per_100g: number;
+          fat_per_100g: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["saved_dishes"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "saved_dishes_trainer_id_fkey";
+            columns: ["trainer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      meal_plan_items: {
+        Row: {
+          id: string;
+          plan_id: string;
+          meal_number: number;
+          food_id: string | null;
+          dish_id: string | null;
+          option_slot: string | null;
+          grams: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          plan_id: string;
+          meal_number: number;
+          food_id?: string | null;
+          dish_id?: string | null;
+          option_slot?: string | null;
+          grams?: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["meal_plan_items"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "meal_plan_items_plan_id_fkey";
+            columns: ["plan_id"];
+            isOneToOne: false;
+            referencedRelation: "nutrition_plans";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "meal_plan_items_food_id_fkey";
+            columns: ["food_id"];
+            isOneToOne: false;
+            referencedRelation: "foods";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "meal_plan_items_dish_id_fkey";
+            columns: ["dish_id"];
+            isOneToOne: false;
+            referencedRelation: "saved_dishes";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      food_log: {
+        Row: {
+          id: string;
+          client_id: string;
+          food_id: string | null;
+          dish_id: string | null;
+          logged_date: string;
+          grams: number;
+          meal_number: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          client_id: string;
+          food_id?: string | null;
+          dish_id?: string | null;
+          logged_date?: string;
+          grams?: number;
+          meal_number?: number | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["food_log"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "food_log_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "food_log_food_id_fkey";
+            columns: ["food_id"];
+            isOneToOne: false;
+            referencedRelation: "foods";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "food_log_dish_id_fkey";
+            columns: ["dish_id"];
+            isOneToOne: false;
+            referencedRelation: "saved_dishes";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      client_measurements: {
+        Row: {
+          id: string;
+          client_id: string;
+          measured_at: string;
+          weight_kg: number | null;
+          body_fat_pct: number | null;
+          waist_cm: number | null;
+          hip_cm: number | null;
+          chest_cm: number | null;
+          arm_cm: number | null;
+          thigh_cm: number | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          client_id: string;
+          measured_at?: string;
+          weight_kg?: number | null;
+          body_fat_pct?: number | null;
+          waist_cm?: number | null;
+          hip_cm?: number | null;
+          chest_cm?: number | null;
+          arm_cm?: number | null;
+          thigh_cm?: number | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["client_measurements"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "client_measurements_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
