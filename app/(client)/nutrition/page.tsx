@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
+import { ShoppingBag } from 'lucide-react'
 import { PageTransition } from '@/components/ui/page-transition'
 import { MacroProgressBars } from '@/components/client/nutrition/MacroProgressBars'
 import { ClientDailyMeals } from '@/components/client/nutrition/ClientDailyMeals'
@@ -56,9 +58,18 @@ export default async function NutritionPage() {
   return (
     <PageTransition>
       <div className="px-4 pt-6 pb-28">
-        <div className="mb-5">
-          <h1 className="text-2xl font-bold text-[#e8e8e6] tracking-tight">Nutrición</h1>
-          <p className="text-sm text-[#a0a0a0] mt-0.5 capitalize">{dateLabel}</p>
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-[#e8e8e6] tracking-tight">Nutrición</h1>
+            <p className="text-sm text-[#a0a0a0] mt-0.5 capitalize">{dateLabel}</p>
+          </div>
+          <Link
+            href="/nutrition/shopping-list"
+            className="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] flex items-center justify-center text-[#e8e8e6] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+            title="Lista de la compra"
+          >
+            <ShoppingBag className="w-5 h-5" />
+          </Link>
         </div>
 
         <MacroProgressBars

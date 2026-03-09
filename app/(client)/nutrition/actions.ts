@@ -256,3 +256,75 @@ export async function logFreeFoodAction(
     return { success: false, error: error.message || 'Unknown error' }
   }
 }
+
+export async function generateWeeklyShoppingListAction(clientId: string) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    // Fetch active plan with its items and the related food/dish
+    const { data: activePlan, error: planError } = await supabase
+      .from('nutrition_plans')
+      .select('id, items:meal_plan_items(grams, option_slot, food:foods(id, name, category), dish:saved_dishes(id, name))')
+      .eq('client_id', clientId)
+      .eq('active', true)
+      .maybeSingle()
+
+    if (planError || !activePlan) {
+      return { success: false, error: 'No hay plan activo disponible' }
+    }
+
+    // Group items by food_id or dish_id (filtering only option A or null for Type A compatibility)
+    // Actually, for a single set of meals, type B might have options A, B, C. Defaulting to 'A' means we build shopping list for option A.
+    // If option_slot is null, we count it.
+
+    type ShoppingListItem = {
+      food_name: string
+      category: string
+      total_grams: number
+    }
+
+    const aggregates: Record<string, ShoppingListItem> = {}
+
+    // Type of items:
+    const mealItems = activePlan.items as any[]
+
+    mealItems.forEach(item => {
+      const isDefaultOption = !item.option_slot || item.option_slot === 'A'
+      if (!isDefaultOption) return
+
+      const source = item.food || item.dish
+      if (!source) return
+
+      const key = `${source.id}-${item.food ? 'food' : 'dish'}`
+
+      const category = item.food ? (source.category || 'Otros') : 'Platos/Preparados'
+
+      if (!aggregates[key]) {
+        aggregates[key] = {
+          food_name: source.name,
+          category,
+          total_grams: 0
+        }
+      }
+
+      // Add the daily amount multiplied by 7 for the week
+      aggregates[key].total_grams += (item.grams * 7)
+    })
+
+    const list = Object.values(aggregates)
+
+    // Sort primarily by category, then by name
+    list.sort((a, b) => {
+      if (a.category < b.category) return -1
+      if (a.category > b.category) return 1
+      return a.food_name.localeCompare(b.food_name)
+    })
+
+    return { success: true, data: list }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Unknown error' }
+  }
+}
+
