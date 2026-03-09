@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T16:28:25.092Z"
+last_updated: "2026-03-09T16:35:13.025Z"
 progress:
   total_phases: 7
   completed_phases: 0
@@ -21,10 +21,10 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 8 — Database Foundation + Formulas (next to plan)
 
 ## Current Position
-- **Phase**: 8 (executing)
-- **Plan**: 08-01 (complete), 08-02 (complete), 08-03 (next)
-- **Status**: Wave 1 done — 08-01 DB foundation complete, 08-02 formulas complete; Wave 2 (08-03) next
-- **Last activity**: 2026-03-09 — Phase 8 Wave 1 complete: DB migration + TypeScript types + nutrition formulas done
+- **Phase**: 8 (complete — all 3 plans done)
+- **Plan**: 08-01 (complete), 08-02 (complete), 08-03 (complete — checkpoint:human-verify pending)
+- **Status**: Phase 8 complete — seed script created; awaiting human verification (run seed + confirm 13 rows in Supabase)
+- **Last activity**: 2026-03-09 — 08-03 seed script created and committed; Phase 9 next
 
 ## Progress Bar
 
@@ -94,7 +94,7 @@ Phase 14: [ ] Trainer Completar
 - DB migration executed: foods, food_equivalences, saved_dishes, meal_plan_items, food_log, client_measurements — all live in Supabase with RLS
 - TypeScript types added for all 6 tables in `lib/supabase/types.ts` — full type safety, no `as any`
 - `lib/calculations/nutrition.ts` extended with Katch-McArdle, Mifflin-St Jeor, TDEE, macros (08-02)
-- Wave 2 (08-03): seed script for 13 base foods + formula validation tests — NEXT
+- Wave 2 (08-03): seed script created (`scripts/seed-foods.ts`) — 13 alimentos, upsert idempotente — COMPLETE
 
 ## Pending Todos
 
@@ -115,3 +115,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [v4.0 roadmap]: Phase 14 (Trainer Completar) has no dependency on Phase 13 (AI) — can execute in parallel or at end
 - [Phase 08-01]: client_measurements is a new standalone table separate from revision_measurements — canonical daily-log for Phase 12 progress tracking
 - [Phase 08-01]: food_log uses single table with nullable food_id/dish_id FK columns + CHECK constraint (exactly one non-null) — avoids join complexity in Phase 11
+- [Phase 08-03]: Script seed usa service role key para bypass RLS; onConflict: 'name' como clave idempotente; Node 20+ --env-file en vez de dotenv

@@ -49,7 +49,7 @@
 <details open>
 <summary>📋 v4.0 Módulo Nutrición (Phases 8-14) — IN PROGRESS</summary>
 
-- [ ] **Phase 8: Database Foundation + Formulas** — New nutrition tables in Supabase with full TypeScript types, seed data, and all calculation formulas (Katch-McArdle, Mifflin, TDEE, macros)
+- [x] **Phase 8: Database Foundation + Formulas** — New nutrition tables in Supabase with full TypeScript types, seed data, and all calculation formulas (Katch-McArdle, Mifflin, TDEE, macros) (completed 2026-03-09)
 - [ ] **Phase 9: Trainer Plan Creator** — Trainer form with real-time calculation preview and support for diet types A, B, and C
 - [ ] **Phase 10: Trainer Plan Meals + Assignment** — Assign finalized plans to clients with start date and saved dishes builder
 - [ ] **Phase 11: Client Nutrition View** — Client sees daily calorie/macro progress bars, meal list with equivalents, food logging, and weekly shopping list
@@ -158,7 +158,7 @@ Plans:
 | 5. Client Management Fixes | v3.0 | 3/3 | Complete | 2026-03-09 |
 | 6. Navigation & Plans | v3.0 | 3/3 | Complete | 2026-03-09 |
 | 7. TypeScript Cleanup | v3.0 | 1/1 | Complete | 2026-03-09 |
-| 8. Database Foundation + Formulas | 2/3 | In Progress|  | - |
+| 8. Database Foundation + Formulas | 3/3 | Complete   | 2026-03-09 | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
 | 10. Trainer Plan Meals + Assignment | v4.0 | 0/? | Not started | - |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |

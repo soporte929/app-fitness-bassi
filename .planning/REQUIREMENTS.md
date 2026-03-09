@@ -10,7 +10,7 @@ Requirements para milestone v4.0 — Módulo Nutrición.
 ### Infraestructura BD (INFRA)
 
 - [x] **INFRA-01**: Las tablas `foods`, `food_equivalences`, `saved_dishes`, `meal_plan_items`, `food_log` y `client_measurements` existen en Supabase con types completos en `lib/supabase/types.ts`
-- [ ] **INFRA-02**: La tabla `foods` contiene seed inicial con 13 alimentos base (pollo, huevos, atún, ternera, salmón, arroz, pasta, patata, avena, pan, aceite oliva, aguacate, frutos secos)
+- [x] **INFRA-02**: La tabla `foods` contiene seed inicial con 13 alimentos base (pollo, huevos, atún, ternera, salmón, arroz, pasta, patata, avena, pan, aceite oliva, aguacate, frutos secos)
 
 ### Cálculo Nutricional (CALC)
 
@@ -113,7 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | INFRA-01 | Phase 8 | Complete |
-| INFRA-02 | Phase 8 | Pending |
+| INFRA-02 | Phase 8 | Complete |
 | CALC-01 | Phase 8 | Pending |
 | CALC-02 | Phase 8 | Pending |
 | CALC-03 | Phase 8 | Pending |
