@@ -74,6 +74,7 @@ export type ClientNutritionContextResult = {
     carbs: number
     fat: number
   }
+  logs: any[] // We can type this better later if needed
 }
 
 export async function getClientNutritionContextAction(
@@ -136,7 +137,8 @@ export async function getClientNutritionContextAction(
       success: true,
       data: {
         activePlan,
-        consumed
+        consumed,
+        logs: logs || []
       }
     }
   } catch (error: any) {
