@@ -8,6 +8,16 @@ Fitness Bassi is a personal training platform built for a trainer named Bassi an
 
 The workout tracking loop must work end-to-end: client starts a session, logs every set, finishes, and can review it in history — if this breaks, nothing else matters.
 
+## Current Milestone: v2.0 Bassi v2
+
+**Goal:** Fix critical bugs, complete the client experience (history, PRs, weight logging, revisiones), add AI nutrition parsing, and close all dead trainer sidebar links.
+
+**Target features:**
+- Technical debt: revisions types, "Reanudar entreno" bug, nutrition macro placeholders
+- Client: history feed, PR detection, weight/measurement logging, revisiones in nav
+- AI: Claude API nutrition parsing (text → macros)
+- Trainer: exercises page, close dead sidebar links
+
 ## Requirements
 
 ### Validated
@@ -38,21 +48,33 @@ The workout tracking loop must work end-to-end: client starts a session, logs ev
 
 ### Active
 
-<!-- Next milestone — history + PR detection -->
+<!-- v2.0 — Bassi v2 -->
 
-- [ ] Client can see their full workout history (sessions feed at `/history`)
-- [ ] Client can drill into a past session and see all logged sets
-- [ ] App flags when a set is a new personal record (best weight × reps for that exercise)
-- [ ] History feed highlights sessions where PRs were set
+- [ ] Bugfix: "Reanudar entreno" redirects to existing session instead of creating new one
+- [ ] Bugfix: `revisions`, `revision_measurements`, `revision_photos` tables typed properly in types.ts
+- [ ] Bugfix: Nutrition macro targets computed correctly for clients without active nutrition plan
+- [ ] Client: workout history feed at `/history` (already partially built — audit + complete)
+- [ ] Client: session detail page at `/history/[sessionId]` (already partially built — audit + complete)
+- [ ] Client: PR detection — badge shown during workout when set beats previous best
+- [ ] Client: History feed highlights sessions with PRs
+- [ ] Client: weight logging input from `/progress`
+- [ ] Client: measurement logging input (waist, etc.) from `/progress`
+- [ ] Client: target weight displayed as reference line on weight chart
+- [ ] Client: revisiones tab in bottom nav
+- [ ] AI: Claude API endpoint parses free text into nutrition macros
+- [ ] AI: Client confirms parsed macros before saving
+- [ ] AI: Fallback to manual entry if Claude doesn't recognize food
+- [ ] Trainer: exercises page (`/exercises`) — browse and manage exercise library
+- [ ] Trainer: dead sidebar links removed or implemented (`/reports`, `/settings`)
+- [ ] Trainer: "Ver historial" button in client detail navigates to client's session history
 
 ### Out of Scope
 
-- Personal Records UI (PRs) — deferred to v1.1; need more session data first
-- Volume/frequency stats — deferred to v1.1
 - Offline workout support — too complex; requires IndexedDB
-- Trainer-side workout session viewing — trainer can see client data in client detail page
-- Push notifications — not in scope
+- Push notifications — not in scope for v2
 - Real-time sync (trainer watching session live) — Supabase Realtime not yet integrated
+- Volume/frequency stats — deferred to v3
+- Mobile app (native) — web-first approach
 
 ## Context
 
@@ -62,15 +84,19 @@ The workout tracking loop must work end-to-end: client starts a session, logs ev
 - Pattern: pages fetch data server-side, pass to client components as props
 - ~15,585 LOC TypeScript/TSX (post-v1.0)
 - v1.0 shipped: `/workout/[sessionId]` page, navigation wiring, startWorkoutSession action
-- Pre-existing TypeScript errors (3): `profile/page.tsx` (href prop) + `clients/[id]/page.tsx` (Phase type) — pre-date v1.0
+- Dark design system: bg-base #191919, bg-surface #212121, bg-elevated #2a2a2a, accent #6b7fa3
+- `revisions`, `revision_measurements`, `revision_photos` exist in DB but not in types.ts — use `as any` workaround currently
+- `nutrition_plans` / `nutrition_plan_meals` types also incomplete — workaround with `as any`
 - Dev auth bypass active in middleware.ts (NODE_ENV === 'development') — remove before production
+- Claude API (@anthropic-ai/sdk) installed; use `claude-sonnet-4-20250514` model, server-side only
 
 ## Constraints
 
 - **Tech stack**: Next.js + Supabase only — no new heavy libraries without discussion
-- **Design system**: Only the established color palette and component library
+- **Design system**: Only the established color palette and component library (dark theme)
 - **Icons**: Lucide React exclusively
 - **No hardcoding**: All data must come from Supabase
+- **Claude API**: Server-side only — never expose API key to client
 
 ## Key Decisions
 
@@ -88,4 +114,4 @@ The workout tracking loop must work end-to-end: client starts a session, logs ev
 | Banner hide guard uses pathname.startsWith('/workout') | Covers all /workout/* sub-paths, prevents double-banner | ✓ Good |
 
 ---
-*Last updated: 2026-03-09 after v1.0 milestone — Workout Loop Completion shipped*
+*Last updated: 2026-03-09 after v2.0 milestone started — Bassi v2*
