@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.0
-milestone_name: Bassi v3 - Fixes & Polish
-status: Phase 6 completed and verified
-stopped_at: Phase 6 Verification complete
-last_updated: "2026-03-09T14:38:00.000Z"
-last_activity: 2026-03-09 — Phase 6 executed and verified successfully
+milestone: v4.0
+milestone_name: Módulo Nutrición
+status: Defining requirements
+stopped_at: Milestone v4.0 started
+last_updated: "2026-03-09T00:00:00.000Z"
+last_activity: 2026-03-09 — Milestone v4.0 started
 progress:
-  total_phases: 7
-  completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -18,19 +18,16 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-09 after v3.0 milestone started)
+See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 **Core value:** El loop de entrenamiento funciona de extremo a extremo — si esto falla, nada más importa.
-**Current focus:** Resuming Phase 5 or proceeding to Phase 7
+**Current focus:** Not started (defining requirements)
 
 ## Current Position
-- **Phase**: 5 (verified)
-- **Status**: ✅ Milestone v3.0 Bassi v3 - Fixes & Polish COMPLETED
-
-## Next Steps
-1. /complete-milestone
-
-Progress: [██████████] 100%  (7/7 global phases complete, 4/4 in v3.0 completed)
+- **Phase**: Not started
+- **Plan**: —
+- **Status**: Defining requirements
+- **Last activity**: 2026-03-09 — Milestone v4.0 started
 
 ## Performance Metrics
 
@@ -44,6 +41,10 @@ Progress: [██████████] 100%  (7/7 global phases complete, 4/
 - Average duration: ~35min per plan
 - Total execution time: ~35min per plan
 
+**v3.0 Velocity:**
+- Plans completed: 10 (phases 4-7)
+- Average duration: ~20min per plan
+
 ## Accumulated Context
 
 ### Architecture Patterns (established)
@@ -53,26 +54,33 @@ Progress: [██████████] 100%  (7/7 global phases complete, 4/
 - `params` is a Promise in Next.js 16: always `params: Promise<{ id: string }>` with `await params`
 - Global (dateless) collision check for session uniqueness: `.eq('completed', false).maybeSingle()`
 - Dark design system: CSS vars `--bg-base`, `--bg-surface`, `--bg-elevated`, `--accent`
+- Admin service role client for INSERT/UPDATE (no RLS INSERT policy for clients table)
 
 ### Known Gotchas
 - Dev auth bypass active in middleware.ts (`NODE_ENV === 'development'`) — remove before production
 - Recharts formatter: `(value: number | undefined, name: string | undefined)` to avoid type errors
 - Column ambiguity in `.eq()`: remove duplicate-named column from child select
-- Pre-existing TS errors in profile/page.tsx (href union) and clients/[id]/page.tsx (Phase type) — target TS-01, TS-02 in Phase 7
+- FK hints required on all embedded joins — PostgREST picks wrong direction otherwise
+- Existing nutrition tables: `nutrition_plans`, `nutrition_plan_meals` have incomplete types — workaround with `as any`; will be superseded by v4.0 INFRA work
 
 ### Useful Files
 - `lib/supabase/types.ts` — all Database types (1200+ lines)
+- `lib/calculations/nutrition.ts` — existing Cunningham/Tinsley/GET formulas (to be extended)
 - `lib/pr-detection.ts` — computePRBestsByClient, detectSessionPRs
 - `app/(client)/today/actions.ts` — `saveSetLog` and `finishWorkout` (reusable)
 - `app/(client)/history/page.tsx` — COMPLETE with real Supabase data + PR badges
-- `app/(client)/history/[sessionId]/page.tsx` — COMPLETE with set detail + PR badges
-- `app/(client)/nutrition/page.tsx` — COMPLETE (acceso a verificar — NUTR-01)
-- `components/trainer/sidebar.tsx` — sidebar del trainer (logo issue — TRNUI-01)
-- `app/(trainer)/dashboard/page.tsx` — dashboard trainer (margins, logo — TRNUI-03/04/05)
-- `app/(trainer)/clients/` — create client error (CLNT-01)
+- `app/(client)/nutrition/page.tsx` — existing nutrition checklist (to be expanded in v4.0)
+- `app/(client)/progress/page.tsx` — existing progress page (to be extended with logging in v4.0)
 
-### Blockers/Concerns
-- Error de producción CLNT-01 (Digest 2112945886) — CRÍTICO, investigar en Phase 5
+### v4.0 Nutrition Specs
+- nutrition-specs.md contains full DB schema, formulas, and UX flows for the nutrition module
+- Formulas: Katch-McArdle (con %grasa), Mifflin-St Jeor (sin %grasa), TDEE, macros por fase
+- Diet types: A=Estructurada (auto-generated meals), B=Opciones A/B/C (equivalents), C=Flexible (macros only)
+- Starting phase: Phase 8 (v3.0 ended at Phase 7)
+
+## Pending Todos
+
+(none)
 
 ## Decisions
 
@@ -81,33 +89,7 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [02-02 BUG-01]: Global session check (no date bounds) matches actions.ts collision guard
 - [02-02 BUG-03]: calculateNutrition() replaces hardcoded getKcalByPhase/buildTargets
 - [Phase 03-01]: detectSessionPRs compares current session vs prior sessions
-- [Phase 03-01]: Promise.all in history/page.tsx runs detectSessionPRs per session in parallel
-- [Phase 03-02]: prBestVolume passed as numeric threshold from server; isPR derived client-side
-- [Phase 04-login-trainer-ui-polish]: Usar /2.png en sidebar del trainer — el archivo con underscores no existe en /public
-- [Phase 04-login-trainer-ui-polish]: Eliminar logoPhase state completamente — animation fija como string literal es suficiente
-- [Phase 04-login-trainer-ui-polish]: useEffect de mount en ThemeProvider lee localStorage directamente para sincronizar estado React con DOM tras hidratación del script inline de layout.tsx
-- [Phase 04-login-trainer-ui-polish]: Todos los requisitos de Phase 4 verificados visualmente por el humano — aprobados sin issues adicionales
-- [Phase 05-client-management-fixes]: Use admin client (service role key) for clients INSERT in createClientAction — no INSERT RLS policy exists, regular user client fails in production with Digest 2112945886
-- [Phase 05-client-management-fixes]: activity_level removed from UI but preserved in form state and server action calls — hardcoded 'moderate' default in create modal, initial value preserved in edit panel
-
-## Pending Todos
-
-(none)
-
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Fix visual changes in login and dashboard pages | 2026-03-09 | 3a01770 | [1-fix-visual-changes-in-login-and-dashboar](./quick/1-fix-visual-changes-in-login-and-dashboar/) |
-| 2 | Glow amarillo del logo en login — fijo y estático | 2026-03-09 | c86f4d2 | [2-el-glow-amarillo-del-logo-en-login-tiene](./quick/2-el-glow-amarillo-del-logo-en-login-tiene/) |
-| Phase 04-login-trainer-ui-polish P04-01 | 1 | 2 tasks | 2 files |
-| Phase 04-login-trainer-ui-polish P02 | 5 | 1 tasks | 1 files |
-| Phase 04-login-trainer-ui-polish P03 | 0 | 1 tasks | 0 files |
-| Phase 05-client-management-fixes P01 | 4 | 2 tasks | 2 files |
-| Phase 05-client-management-fixes P02 | 2min | 2 tasks | 2 files |
-
-## Session Continuity
-
-Last session: 2026-03-09T13:03:34.177Z
-Stopped at: Completed 05-client-management-fixes 05-02-PLAN.md
-Resume file: None
+- [Phase 04-login-trainer-ui-polish]: Usar /2.png en sidebar del trainer
+- [Phase 04-login-trainer-ui-polish]: useEffect de mount en ThemeProvider sincroniza con localStorage
+- [Phase 05-client-management-fixes]: Use admin client (service role key) for clients INSERT — no RLS INSERT policy in production
+- [Phase 05-client-management-fixes]: activity_level hardcoded to 'moderate' default in create modal
