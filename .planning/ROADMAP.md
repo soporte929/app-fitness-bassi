@@ -51,7 +51,7 @@
 
 - [x] **Phase 8: Database Foundation + Formulas** — New nutrition tables in Supabase with full TypeScript types, seed data, and all calculation formulas (Katch-McArdle, Mifflin, TDEE, macros) (completed 2026-03-09)
 - [ ] **Phase 9: Trainer Plan Creator** — Trainer form with real-time calculation preview and support for diet types A, B, and C
-- [ ] **Phase 10: Trainer Plan Meals + Assignment** — Assign finalized plans to clients with start date and saved dishes builder
+- [x] **Phase 10: Trainer Plan Meals + Assignment** — Assign finalized plans to clients with start date and saved dishes builder (completed 2026-03-09)
 - [ ] **Phase 11: Client Nutrition View** — Client sees daily calorie/macro progress bars, meal list with equivalents, food logging, and weekly shopping list
 - [ ] **Phase 12: Progress Logging** — Client registers body weight and measurements from /progress; target weight reference line on chart
 - [ ] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback
@@ -98,10 +98,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. The trainer can select a client from a list and set a start date, then save the nutrition plan — the client immediately has an active nutrition plan associated to their account
   2. The trainer can create a saved dish by combining multiple foods with quantities, see the summed macro total, name the dish, and save it for reuse in future plans
-**Plans**: 2 plans
+**Plans**: 3 plans
 Plans:
 - [ ] 10-01-PLAN.md — Nutrition Plan Assignment & Persistence
 - [ ] 10-02-PLAN.md — Saved Dishes (Platos Guardados)
+- [ ] 10-03-PLAN.md — Gap closure: wirear selecciones de MealSlot al action (food_id/grams reales en meal_plan_items)
 
 ### Phase 11: Client Nutrition View
 **Goal**: The client has a complete daily nutrition dashboard where they can track their macros, see their planned meals, swap equivalents, log food, and get a weekly shopping list
@@ -163,7 +164,7 @@ Plans:
 | 7. TypeScript Cleanup | v3.0 | 1/1 | Complete | 2026-03-09 |
 | 8. Database Foundation + Formulas | 3/3 | Complete   | 2026-03-09 | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
-| 10. Trainer Plan Meals + Assignment | 1/2 | In Progress|  | - |
+| 10. Trainer Plan Meals + Assignment | 2/3 | Gap closure in progress | 2026-03-09 | - |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
 | 12. Progress Logging | v4.0 | 0/? | Not started | - |
 | 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |

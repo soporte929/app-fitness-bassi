@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T17:21:47.726Z"
+last_updated: "2026-03-09T17:24:44.518Z"
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Phase**: 10
-- **Plan**: 1 of 2 complete
-- **Status**: In progress
-- **Last activity**: 2026-03-09 — Plan 10-01 executed (nutrition plan assignment + persistence)
+- **Plan**: 2 of 2 complete (Phase 10 DONE)
+- **Status**: Phase 10 complete — ready for Phase 11
+- **Last activity**: 2026-03-09 — Plan 10-02 executed (saved dishes builder + MealSlot food search)
 
 ## Next Steps
-1. /execute 10 (plan 02)
+1. /execute 11 (Client Nutrition View)
 
 ## Progress Bar
 
@@ -35,7 +35,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 v4.0 Progress: [███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 28% (2/7 phases)
 Phase 8:  [x] Database Foundation + Formulas
 Phase 9:  [x] Trainer Plan Creator
-Phase 10: [~] Trainer Plan Meals + Assignment (1/2 plans done)
+Phase 10: [x] Trainer Plan Meals + Assignment
 Phase 11: [ ] Client Nutrition View
 Phase 12: [ ] Progress Logging
 Phase 13: [ ] AI Nutrition Parsing
@@ -122,3 +122,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 10]: start_date stored as created_at in nutrition_plans (no dedicated column in schema)
 - [Phase 10]: Server component parent fetches clients, passes to 'use client' form as props — avoids client-side Supabase fetch
 - [Phase 10]: Deactivate existing active plans before inserting new one (deactivate-then-insert pattern)
+- [Phase 10-02]: saved_dishes stored as per-100g macros normalized from ingredient weights — consistent with foods schema so MealSlot treats dishes exactly like foods
+- [Phase 10-02]: FoodSearchSlot is a local-state-only component — no server action at authoring time, DB insert happens when plan is saved

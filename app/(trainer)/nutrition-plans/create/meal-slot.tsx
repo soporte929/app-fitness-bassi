@@ -13,7 +13,7 @@ type SearchableItem =
   | { kind: 'food'; food: Food }
   | { kind: 'dish'; dish: SavedDish }
 
-interface SelectedItem {
+export interface SelectedItem {
   id: string
   kind: 'food' | 'dish'
   name: string
@@ -35,6 +35,7 @@ interface MealSlotProps {
   }
   foods: Food[]
   dishes: SavedDish[]
+  onMealChange?: (mealIndex: number, options: SelectedItem[][]) => void
 }
 
 function calcSlotMacros(items: SelectedItem[]) {
@@ -61,10 +62,12 @@ function FoodSearchSlot({
   foods,
   dishes,
   optionLabel,
+  onChange,
 }: {
   foods: Food[]
   dishes: SavedDish[]
   optionLabel?: string
+  onChange?: (items: SelectedItem[]) => void
 }) {
   const [query, setQuery] = useState('')
   const [items, setItems] = useState<SelectedItem[]>([])
@@ -108,18 +111,28 @@ function FoodSearchSlot({
             fat_per_100g: searchable.dish.fat_per_100g,
           }
 
-    setItems((prev) => [...prev, newItem])
+    setItems((prev) => {
+      const next = [...prev, newItem]
+      onChange?.(next)
+      return next
+    })
     setQuery('')
   }
 
   function updateGrams(id: string, kind: 'food' | 'dish', grams: number) {
-    setItems((prev) =>
-      prev.map((i) => (i.id === id && i.kind === kind ? { ...i, grams } : i))
-    )
+    setItems((prev) => {
+      const next = prev.map((i) => (i.id === id && i.kind === kind ? { ...i, grams } : i))
+      onChange?.(next)
+      return next
+    })
   }
 
   function removeItem(id: string, kind: 'food' | 'dish') {
-    setItems((prev) => prev.filter((i) => !(i.id === id && i.kind === kind)))
+    setItems((prev) => {
+      const next = prev.filter((i) => !(i.id === id && i.kind === kind))
+      onChange?.(next)
+      return next
+    })
   }
 
   const macros = calcSlotMacros(items)
@@ -230,13 +243,16 @@ function FoodSearchSlot({
   )
 }
 
-export function MealSlot({ mealNumber, dietType, targetMacros, foods, dishes }: MealSlotProps) {
+export function MealSlot({ mealNumber, dietType, targetMacros, foods, dishes, onMealChange }: MealSlotProps) {
   const [options, setOptions] = useState([{ id: 1, label: 'Opción A' }])
+  const [slotItemsA, setSlotItemsA] = useState<SelectedItem[]>([])
+  const [slotItemsB, setSlotItemsB] = useState<SelectedItem[][]>([[]])
 
   const addOption = () => {
     if (options.length < 3) {
       const labels = ['Opción A', 'Opción B', 'Opción C']
       setOptions((prev) => [...prev, { id: prev.length + 1, label: labels[prev.length] }])
+      setSlotItemsB((prev) => [...prev, []])
     }
   }
 
@@ -253,7 +269,14 @@ export function MealSlot({ mealNumber, dietType, targetMacros, foods, dishes }: 
       </div>
 
       {dietType === 'A' ? (
-        <FoodSearchSlot foods={foods} dishes={dishes} />
+        <FoodSearchSlot
+          foods={foods}
+          dishes={dishes}
+          onChange={(items) => {
+            setSlotItemsA(items)
+            onMealChange?.(mealNumber - 1, [items])
+          }}
+        />
       ) : (
         <div className="space-y-4">
           {options.map((opt) => (
@@ -262,6 +285,14 @@ export function MealSlot({ mealNumber, dietType, targetMacros, foods, dishes }: 
               foods={foods}
               dishes={dishes}
               optionLabel={opt.label}
+              onChange={(items) => {
+                setSlotItemsB((prev) => {
+                  const next = [...prev]
+                  next[opt.id - 1] = items
+                  onMealChange?.(mealNumber - 1, next)
+                  return next
+                })
+              }}
             />
           ))}
           {options.length < 3 && (
