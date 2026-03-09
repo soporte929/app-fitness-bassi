@@ -12,7 +12,7 @@ export interface ClientAlertInput {
   daysSinceLastWorkout: number;
   weightDeltaKg: number;        // últimas 2 semanas (+ = subiendo)
   waistDeltaCm: number;         // últimas 2 semanas (+ = subiendo)
-  phase: "deficit" | "surplus" | "maintenance";
+  phase: "deficit" | "surplus" | "maintenance" | "recomposition" | "volume";
   weeklyWorkoutsCompleted: number;
   weeklyWorkoutsTarget: number;
 }
