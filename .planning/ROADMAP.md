@@ -139,6 +139,6 @@ Plans:
 | 2. Bug Fixes & Type Safety | v2.0 | 2/2 | Complete | 2026-03-09 |
 | 3. History & Personal Records | v2.0 | 2/2 | Complete | 2026-03-09 |
 | 4. Login & Trainer UI Polish | 3/3 | Complete   | 2026-03-09 | - |
-| 5. Client Management Fixes | v3.0 | 0/3 | Not started | - |
+| 5. Client Management Fixes | 1/3 | In Progress|  | - |
 | 6. Navigation & Plans | v3.0 | 0/TBD | Not started | - |
 | 7. TypeScript Cleanup | v3.0 | 0/TBD | Not started | - |

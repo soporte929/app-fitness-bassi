@@ -27,14 +27,6 @@ const objectiveOptions: Array<{ value: Objective; label: string }> = [
   { value: 'maintenance_normal', label: 'Mantenimiento normal' },
 ]
 
-const activityOptions: { value: ActivityLevel; label: string }[] = [
-  { value: 'sedentary', label: 'Sedentario (legacy)' },
-  { value: 'light', label: 'Ligero (legacy)' },
-  { value: 'moderate', label: 'Moderado (legacy)' },
-  { value: 'active', label: 'Activo (legacy)' },
-  { value: 'very_active', label: 'Muy activo' },
-]
-
 const lifestyleOptions: Array<{ value: Lifestyle; label: string }> = [
   { value: 'sedentary', label: 'Sedentario' },
   { value: 'light', label: 'Ligeramente activo' },
@@ -301,21 +293,6 @@ export function CreateClientModal({ open, onOpenChange }: Props) {
               {errors.daily_steps && <p className="text-xs text-[var(--danger)] mt-1">{errors.daily_steps}</p>}
             </div>
 
-            <p className={sectionCls}>Notas del trainer</p>
-            <div>
-              <label className={labelCls}>Notas del trainer</label>
-              <textarea
-                rows={4}
-                maxLength={500}
-                value={form.trainer_notes}
-                onChange={(e) => set('trainer_notes', e.target.value)}
-                placeholder="Observaciones, lesiones, preferencias..."
-                className={`${inputCls} resize-none`}
-              />
-              <p className="text-[10px] text-[#a0a0a0] mt-1">{form.trainer_notes.length}/500</p>
-              {errors.trainer_notes && <p className="text-xs text-[var(--danger)] mt-1">{errors.trainer_notes}</p>}
-            </div>
-
             <p className={sectionCls}>Composición corporal</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -330,16 +307,6 @@ export function CreateClientModal({ open, onOpenChange }: Props) {
               </div>
             </div>
 
-            <p className={sectionCls}>Compatibilidad</p>
-            <div>
-              <label className={labelCls}>Nivel de actividad (legacy)</label>
-              <CustomSelect
-                options={activityOptions}
-                value={form.activity_level}
-                onChange={(v) => set('activity_level', v)}
-              />
-            </div>
-
             <div>
               <label className={labelCls}>Peso objetivo (kg)</label>
               <input type="number" inputMode="decimal" step="0.1" value={form.target_weight_kg} onChange={(e) => set('target_weight_kg', e.target.value)} placeholder="—" className={inputCls} />
@@ -350,6 +317,21 @@ export function CreateClientModal({ open, onOpenChange }: Props) {
               <label className={labelCls}>Fecha de ingreso *</label>
               <input type="date" value={form.joined_date} max={today} onChange={(e) => set('joined_date', e.target.value)} className={inputCls} />
               {errors.joined_date && <p className="text-xs text-[var(--danger)] mt-1">{errors.joined_date}</p>}
+            </div>
+
+            <p className={sectionCls}>Notas del trainer</p>
+            <div>
+              <label className={labelCls}>Notas del trainer</label>
+              <textarea
+                rows={4}
+                maxLength={500}
+                value={form.trainer_notes}
+                onChange={(e) => set('trainer_notes', e.target.value)}
+                placeholder="Observaciones, lesiones, preferencias..."
+                className={`${inputCls} resize-none`}
+              />
+              <p className="text-[10px] text-[#a0a0a0] mt-1">{form.trainer_notes.length}/500</p>
+              {errors.trainer_notes && <p className="text-xs text-[var(--danger)] mt-1">{errors.trainer_notes}</p>}
             </div>
           </div>
 

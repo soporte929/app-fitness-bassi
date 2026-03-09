@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Bassi v3 - Fixes & Polish
 status: Roadmap ready — plan Phase 4 to start execution
-stopped_at: Completed 04-login-trainer-ui-polish 04-03-PLAN.md
-last_updated: "2026-03-09T12:23:26.647Z"
+stopped_at: Completed 05-client-management-fixes 05-01-PLAN.md
+last_updated: "2026-03-09T12:59:17.204Z"
 last_activity: 2026-03-09 — Roadmap created for v3.0
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 7
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
   percent: 0
 ---
 
@@ -87,6 +87,7 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 04-login-trainer-ui-polish]: Eliminar logoPhase state completamente — animation fija como string literal es suficiente
 - [Phase 04-login-trainer-ui-polish]: useEffect de mount en ThemeProvider lee localStorage directamente para sincronizar estado React con DOM tras hidratación del script inline de layout.tsx
 - [Phase 04-login-trainer-ui-polish]: Todos los requisitos de Phase 4 verificados visualmente por el humano — aprobados sin issues adicionales
+- [Phase 05-client-management-fixes]: Use admin client (service role key) for clients INSERT in createClientAction — no INSERT RLS policy exists, regular user client fails in production with Digest 2112945886
 
 ## Pending Todos
 
@@ -101,9 +102,10 @@ All key decisions documented in PROJECT.md Key Decisions table.
 | Phase 04-login-trainer-ui-polish P04-01 | 1 | 2 tasks | 2 files |
 | Phase 04-login-trainer-ui-polish P02 | 5 | 1 tasks | 1 files |
 | Phase 04-login-trainer-ui-polish P03 | 0 | 1 tasks | 0 files |
+| Phase 05-client-management-fixes P01 | 4 | 2 tasks | 2 files |
 
 ## Session Continuity
 
-Last session: 2026-03-09T12:23:26.644Z
-Stopped at: Completed 04-login-trainer-ui-polish 04-03-PLAN.md
+Last session: 2026-03-09T12:59:17.201Z
+Stopped at: Completed 05-client-management-fixes 05-01-PLAN.md
 Resume file: None
