@@ -24,7 +24,11 @@ Milestone v1.0 completes the workout tracking loop by building the dedicated wor
   3. A rest timer appears automatically after marking a set complete, counts down, and dismisses without interrupting the workout flow
   4. Client taps "Finish Workout" and the session is marked complete in Supabase, then the client is redirected to history
   5. Navigating to `/today` while a session is active redirects to `/workout/[sessionId]`, and the active session banner links to that page instead of `/today`
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Create startWorkoutSession action + /workout/[sessionId] page (core session, set logging, finish flow)
+- [ ] 01-02-PLAN.md — Wire navigation: today/ redirect + active session banner update
 
 ## Progress
 
@@ -33,4 +37,4 @@ Phases execute in numeric order: 1
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Workout Session | 0/TBD | Not started | - |
+| 1. Workout Session | 0/2 | Not started | - |
