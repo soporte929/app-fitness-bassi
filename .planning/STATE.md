@@ -21,10 +21,10 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 8 — Database Foundation + Formulas (next to plan)
 
 ## Current Position
-- **Phase**: 10
-- **Plan**: 3 of 3 complete (Phase 10 DONE)
-- **Status**: Phase 10 complete — ready for Phase 11
-- **Last activity**: 2026-03-09 — Plan 10-03 executed (wire MealSlot selections to server — real meal_plan_items INSERT)
+- **Phase**: 10.1
+- **Plan**: 1 of 1 complete (Phase 10.1 DONE)
+- **Status**: Phase 10.1 complete — ready for Phase 11
+- **Last activity**: 2026-03-09 — Plan 10.1-01 executed (persist diet_type, meals_count, is_template at DB level and actions)
 
 ## Next Steps
 1. /execute 11 (Client Nutrition View)
@@ -32,15 +32,16 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Progress Bar
 
 ```
-v4.0 Progress: [██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 25% (2/8 phases)
-Phase 8:  [x] Database Foundation + Formulas
-Phase 9:  [x] Trainer Plan Creator
-Phase 10: [x] Trainer Plan Meals + Assignment
-Phase 11: [ ] Client Nutrition View
-Phase 12: [ ] Progress Logging
-Phase 13: [ ] AI Nutrition Parsing
-Phase 14: [ ] Trainer Completar
-Phase 15: [ ] Bug Fixes & Logic Corrections
+v4.0 Progress: [████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░] 33% (3/9 phases)
+Phase 8:    [x] Database Foundation + Formulas
+Phase 9:    [x] Trainer Plan Creator
+Phase 10:   [x] Trainer Plan Meals + Assignment
+Phase 10.1: [x] Persist Plan Metadata
+Phase 11:   [ ] Client Nutrition View
+Phase 12:   [ ] Progress Logging
+Phase 13:   [ ] AI Nutrition Parsing
+Phase 14:   [ ] Trainer Completar
+Phase 15:   [ ] Bug Fixes & Logic Corrections
 ```
 
 ## Performance Metrics

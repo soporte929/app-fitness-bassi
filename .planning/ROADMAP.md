@@ -52,7 +52,7 @@
 - [x] **Phase 8: Database Foundation + Formulas** — New nutrition tables in Supabase with full TypeScript types, seed data, and all calculation formulas (Katch-McArdle, Mifflin, TDEE, macros) (completed 2026-03-09)
 - [ ] **Phase 9: Trainer Plan Creator** — Trainer form with real-time calculation preview and support for diet types A, B, and C
 - [x] **Phase 10: Trainer Plan Meals + Assignment** — Assign finalized plans to clients with start date and saved dishes builder (completed 2026-03-09)
-- [ ] **Phase 10.1: Persist Plan Metadata** — Gap closure: persist diet_type, meals_count, and is_template to nutrition_plans so Phase 11 can reconstruct any plan's structure
+- [x] **Phase 10.1: Persist Plan Metadata** — Gap closure: persist diet_type, meals_count, and is_template to nutrition_plans so Phase 11 can reconstruct any plan's structure
 - [ ] **Phase 11: Client Nutrition View** — Client sees daily calorie/macro progress bars, meal list with equivalents, food logging, and weekly shopping list
 - [ ] **Phase 12: Progress Logging** — Client registers body weight and measurements from /progress; target weight reference line on chart
 - [ ] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback
@@ -193,7 +193,7 @@ Plans:
 | 8. Database Foundation + Formulas | 3/3 | Complete   | 2026-03-09 | - |
 | 9. Trainer Plan Creator | v4.0 | 0/? | Not started | - |
 | 10. Trainer Plan Meals + Assignment | 3/3 | Complete    | 2026-03-09 | - |
-| 10.1. Persist Plan Metadata | v4.0 | 0/1 | Not started | - |
+| 10.1. Persist Plan Metadata | v4.0 | 1/1 | Complete | 2026-03-09 |
 | 11. Client Nutrition View | v4.0 | 0/? | Not started | - |
 | 12. Progress Logging | v4.0 | 0/? | Not started | - |
 | 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |
