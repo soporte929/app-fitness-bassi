@@ -109,10 +109,10 @@ export function TrainerSidebar({
           <div className={cn("flex items-center gap-3 min-w-0", isMobile && collapsed && "justify-center")}>
             {(!isMobile || !collapsed) ? (
               <Image
-                src="/Black_and_Yellow_Square_Fitness_Logo.png"
+                src="/2.png"
                 alt="Fitness Bassi"
                 width={120}
-                height={60}
+                height={40}
                 className="object-contain"
                 priority
               />
