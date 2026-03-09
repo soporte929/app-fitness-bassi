@@ -1,53 +1,36 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
-last_updated: "2026-03-09T02:47:30.333Z"
+milestone: v1.1
+milestone_name: TBD
+status: planning
+last_updated: "2026-03-09T03:15:53.618Z"
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-09)
+See: .planning/PROJECT.md (updated 2026-03-09 after v1.0 milestone)
 
 **Core value:** The workout tracking loop must work end-to-end — start session, log sets, finish, review in history.
-**Current focus:** Phase 1 — Workout Session
+**Current focus:** Planning next milestone (v1.1 — history feed + PR detection)
 
 ## Current Position
 
-Phase: 1 of 1 (Workout Session)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-03-09 — Completed 01-01 (startWorkoutSession + /workout/[sessionId] page)
-
-Progress: [█████░░░░░] 50%
+Phase: —
+Status: Between milestones — v1.0 shipped, v1.1 not yet planned
 
 ## Performance Metrics
 
-**Velocity:**
-- Total plans completed: 1
-- Average duration: ~2m
-- Total execution time: ~2m
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01 | 1 | ~2m | ~2m |
-
-**Recent Trend:**
-- Last 5 plans: 01-01 (2m)
-- Trend: —
-
-*Updated after each plan completion*
-| Phase 01 P02 | 3m | 2 tasks | 2 files |
+**v1.0 Velocity:**
+- Plans completed: 2
+- Average duration: ~2.5m per plan
+- Total execution time: ~5m
 
 ## Accumulated Context
 
@@ -56,33 +39,32 @@ Progress: [█████░░░░░] 50%
 - Server Actions in `actions.ts` alongside route; called directly with typed params
 - All Supabase joins use explicit FK hints to avoid ambiguous FK failures
 - `params` is a Promise in Next.js 16: always `params: Promise<{ id: string }>` with `await params`
+- Global (dateless) collision check for session uniqueness: `.eq('completed', false).maybeSingle()`
+- `pathname.startsWith('/route')` for hide guards on dynamic sub-paths
 
 ### Known Gotchas
 - `nutrition_plans` / `nutrition_plan_meals` types incomplete in types.ts (use `as any` workaround)
-- Dev auth bypass active in middleware.ts (`NODE_ENV === 'development'`)
+- Dev auth bypass active in middleware.ts (`NODE_ENV === 'development'`) — remove before production
 - Recharts formatter: `(value: number | undefined, name: string | undefined)` to avoid type errors
 - Column ambiguity in `.eq()`: if parent + child both have same column, remove from child select
+- Pre-existing TypeScript errors (3): `profile/page.tsx` + `clients/[id]/page.tsx` — pre-date v1.0
 
 ### Useful Files
 - `lib/supabase/types.ts` — all Database types (1200+ lines)
-- `components/client/rest-timer.tsx` — rest timer already built (listens to `startRestTimer` custom event)
-- `components/client/exercise-card.tsx` — set logging already built (weight, reps, RIR, mark complete)
-- `components/client/today-exercises-progress.tsx` — wraps ExerciseCards for a session (already exists)
-- `components/client/active-session-banner.tsx` — needs small update to link to `/workout/[sessionId]`
-- `app/(client)/today/actions.ts` — has `saveSetLog` and `finishWorkout` (reuse from workout page)
-- `app/(client)/routines/[planId]/page.tsx` — imports `startWorkoutSession` from `./actions` but actions.ts MISSING
+- `components/client/rest-timer.tsx` — listens to `startRestTimer` custom event
+- `components/client/exercise-card.tsx` — set logging (weight, reps, RIR, mark complete)
+- `components/client/today-exercises-progress.tsx` — wraps ExerciseCards for a session
+- `components/client/active-session-banner.tsx` — session polling, links to /workout/[sessionId]
+- `app/(client)/today/actions.ts` — `saveSetLog` and `finishWorkout` (reusable across routes)
+- `app/(client)/workout/[sessionId]/page.tsx` — active workout session page (v1.0 built)
+- `app/(client)/routines/[planId]/actions.ts` — `startWorkoutSession` (global collision check)
 
 ### Blockers/Concerns
-- (none — previous blocker resolved: `app/(client)/routines/[planId]/actions.ts` created in plan 01-01)
+- (none)
 
 ## Decisions
 
-- **01-01:** Global collision check — one active workout session allowed at a time across all days
-- **01-01:** finishWorkout reused from `today/actions.ts` — not duplicated in workout page
-- **01-01:** No back button on `/workout/[sessionId]` — focused workout experience per CONTEXT.md
-- **01-01:** Error fallback on session create failure redirects to `/routines` (not `/today`)
-- [Phase 01]: today/page.tsx simplified — all workout rendering removed as dead code after redirect added
-- [Phase 01]: Banner hide guard uses pathname.startsWith('/workout') to cover all /workout/* sub-paths
+All key decisions documented in PROJECT.md Key Decisions table.
 
 ## Pending Todos
 
@@ -90,6 +72,6 @@ Progress: [█████░░░░░] 50%
 
 ## Session Continuity
 
-Last session: 2026-03-09T02:43:41.735Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-03-09
+Stopped at: v1.0 milestone complete — run /gsd:new-milestone to start v1.1
 Resume file: None
