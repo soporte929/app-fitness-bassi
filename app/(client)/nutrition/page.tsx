@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PageTransition } from '@/components/ui/page-transition'
 import { MacroProgressBars } from '@/components/client/nutrition/MacroProgressBars'
+import { ClientDailyMeals } from '@/components/client/nutrition/ClientDailyMeals'
 import { getClientNutritionContextAction } from './actions'
 import type { Database } from '@/lib/supabase/types'
 
@@ -69,14 +70,23 @@ export default async function NutritionPage() {
           consumed={context?.consumed || { kcal: 0, protein: 0, carbs: 0, fat: 0 }}
         />
 
-        {/* Placeholders for upcoming phases */}
-        <section className="mb-6 opacity-50">
+        {/* Plan Section */}
+        <section className="mb-6">
           <p className="text-xs font-medium text-[#6b7fa3] tracking-wide uppercase mb-3">
             Plan del entrenador
           </p>
-          <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5 text-center">
-            <p className="text-sm text-[#a0a0a0]">Sección en construcción (Próxima actualización en fase 11.2)</p>
-          </div>
+          {context?.activePlan ? (
+            <ClientDailyMeals
+              clientId={client.id}
+              dateStr={currentDateString}
+              plan={context.activePlan}
+              logs={context.logs}
+            />
+          ) : (
+            <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5 text-center">
+              <p className="text-sm text-[#a0a0a0]">No hay plan activo disponible</p>
+            </div>
+          )}
         </section>
 
         <section className="opacity-50">

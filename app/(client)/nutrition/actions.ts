@@ -67,7 +67,13 @@ export async function deleteNutritionLogAction(logId: string): Promise<void> {
 }
 
 export type ClientNutritionContextResult = {
-  activePlan: Database['public']['Tables']['nutrition_plans']['Row'] | null
+  activePlan: (Database['public']['Tables']['nutrition_plans']['Row'] & {
+    meals: Database['public']['Tables']['nutrition_plan_meals']['Row'][]
+    items: (Database['public']['Tables']['meal_plan_items']['Row'] & {
+      food: Database['public']['Tables']['foods']['Row'] | null
+      dish: Database['public']['Tables']['saved_dishes']['Row'] | null
+    })[]
+  }) | null
   consumed: {
     kcal: number
     protein: number
@@ -86,7 +92,7 @@ export async function getClientNutritionContextAction(
 
     const { data: activePlan, error: planError } = await supabase
       .from('nutrition_plans')
-      .select('*')
+      .select('*, meals:nutrition_plan_meals(*), items:meal_plan_items(*, food:foods(*), dish:saved_dishes(*))')
       .eq('client_id', clientId)
       .eq('active', true)
       .maybeSingle()
@@ -141,6 +147,47 @@ export async function getClientNutritionContextAction(
         logs: logs || []
       }
     }
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Unknown error' }
+  }
+}
+
+export async function logPlannedMealAction(
+  clientId: string,
+  dateStr: string,
+  mealNumber: number,
+  itemsToLog: Array<{ foodId: string | null; dishId: string | null; grams: number }>
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const { data: ownClient } = await supabase
+      .from('clients')
+      .select('id')
+      .eq('profile_id', user.id)
+      .eq('id', clientId)
+      .maybeSingle()
+
+    if (!ownClient) return { success: false, error: 'Cliente no válido' }
+
+    const inserts = itemsToLog.map(item => ({
+      client_id: ownClient.id,
+      logged_date: dateStr,
+      meal_number: mealNumber,
+      food_id: item.foodId,
+      dish_id: item.dishId,
+      grams: item.grams
+    }))
+
+    if (inserts.length > 0) {
+      const { error } = await supabase.from('food_log').insert(inserts)
+      if (error) throw error
+    }
+
+    revalidatePath('/nutrition')
+    return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message || 'Unknown error' }
   }
