@@ -68,5 +68,5 @@ Progress: [░░░░░░░░░░] 0%
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Roadmap created — ready to run /gsd:plan-phase 1
-Resume file: None
+Stopped at: Phase 1 context gathered — ready to run /gsd:plan-phase 1
+Resume file: .planning/phases/01-workout-session/01-CONTEXT.md
