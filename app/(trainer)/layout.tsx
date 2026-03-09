@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import Image from "next/image";
 import { TrainerSidebar } from "@/components/trainer/sidebar";
 import LoadingScreen from "@/components/ui/loading-screen";
 import { Menu } from "lucide-react";
@@ -58,9 +59,18 @@ export default function TrainerLayout({
         >
           <Menu className="w-5 h-5 text-[var(--text-primary)]" />
         </button>
-        <span className="ml-3 text-sm font-semibold text-[var(--text-primary)] tracking-wide">
-          Fitness Bassi
-        </span>
+        <div className="flex-1 flex items-center justify-center">
+          <Image
+            src="/2.png"
+            alt="Fitness Bassi"
+            width={80}
+            height={32}
+            className="object-contain"
+            priority
+          />
+        </div>
+        {/* Spacer para centrar logo */}
+        <div className="w-9 h-9" />
       </div>
 
       {/* Main content adjusts left padding based on sidebar state */}
