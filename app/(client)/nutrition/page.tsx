@@ -108,7 +108,7 @@ export default async function NutritionPage() {
               Registro libre
             </p>
             <div className="flex items-center gap-2">
-              <AIFoodParserModal clientId={client.id} />
+              <AIFoodParserModal clientId={client.id} dateStr={currentDateString} />
               <FoodSearchModal
                 clientId={client.id}
                 dateStr={currentDateString}

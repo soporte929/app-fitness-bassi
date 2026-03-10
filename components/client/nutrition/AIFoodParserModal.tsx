@@ -3,11 +3,11 @@
 import { useState, useTransition } from 'react'
 import { Loader2, Sparkles, X, ChevronLeft } from 'lucide-react'
 import { parseNutritionAction, type MacroEstimate } from '@/app/(client)/nutrition/ai-actions'
-import { createNutritionFreeLogAction } from '@/app/(client)/nutrition/free-log-actions'
+import { logAIFoodEntryAction } from '@/app/(client)/nutrition/actions'
 
 type Step = 'input' | 'loading' | 'confirm' | 'fallback'
 
-export function AIFoodParserModal({ clientId }: { clientId: string }) {
+export function AIFoodParserModal({ clientId, dateStr }: { clientId: string; dateStr: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState<Step>('input')
   const [description, setDescription] = useState('')
@@ -65,15 +65,14 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
 
   const handleSave = () => {
     startTransition(async () => {
-      await createNutritionFreeLogAction({
-        clientId,
-        foodName: estimate?.description || description,
-        grams: null,
-        calories: Number(manualKcal) || null,
-        proteinG: Number(manualProtein) || null,
-        carbsG: Number(manualCarbs) || null,
-        fatG: Number(manualFat) || null,
-      })
+      const macroData: MacroEstimate = {
+        kcal: Number(manualKcal) || 0,
+        protein_g: Number(manualProtein) || 0,
+        carbs_g: Number(manualCarbs) || 0,
+        fat_g: Number(manualFat) || 0,
+        description: estimate?.description || description || 'Alimento libre',
+      }
+      await logAIFoodEntryAction(clientId, macroData, dateStr)
       closeModal()
     })
   }
