@@ -237,7 +237,7 @@ export function CreateTemplateModal() {
                 <div className="space-y-3">
                   {meals.map((meal, index) => (
                     <div
-                      key={`${index}-${meal.name}`}
+                      key={index}
                       className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] p-3"
                     >
                       <div className="mb-2 flex items-center justify-between">
