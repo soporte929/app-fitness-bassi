@@ -67,7 +67,7 @@
 <summary>📋 v4.2 Gap Closure (Phases 20-23) — IN PROGRESS</summary>
 
 - [x] **Phase 20: Integration Bug Fixes** — Fix AI food parser writing to wrong table (nutrition_logs→food_log) and Phase 19 modal not cloning meal_plan_items; remove dead code (completed 2026-03-10)
-- [ ] **Phase 21: Retroactive Verification — Phases 10, 10.1, 16, 17** — Create missing VERIFICATION.md for four implemented-but-unverified phases
+- [x] **Phase 21: Retroactive Verification — Phases 10, 10.1, 16, 17** — Create missing VERIFICATION.md for four implemented-but-unverified phases (completed 2026-03-10)
 - [x] **Phase 22: Retroactive Verification — Phase 11** — Create VERIFICATION.md for Phase 11 after integration fixes from Phase 20 are in place (completed 2026-03-10)
 - [ ] **Phase 23: CALC Audit + Traceability Cleanup** — Verify CALC-01-05 formulas exist, fix stale PROG checkboxes, add V41 requirements to traceability table
 
@@ -352,6 +352,6 @@ Plans:
 | 18. Client App Improvements | 2/2 | Complete    | 2026-03-10 | - |
 | 19. Trainer Settings & Modals | 2/2 | Complete    | 2026-03-10 | - |
 | 20. Integration Bug Fixes | 2/2 | Complete    | 2026-03-10 | - |
-| 21. Retroactive Verification (10, 10.1, 16, 17) | v4.2 | 0/? | Not started | - |
+| 21. Retroactive Verification (10, 10.1, 16, 17) | v4.2 | Complete    | 2026-03-10 | - |
 | 22. Retroactive Verification (11) | v4.2 | 0/? | Not started | - |
 | 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |
