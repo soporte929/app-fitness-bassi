@@ -285,5 +285,5 @@ Plans:
 | 15. Bug Fixes & Logic Corrections | 4/4 | Complete   | 2026-03-10 | - |
 | 16. Branding & UI Corrections | v4.1 | 1/1 | Complete | 2026-03-10 |
 | 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
-| 18. Client App Improvements | v4.1 | 0/2 | Planned | - |
+| 18. Client App Improvements | 1/2 | In Progress|  | - |
 | 19. Trainer Settings & Modals | v4.1 | 0/? | Not started | - |

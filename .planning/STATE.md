@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.1
-milestone_name: Polish & Settings
-status: Milestone planned
-last_updated: "2026-03-10T15:30:00.000Z"
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-03-10T16:28:20.185Z"
 progress:
-  total_phases: 4
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_phases: 10
+  completed_phases: 7
+  total_plans: 20
+  completed_plans: 21
 ---
 
 # State
@@ -23,11 +23,12 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Current Position
 - **Milestone**: v4.1 Polish & Settings
 - **Phase**: 18
-- **Status**: Planning complete
-- **Last activity**: 2026-03-10 — Phase 18 planned (Avatar upload and Nutrition UI checklist).
+- **Plan**: 1 of 2 complete
+- **Status**: In progress — 18-01 complete, 18-02 pending
+- **Last activity**: 2026-03-10 — Completed 18-01-PLAN.md (avatar photo upload)
 
 ## Next Steps
-1. /execute 18 — run all plans
+1. /execute 18 plan 2 — run 18-02 (nutrition UI improvements)
 
 ## Progress Bar
 
@@ -138,3 +139,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 15-03]: MetadataRoute.Manifest purpose separado en entries individuales ('any' / 'maskable') — string combinado no válido en TypeScript
 - [Phase 15-04]: full_name.trim() || undefined (no null) — profiles.Update es Partial<Insert> donde full_name es string | undefined
 - [Phase 15-04]: BUG-03 verificado como inexistente — RoutineBuilder ya mantiene estado entre steps sin cambios
+- [Phase 18-01]: upload path avatars/<userId>/<timestamp>.<ext> — namespaced by user, unique by timestamp, no collisions
+- [Phase 18-01]: userId passed as prop from server page component to EditProfileForm — avoids client-side auth fetch
