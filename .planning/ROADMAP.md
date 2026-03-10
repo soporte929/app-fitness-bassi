@@ -214,6 +214,6 @@ Plans:
 | 10.1. Persist Plan Metadata | v4.0 | 1/1 | Complete | 2026-03-09 |
 | 11. Client Nutrition View | v4.0 | 0/4 | Planned | - |
 | 12. Progress Logging | v4.0 | 2/2 | Complete | 2026-03-10 |
-| 13. AI Nutrition Parsing | v4.0 | 0/2 | Planned | - |
+| 13. AI Nutrition Parsing | 1/2 | In Progress|  | - |
 | 14. Trainer Completar | v4.0 | 0/? | Not started | - |
 | 15. Bug Fixes & Logic Corrections | v4.0 | 0/? | Not started | - |

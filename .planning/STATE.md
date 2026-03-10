@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T17:47:49.773Z"
+last_updated: "2026-03-10T10:24:37.525Z"
 progress:
-  total_phases: 2
+  total_phases: 5
   completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 8
+  completed_plans: 9
 ---
 
 # State
@@ -21,13 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
 
 ## Current Position
-- **Phase**: 12 (completed)
-- **Task**: All tasks complete
-- **Status**: Verified
-- **Last activity**: 2026-03-10 — Phase 12 executed successfully. 2 plans completed.
+- **Phase**: 13-ai-nutrition-parsing (in progress — plan 01 of 2 complete)
+- **Task**: 13-01 complete, 13-02 next
+- **Status**: In Progress
+- **Last activity**: 2026-03-10 — Phase 13 Plan 01 executed. parseNutritionAction Server Action created.
 
 ## Next Steps
-1. /plan 13
+1. Execute 13-02 (AI Nutrition UI)
 
 ## Progress Bar
 
@@ -39,7 +39,7 @@ Phase 10:   [x] Trainer Plan Meals + Assignment
 Phase 10.1: [x] Persist Plan Metadata
 Phase 11:   [x] Client Nutrition View
 Phase 12:   [x] Progress Logging
-Phase 13:   [ ] AI Nutrition Parsing
+Phase 13:   [~] AI Nutrition Parsing (1/2 plans done)
 Phase 14:   [ ] Trainer Completar
 Phase 15:   [ ] Bug Fixes & Logic Corrections
 ```
@@ -128,3 +128,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 10-02]: FoodSearchSlot is a local-state-only component — no server action at authoring time, DB insert happens when plan is saved
 - [Phase 10-03]: MealSelectedItem defined locally in actions.ts — cannot import 'use client' types in server actions
 - [Phase 10-03]: mealItems optional in AssignNutritionPlanInput — plans without food selections are valid; no empty rows inserted
+- [Phase 13-ai-nutrition-parsing]: AI Server Action in separate ai-actions.ts file — keeps Claude API logic isolated from Supabase mutations
+- [Phase 13-ai-nutrition-parsing]: max_tokens: 256 for Claude macro estimate — sufficient for JSON response without waste
