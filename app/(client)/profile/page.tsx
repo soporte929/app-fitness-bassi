@@ -151,6 +151,7 @@ export default async function ProfilePage() {
                 full_name: profile.full_name ?? null,
                 avatar_url: profile.avatar_url ?? null,
               }}
+              userId={user.id}
             />
             <p className="text-sm text-[var(--text-secondary)] truncate mt-3">
               {profile.email}
