@@ -21,13 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
 
 ## Current Position
-- **Phase**: 14-trainer-completar (COMPLETE — both plans done)
-- **Task**: 14-01 complete (14-02 already done)
+- **Phase**: 15-bug-fixes-logic-corrections (1/4 plans done)
+- **Task**: 15-01 complete
 - **Status**: In Progress
-- **Last activity**: 2026-03-10 — Phase 14 Plan 01 executed. Exercises library page + filter component built, sidebar cleaned of dead links.
+- **Last activity**: 2026-03-10 — Phase 15 Plan 01 executed. Charts margins fixed, AssignRoutineButton dropdown corrected, FoodSearchInput useRef extracted.
 
 ## Next Steps
-1. Execute Phase 15 (Bug Fixes & Logic Corrections)
+1. Execute Phase 15 Plan 02 (Bug Fixes & Logic Corrections continued)
 
 ## Progress Bar
 
@@ -41,7 +41,7 @@ Phase 11:   [x] Client Nutrition View
 Phase 12:   [x] Progress Logging
 Phase 13:   [x] AI Nutrition Parsing (2/2 plans done)
 Phase 14:   [x] Trainer Completar (2/2 plans done)
-Phase 15:   [ ] Bug Fixes & Logic Corrections
+Phase 15:   [~] Bug Fixes & Logic Corrections (1/4 plans done)
 ```
 
 ## Performance Metrics
@@ -135,3 +135,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 14-trainer-completar]: RLS en exercises filtra automáticamente por trainer_id via day_id → workout_plans — no se requiere filtro manual en la query
 - [Phase 14-02]: Reuse client HistoryFilters/SessionHistoryCard for trainer history view — identical SessionData shape, no duplication
 - [Phase 14-02]: notFound() on trainer_id mismatch (not redirect) — consistent with existing clients/[id]/page.tsx pattern
+- [Phase 15-01]: FoodSearchInput extraído con useRef como sub-componente estático (key no dinámica) — garantiza estabilidad del nodo DOM del input entre re-renders de FoodSearchSlot
+- [Phase 15-01]: BUG-06/07/08 no requerían cambios de lógica — createClientAction ya usaba admin client, sidebar ya tenía rutas correctas
