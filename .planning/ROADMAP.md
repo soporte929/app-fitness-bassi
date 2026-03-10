@@ -68,7 +68,7 @@
 - [x] **Phase 16: Branding & UI Corrections** — Sidebar trainer: "Fitness Bassi" en font Anton, gráficos dashboard: corregir problemas de márgenes. (completed 2026-03-10)
 - [x] **Phase 17: Global Theme System** — ThemeToggle persistido y funcional (App Cliente y Trainer) usando next-themes, clases en :root y localStorage. (completed 2026-03-10)
 - [x] **Phase 18: Client App Improvements** — Restaurar checklist de nutrición, foto de perfil desde galería a Supabase Storage y actualización de avatar_url. (completed 2026-03-10)
-- [ ] **Phase 19: Trainer Settings & Modals** — Detalle de Cliente: Cambiar botón a "Asignar plan nutricional" con Modal, Settings Hub: Nueva vista de Ajustes.
+- [x] **Phase 19: Trainer Settings & Modals** — Detalle de Cliente: Cambiar botón a "Asignar plan nutricional" con Modal, Settings Hub: Nueva vista de Ajustes. (completed 2026-03-10)
 
 </details>
 
@@ -290,4 +290,4 @@ Plans:
 | 16. Branding & UI Corrections | v4.1 | 1/1 | Complete | 2026-03-10 |
 | 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Client App Improvements | 2/2 | Complete    | 2026-03-10 | - |
-| 19. Trainer Settings & Modals | v4.1 | 0/2 | Planned | - |
+| 19. Trainer Settings & Modals | 2/2 | Complete   | 2026-03-10 | - |

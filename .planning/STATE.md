@@ -22,22 +22,22 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v4.1 Polish & Settings
-- **Phase**: 18
+- **Phase**: 19
 - **Plan**: 2 of 2 complete
-- **Status**: Phase 18 complete — all plans executed
-- **Last activity**: 2026-03-10 — Completed 18-02-PLAN.md (interactive nutrition checklist)
+- **Status**: Phase 19 complete — all plans executed
+- **Last activity**: 2026-03-10 — Completed 19-02-PLAN.md (trainer Settings Hub + sidebar entry)
 
 ## Next Steps
-1. /execute 19 plan 1 — start Phase 19 (Trainer Settings & Modals)
+1. Phase 19 complete — v4.1 milestone complete
 
 ## Progress Bar
 
 ```text
-v4.1 Progress: [███████████████████████████░░░░░░░░] 75% (3/4 phases)
+v4.1 Progress: [████████████████████████████████████] 100% (4/4 phases)
 Phase 16: [x] Branding & UI Corrections
 Phase 17: [x] Global Theme System
 Phase 18: [x] Client App Improvements
-Phase 19: [ ] Trainer Settings & Modals
+Phase 19: [x] Trainer Settings & Modals
 ```
 
 ## Performance Metrics
@@ -143,3 +143,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 18-01]: userId passed as prop from server page component to EditProfileForm — avoids client-side auth fetch
 - [Phase 18]: checkedItems keyed by item.id (UUID) — stable across option slot toggles, no index drift
 - [Phase 18]: Log all items if none checked, only checked items if at least one is checked — preserves one-tap default flow
+- [Phase 19-02]: Settings Hub secciones Cuenta y Apariencia — cubre V41-07; entry en sección Principal del sidebar junto a Dashboard y Clientes
+- [Phase 19-02]: profile?.email ?? user.email fallback — garantiza email visible aunque profiles.email sea null
