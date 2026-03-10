@@ -156,7 +156,10 @@ Plans:
   2. The app sends the description server-side to Claude API and returns estimated protein, fat, carb, and calorie values — the client sees the result without leaving the page
   3. The client sees the estimated macros in a confirmation step before the food is logged — they can accept or go back to edit the description
   4. If Claude cannot parse the description or returns an error, the client sees a fallback form where they can manually enter the macro values and proceed to log
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 13-01-PLAN.md — parseNutritionAction Server Action (Claude API integration)
+- [ ] 13-02-PLAN.md — AIFoodParserModal Client Component (4-step state machine) + page.tsx integration
 
 ### Phase 14: Trainer Completar
 **Goal**: The trainer has a working exercises library page, can navigate to any client's workout history, and the sidebar contains no broken navigation links
@@ -211,6 +214,6 @@ Plans:
 | 10.1. Persist Plan Metadata | v4.0 | 1/1 | Complete | 2026-03-09 |
 | 11. Client Nutrition View | v4.0 | 0/4 | Planned | - |
 | 12. Progress Logging | v4.0 | 2/2 | Complete | 2026-03-10 |
-| 13. AI Nutrition Parsing | v4.0 | 0/? | Not started | - |
+| 13. AI Nutrition Parsing | v4.0 | 0/2 | Planned | - |
 | 14. Trainer Completar | v4.0 | 0/? | Not started | - |
 | 15. Bug Fixes & Logic Corrections | v4.0 | 0/? | Not started | - |
