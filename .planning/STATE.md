@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
-last_updated: "2026-03-10T10:56:59.110Z"
+milestone: v4.1
+milestone_name: Polish & Settings
+status: Milestone planned
+last_updated: "2026-03-10T15:30:00.000Z"
 progress:
-  total_phases: 6
-  completed_phases: 4
-  total_plans: 10
-  completed_plans: 12
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # State
@@ -18,30 +18,25 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 **Core value:** El loop de entrenamiento funciona de extremo a extremo — si esto falla, nada más importa.
-**Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
+**Current focus:** Phase 16: Branding & UI Corrections
 
 ## Current Position
-- **Phase**: 15-bug-fixes-logic-corrections (4/4 plans done — COMPLETE)
-- **Task**: All tasks complete
-- **Status**: Verifying
-- **Last activity**: 2026-03-10 — Phase 15 all 4 plans executed. 04: EditProfileForm, updateProfileAction, RestTimer pause, BUG-03 verified (non-existent).
+- **Milestone**: v4.1 Polish & Settings
+- **Phase**: Not started
+- **Status**: Milestone planned
+- **Last activity**: 2026-03-10 — Milestone v4.1 created.
 
 ## Next Steps
-1. Phase 15 verification
+1. /plan 16 — Create Phase 16 execution plans
 
 ## Progress Bar
 
-```
-v4.0 Progress: [██████████████████████████░░░░░░░░░] 55% (5/9 phases)
-Phase 8:    [x] Database Foundation + Formulas
-Phase 9:    [x] Trainer Plan Creator
-Phase 10:   [x] Trainer Plan Meals + Assignment
-Phase 10.1: [x] Persist Plan Metadata
-Phase 11:   [x] Client Nutrition View
-Phase 12:   [x] Progress Logging
-Phase 13:   [x] AI Nutrition Parsing (2/2 plans done)
-Phase 14:   [x] Trainer Completar (2/2 plans done)
-Phase 15:   [~] Bug Fixes & Logic Corrections (4/4 plans done — verifying)
+```text
+v4.1 Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
+Phase 16: [ ] Branding & UI Corrections
+Phase 17: [ ] Global Theme System
+Phase 18: [ ] Client App Improvements
+Phase 19: [ ] Trainer Settings & Modals
 ```
 
 ## Performance Metrics

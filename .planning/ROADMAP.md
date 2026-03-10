@@ -5,7 +5,8 @@
 - ✅ **v1.0 Workout Loop Completion** — Phase 1 (shipped 2026-03-09)
 - ✅ **v2.0 Bassi v2** — Phases 2-3 (shipped 2026-03-09) | Phases 4-7 CANCELLED → deferred to v4.0
 - ✅ **v3.0 Bassi v3 - Fixes & Polish** — Phases 4-7 (shipped 2026-03-09)
-- 📋 **v4.0 Módulo Nutrición** — Phases 8-14 (planned 2026-03-09)
+- 📋 **v4.0 Módulo Nutrición** — Phases 8-15 (planned 2026-03-09)
+- 📋 **v4.1 Polish & Settings** — Phases 16-19 (planned 2026-03-10)
 
 ## Phases
 
@@ -58,6 +59,16 @@
 - [x] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback (completed 2026-03-10)
 - [x] **Phase 14: Trainer Completar** — Exercises library page, client history link, and dead sidebar links resolved (completed 2026-03-10)
 - [x] **Phase 15: Bug Fixes & Logic Corrections** — UI/UX polish, form state persistence, chart margins, and flow logic corrections (Routine vs Plan assignment) (completed 2026-03-10)
+
+</details>
+
+<details open>
+<summary>📋 v4.1 Polish & Settings (Phases 16-19) — IN PROGRESS</summary>
+
+- [ ] **Phase 16: Branding & UI Corrections** — Sidebar trainer: "Fitness Bassi" en font Anton, gráficos dashboard: corregir problemas de márgenes.
+- [ ] **Phase 17: Global Theme System** — ThemeToggle persistido y funcional (App Cliente y Trainer) usando next-themes, clases en :root y localStorage.
+- [ ] **Phase 18: Client App Improvements** — Restaurar checklist de nutrición, foto de perfil desde galería a Supabase Storage y actualización de avatar_url.
+- [ ] **Phase 19: Trainer Settings & Modals** — Detalle de Cliente: Cambiar botón a "Asignar plan nutricional" con Modal, Settings Hub: Nueva vista de Ajustes.
 
 </details>
 
@@ -200,6 +211,47 @@ Plans:
 - [ ] 15-04-PLAN.md — Pause timer, editable profile, verify RoutineBuilder state (BUG-03, FEAT-02, 06)
 
 
+### Phase 16: Branding & UI Corrections
+**Goal**: El branding del trainer está completo con el título correcto, y los gráficos del dashboard se muestran sin problemas de recortado ni *overflows*.
+**Depends on**: None
+**Requirements**: V41-01, V41-02
+**Success Criteria** (what must be TRUE):
+  1. En el sidebar del trainer (desktop y móvil), debajo de la imagen del logo aparece "FITNESS BASSI" usando la fuente Anton y el color #F5C518 o #6b7fa3.
+  2. Las gráficas del dashboard (Adherencia, Progreso, etc.) tienen sus márgenes ajustados (`margin={{ top, right, bottom, left }}`) de forma que no se recortan en resoluciones estrechas.
+**Plans**: TBD
+
+### Phase 17: Global Theme System
+**Goal**: Todo el sistema de interfaz soporta Dark/Light mode, persistiendo las preferencias del usuario mediante `next-themes`.
+**Depends on**: None
+**Requirements**: V41-03
+**Success Criteria** (what must be TRUE):
+  1. La app integra `ThemeProvider` de `next-themes` y usa la clase `dark` inyectada en el `<html>`.
+  2. Existe un componente `ThemeToggle` funcional accesible por el cliente y por el entrenador.
+  3. El modo seleccionado se persiste correctamente en localStorage sin provocar *hydration mismatches*.
+**Plans**: TBD
+
+### Phase 18: Client App Improvements
+**Goal**: El cliente puede subir su propia foto de perfil a Supabase Storage y el listado de nutrición diario interactivo vuelve a estar disponible.
+**Depends on**: None
+**Requirements**: V41-04, V41-05
+**Success Criteria** (what must be TRUE):
+  1. En el perfil del cliente, hay un trigger para subir foto interactuando con la cámara/galería nativa.
+  2. La foto se almacena en un bucket de Supabase Storage (`avatars`) y la columna `avatar_url` en `profiles` se actualiza vía Server Action.
+  3. En la vista de Nutrición de cliente (`/nutrition`), el usuario visualiza su lista de comidas del día.
+  4. Cada ítem de comida funciona como un checkbox mostrando nombre, hora (si aplica), y resumen de macros (P, F, C) y gramos totales.
+**Plans**: TBD
+
+### Phase 19: Trainer Settings & Modals
+**Goal**: El entrenador dispone de un hub central y la asignación de planes se simplifica usando un modal.
+**Depends on**: None
+**Requirements**: V41-06, V41-07
+**Success Criteria** (what must be TRUE):
+  1. En el detalle del cliente (`/clients/[id]`), el botón secundario es "Asignar plan nutricional".
+  2. Al pulsar el botón, se abre un Dialog que lista plantillas de planes de nutrición y permite asignarlas eligiendo la fecha de inicio.
+  3. Existe una nueva ruta de Ajustes (Settings Hub) para el entrenador con secciones para gestión de cuenta/UI.
+**Plans**: TBD
+
+
 ## Progress
 
 **v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
@@ -222,3 +274,7 @@ Plans:
 | 13. AI Nutrition Parsing | 2/2 | Complete    | 2026-03-10 | - |
 | 14. Trainer Completar | 2/2 | Complete    | 2026-03-10 | - |
 | 15. Bug Fixes & Logic Corrections | 4/4 | Complete   | 2026-03-10 | - |
+| 16. Branding & UI Corrections | v4.1 | 0/? | Not started | - |
+| 17. Global Theme System | v4.1 | 0/? | Not started | - |
+| 18. Client App Improvements | v4.1 | 0/? | Not started | - |
+| 19. Trainer Settings & Modals | v4.1 | 0/? | Not started | - |
