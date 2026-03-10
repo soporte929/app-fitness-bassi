@@ -7,6 +7,7 @@
 - ✅ **v3.0 Bassi v3 - Fixes & Polish** — Phases 4-7 (shipped 2026-03-09)
 - 📋 **v4.0 Módulo Nutrición** — Phases 8-15 (planned 2026-03-09)
 - 📋 **v4.1 Polish & Settings** — Phases 16-19 (planned 2026-03-10)
+- 📋 **v4.2 Gap Closure** — Phases 20-23 (planned 2026-03-10)
 
 ## Phases
 
@@ -59,6 +60,16 @@
 - [x] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback (completed 2026-03-10)
 - [x] **Phase 14: Trainer Completar** — Exercises library page, client history link, and dead sidebar links resolved (completed 2026-03-10)
 - [x] **Phase 15: Bug Fixes & Logic Corrections** — UI/UX polish, form state persistence, chart margins, and flow logic corrections (Routine vs Plan assignment) (completed 2026-03-10)
+
+</details>
+
+<details open>
+<summary>📋 v4.2 Gap Closure (Phases 20-23) — IN PROGRESS</summary>
+
+- [ ] **Phase 20: Integration Bug Fixes** — Fix AI food parser writing to wrong table (nutrition_logs→food_log) and Phase 19 modal not cloning meal_plan_items; remove dead code
+- [ ] **Phase 21: Retroactive Verification — Phases 10, 10.1, 16, 17** — Create missing VERIFICATION.md for four implemented-but-unverified phases
+- [ ] **Phase 22: Retroactive Verification — Phase 11** — Create VERIFICATION.md for Phase 11 after integration fixes from Phase 20 are in place
+- [ ] **Phase 23: CALC Audit + Traceability Cleanup** — Verify CALC-01-05 formulas exist, fix stale PROG checkboxes, add V41 requirements to traceability table
 
 </details>
 
@@ -265,6 +276,52 @@ Plans:
 - [ ] 19-02-PLAN.md — Settings Hub: nueva ruta /settings + entrada en sidebar (V41-07)
 
 
+### Phase 20: Integration Bug Fixes
+**Goal**: Los dos breaks de integración críticos están resueltos: el AI food parser escribe correctamente en food_log, y el modal de asignación de planes clona todos los meal_plan_items
+**Depends on**: None (bug fixes independientes)
+**Requirements**: AI-03, CNUTR-01, CNUTR-02, CNUTR-03, CNUTR-05, V41-05, V41-06
+**Gap Closure**: Cierra gaps de integración detectados por audit
+**Success Criteria** (what must be TRUE):
+  1. Cuando el cliente usa el AI Food Parser y confirma los macros estimados, el alimento aparece en los totales diarios de calorías y macros (progress bars actualizados)
+  2. Cuando el entrenador asigna un plan nutricional vía el modal "Asignar plan nutricional", el cliente ve las comidas con sus alimentos y cantidades en `/nutrition`
+  3. Los archivos `NutritionFreeLogSheet.tsx`, `add-meal-fab.tsx`, `nutrition-checklist.tsx` (legacy) y las actions `createNutritionLogAction`/`deleteNutritionLogAction` están eliminados o archivados
+**Plans**: TBD
+
+### Phase 21: Retroactive Verification — Phases 10, 10.1, 16, 17
+**Goal**: Las cuatro fases implementadas pero no verificadas tienen VERIFICATION.md — el audit puede confirmar su estado sin bloqueos
+**Depends on**: None
+**Requirements**: TPLAN-03, TPLAN-06, TPLAN-07, TPLAN-08, V41-01, V41-02, V41-03
+**Gap Closure**: Cierra bloqueadores de verificación detectados por audit
+**Success Criteria** (what must be TRUE):
+  1. `.planning/phases/10-trainer-plan-meals/VERIFICATION.md` existe y confirma TPLAN-07 y TPLAN-08
+  2. `.planning/phases/10.1-persist-plan-metadata/VERIFICATION.md` existe y confirma TPLAN-03 y TPLAN-06
+  3. `.planning/phases/16-branding-ui-corrections/VERIFICATION.md` existe y confirma V41-01 y V41-02
+  4. `.planning/phases/17-global-theme-system/VERIFICATION.md` existe y confirma V41-03
+**Plans**: TBD
+
+### Phase 22: Retroactive Verification — Phase 11
+**Goal**: Phase 11 tiene VERIFICATION.md válido que confirma CNUTR-01 a CNUTR-06, incluyendo el fix del Break 1 de integración
+**Depends on**: Phase 20 (los fixes de integración deben estar aplicados antes de verificar)
+**Requirements**: CNUTR-01, CNUTR-02, CNUTR-03, CNUTR-04, CNUTR-05, CNUTR-06
+**Gap Closure**: Cierra bloqueador de verificación detectado por audit
+**Success Criteria** (what must be TRUE):
+  1. `.planning/phases/11-client-nutrition-view/VERIFICATION.md` existe y confirma CNUTR-01 a CNUTR-06
+  2. La verificación incluye prueba de que el AI food parser (tras fix) contribuye a CNUTR-01 y CNUTR-02
+**Plans**: TBD
+
+### Phase 23: CALC Audit + Traceability Cleanup
+**Goal**: Los requisitos CALC-01-05 están verificados contra el código real, los checkboxes stale de PROG están corregidos y todos los V41 requirements aparecen en la traceability table
+**Depends on**: None
+**Requirements**: CALC-01, CALC-02, CALC-03, CALC-04, CALC-05, PROG-01, PROG-02, PROG-03
+**Gap Closure**: Cierra gaps de documentación y traceabilidad detectados por audit
+**Success Criteria** (what must be TRUE):
+  1. `lib/calculations/nutrition.ts` contiene implementaciones verificadas de Katch-McArdle, Mifflin-St Jeor, TDEE y distribución de macros (CALC-01-05)
+  2. REQUIREMENTS.md marca PROG-01, PROG-02 y PROG-03 como `[x]` (implementados por Phase 12, VERIFICATION.md ya lo confirma)
+  3. REQUIREMENTS.md traceability table incluye V41-01 a V41-07 con sus fases asignadas
+  4. Coverage count actualizado en REQUIREMENTS.md
+**Plans**: TBD
+
+
 ## Progress
 
 **v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
@@ -291,3 +348,7 @@ Plans:
 | 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Client App Improvements | 2/2 | Complete    | 2026-03-10 | - |
 | 19. Trainer Settings & Modals | 2/2 | Complete    | 2026-03-10 | - |
+| 20. Integration Bug Fixes | v4.2 | 0/? | Not started | - |
+| 21. Retroactive Verification (10, 10.1, 16, 17) | v4.2 | 0/? | Not started | - |
+| 22. Retroactive Verification (11) | v4.2 | 0/? | Not started | - |
+| 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |
