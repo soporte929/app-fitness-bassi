@@ -246,8 +246,10 @@ Plans:
   2. La foto se almacena en un bucket de Supabase Storage (`avatars`) y la columna `avatar_url` en `profiles` se actualiza vía Server Action.
   3. En la vista de Nutrición de cliente (`/nutrition`), el usuario visualiza su lista de comidas del día.
   4. Cada ítem de comida funciona como un checkbox mostrando nombre, hora (si aplica), y resumen de macros (P, F, C) y gramos totales.
-**Plans**: TBD
-
+**Plans**: 2 plans
+Plans:
+- [ ] 18-01-PLAN.md — Subida de foto de perfil
+- [ ] 18-02-PLAN.md — Checklist Nutricional Diario Interactivo
 ### Phase 19: Trainer Settings & Modals
 **Goal**: El entrenador dispone de un hub central y la asignación de planes se simplifica usando un modal.
 **Depends on**: None
@@ -283,5 +285,5 @@ Plans:
 | 15. Bug Fixes & Logic Corrections | 4/4 | Complete   | 2026-03-10 | - |
 | 16. Branding & UI Corrections | v4.1 | 1/1 | Complete | 2026-03-10 |
 | 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
-| 18. Client App Improvements | v4.1 | 0/? | Not started | - |
+| 18. Client App Improvements | v4.1 | 0/2 | Planned | - |
 | 19. Trainer Settings & Modals | v4.1 | 0/? | Not started | - |

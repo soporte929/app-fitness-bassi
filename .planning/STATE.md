@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v4.1 Polish & Settings
-- **Phase**: 17 (completed)
-- **Status**: Complete
-- **Last activity**: 2026-03-10 — Phase 17 completed (next-themes migration + hardcoded color cleanup).
+- **Phase**: 18
+- **Status**: Planning complete
+- **Last activity**: 2026-03-10 — Phase 18 planned (Avatar upload and Nutrition UI checklist).
 
 ## Next Steps
-1. Wait for user instruction to plan Phase 18.
+1. /execute 18 — run all plans
 
 ## Progress Bar
 
