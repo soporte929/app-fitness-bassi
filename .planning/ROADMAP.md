@@ -66,7 +66,7 @@
 <summary>📋 v4.1 Polish & Settings (Phases 16-19) — IN PROGRESS</summary>
 
 - [x] **Phase 16: Branding & UI Corrections** — Sidebar trainer: "Fitness Bassi" en font Anton, gráficos dashboard: corregir problemas de márgenes. (completed 2026-03-10)
-- [ ] **Phase 17: Global Theme System** — ThemeToggle persistido y funcional (App Cliente y Trainer) usando next-themes, clases en :root y localStorage.
+- [x] **Phase 17: Global Theme System** — ThemeToggle persistido y funcional (App Cliente y Trainer) usando next-themes, clases en :root y localStorage. (completed 2026-03-10)
 - [ ] **Phase 18: Client App Improvements** — Restaurar checklist de nutrición, foto de perfil desde galería a Supabase Storage y actualización de avatar_url.
 - [ ] **Phase 19: Trainer Settings & Modals** — Detalle de Cliente: Cambiar botón a "Asignar plan nutricional" con Modal, Settings Hub: Nueva vista de Ajustes.
 
@@ -230,7 +230,12 @@ Plans:
   1. La app integra `ThemeProvider` de `next-themes` y usa la clase `dark` inyectada en el `<html>`.
   2. Existe un componente `ThemeToggle` funcional accesible por el cliente y por el entrenador.
   3. El modo seleccionado se persiste correctamente en localStorage sin provocar *hydration mismatches*.
-**Plans**: TBD
+  4. Ningún archivo .tsx contiene colores dark hardcodeados (#191919, #212121, #111111) — todo usa CSS vars.
+**Plans**: 3 plans
+Plans:
+- [x] 17-01-PLAN.md — Migrar a next-themes: instalar, reemplazar ThemeProvider custom, rewire ThemeToggle (Wave 1)
+- [x] 17-02-PLAN.md — Reemplazar colores hardcodeados en layouts, login y core components (Wave 2)
+- [x] 17-03-PLAN.md — Reemplazar colores hardcodeados en módulos nutrición y trainer (Wave 2)
 
 ### Phase 18: Client App Improvements
 **Goal**: El cliente puede subir su propia foto de perfil a Supabase Storage y el listado de nutrición diario interactivo vuelve a estar disponible.
@@ -277,6 +282,6 @@ Plans:
 | 14. Trainer Completar | 2/2 | Complete    | 2026-03-10 | - |
 | 15. Bug Fixes & Logic Corrections | 4/4 | Complete   | 2026-03-10 | - |
 | 16. Branding & UI Corrections | v4.1 | 1/1 | Complete | 2026-03-10 |
-| 17. Global Theme System | v4.1 | 0/? | Not started | - |
+| 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Client App Improvements | v4.1 | 0/? | Not started | - |
 | 19. Trainer Settings & Modals | v4.1 | 0/? | Not started | - |
