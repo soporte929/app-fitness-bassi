@@ -145,13 +145,13 @@ export function CreateTemplateModal() {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[#212121] p-5 md:p-6">
+          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] p-5 md:p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base md:text-lg font-semibold text-[#e8e8e6]">Crear plantilla</h2>
+              <h2 className="text-base md:text-lg font-semibold text-[var(--text-primary)]">Crear plantilla</h2>
               <button
                 type="button"
                 onClick={closeModal}
-                className="h-8 w-8 rounded-full flex items-center justify-center text-[#a0a0a0] hover:bg-[rgba(255,255,255,0.07)]"
+                className="h-8 w-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -165,58 +165,58 @@ export function CreateTemplateModal() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs text-[#a0a0a0] mb-1">Nombre de la plantilla</label>
+                <label className="block text-xs text-[var(--text-muted)] mb-1">Nombre de la plantilla</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   placeholder="Ej: Volumen 3000 kcal"
-                  className="w-full rounded-xl px-4 py-3 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                  className="w-full rounded-xl px-4 py-3 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                 />
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <label className="block text-xs text-[#a0a0a0] mb-1">Kcal objetivo</label>
+                  <label className="block text-xs text-[var(--text-muted)] mb-1">Kcal objetivo</label>
                   <input
                     type="number"
                     min={0}
                     value={kcalTarget}
                     onChange={(event) => setKcalTarget(event.target.value)}
-                    className="w-full rounded-xl px-4 py-3 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                    className="w-full rounded-xl px-4 py-3 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#a0a0a0] mb-1">Proteína (g)</label>
+                  <label className="block text-xs text-[var(--text-muted)] mb-1">Proteína (g)</label>
                   <input
                     type="number"
                     min={0}
                     step={0.1}
                     value={proteinTarget}
                     onChange={(event) => setProteinTarget(event.target.value)}
-                    className="w-full rounded-xl px-4 py-3 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                    className="w-full rounded-xl px-4 py-3 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#a0a0a0] mb-1">Carbos (g)</label>
+                  <label className="block text-xs text-[var(--text-muted)] mb-1">Carbos (g)</label>
                   <input
                     type="number"
                     min={0}
                     step={0.1}
                     value={carbsTarget}
                     onChange={(event) => setCarbsTarget(event.target.value)}
-                    className="w-full rounded-xl px-4 py-3 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                    className="w-full rounded-xl px-4 py-3 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-[#a0a0a0] mb-1">Grasa (g)</label>
+                  <label className="block text-xs text-[var(--text-muted)] mb-1">Grasa (g)</label>
                   <input
                     type="number"
                     min={0}
                     step={0.1}
                     value={fatTarget}
                     onChange={(event) => setFatTarget(event.target.value)}
-                    className="w-full rounded-xl px-4 py-3 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                    className="w-full rounded-xl px-4 py-3 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                   />
                 </div>
               </div>
@@ -227,7 +227,7 @@ export function CreateTemplateModal() {
                   <button
                     type="button"
                     onClick={addMeal}
-                    className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium border border-[rgba(255,255,255,0.08)] text-[#a0a0a0] hover:text-[#e8e8e6] hover:bg-[rgba(255,255,255,0.05)]"
+                    className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Añadir
@@ -238,14 +238,14 @@ export function CreateTemplateModal() {
                   {meals.map((meal, index) => (
                     <div
                       key={index}
-                      className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] p-3"
+                      className="rounded-xl border border-[var(--border)] bg-[var(--bg-elevated)] p-3"
                     >
                       <div className="mb-2 flex items-center justify-between">
-                        <p className="text-xs text-[#a0a0a0]">Comida #{index + 1}</p>
+                        <p className="text-xs text-[var(--text-muted)]">Comida #{index + 1}</p>
                         <button
                           type="button"
                           onClick={() => removeMeal(index)}
-                          className="h-7 w-7 rounded-lg flex items-center justify-center text-[#a0a0a0] hover:text-[#ff9f9a] hover:bg-[rgba(255,69,58,0.10)]"
+                          className="h-7 w-7 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[#ff9f9a] hover:bg-[rgba(255,69,58,0.10)]"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -257,14 +257,14 @@ export function CreateTemplateModal() {
                           value={meal.name}
                           onChange={(event) => updateMeal(index, 'name', event.target.value)}
                           placeholder="Nombre comida"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                         />
                         <input
                           type="text"
                           value={meal.mealTime}
                           onChange={(event) => updateMeal(index, 'mealTime', event.target.value)}
                           placeholder="Hora (ej: 08:00)"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                         />
                         <input
                           type="number"
@@ -273,7 +273,7 @@ export function CreateTemplateModal() {
                           value={meal.kcalPer100g}
                           onChange={(event) => updateMeal(index, 'kcalPer100g', event.target.value)}
                           placeholder="Kcal / 100g"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                         />
                         <input
                           type="number"
@@ -282,7 +282,7 @@ export function CreateTemplateModal() {
                           value={meal.proteinPer100g}
                           onChange={(event) => updateMeal(index, 'proteinPer100g', event.target.value)}
                           placeholder="Proteína / 100g"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                         />
                         <input
                           type="number"
@@ -291,7 +291,7 @@ export function CreateTemplateModal() {
                           value={meal.carbsPer100g}
                           onChange={(event) => updateMeal(index, 'carbsPer100g', event.target.value)}
                           placeholder="Carbos / 100g"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                         />
                         <input
                           type="number"
@@ -300,7 +300,7 @@ export function CreateTemplateModal() {
                           value={meal.fatPer100g}
                           onChange={(event) => updateMeal(index, 'fatPer100g', event.target.value)}
                           placeholder="Grasa / 100g"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)]"
                         />
                         <input
                           type="number"
@@ -309,7 +309,7 @@ export function CreateTemplateModal() {
                           value={meal.defaultGrams}
                           onChange={(event) => updateMeal(index, 'defaultGrams', event.target.value)}
                           placeholder="Gramos default"
-                          className="w-full rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#e8e8e6] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)] md:col-span-2"
+                          className="w-full rounded-xl px-3 py-2.5 bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#6b7fa3] focus:shadow-[0_0_0_3px_rgba(107,127,163,0.15)] md:col-span-2"
                         />
                       </div>
                     </div>
@@ -322,7 +322,7 @@ export function CreateTemplateModal() {
               <button
                 type="button"
                 onClick={closeModal}
-                className="rounded-xl px-4 py-2.5 text-sm font-medium border border-[rgba(255,255,255,0.08)] text-[#a0a0a0] hover:text-[#e8e8e6] hover:bg-[rgba(255,255,255,0.05)]"
+                className="rounded-xl px-4 py-2.5 text-sm font-medium border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]"
               >
                 Cancelar
               </button>

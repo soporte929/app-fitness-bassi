@@ -31,7 +31,7 @@ export default async function ShoppingListPage() {
 
     if (!success || !items) {
         return (
-            <div className="px-4 pt-6 pb-28 text-center text-[#a0a0a0]">
+            <div className="px-4 pt-6 pb-28 text-center text-[var(--text-muted)]">
                 No se pudo cargar la lista de la compra o no tienes un plan activo.
             </div>
         )
@@ -64,21 +64,21 @@ export default async function ShoppingListPage() {
                     <div className="flex items-center gap-3">
                         <Link
                             href="/nutrition"
-                            className="w-10 h-10 rounded-full bg-[#212121] border border-[rgba(255,255,255,0.05)] flex items-center justify-center text-[#a0a0a0] hover:text-white"
+                            className="w-10 h-10 rounded-full bg-[var(--bg-surface)] border border-[var(--border)] flex items-center justify-center text-[var(--text-muted)] hover:text-white"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-[#e8e8e6] tracking-tight">Lista de la compra</h1>
-                            <p className="text-sm text-[#a0a0a0] mt-0.5">Cantidades para 7 días</p>
+                            <h1 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">Lista de la compra</h1>
+                            <p className="text-sm text-[var(--text-muted)] mt-0.5">Cantidades para 7 días</p>
                         </div>
                     </div>
                 </div>
 
                 {typedItems.length === 0 ? (
-                    <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-8 text-center flex flex-col items-center justify-center mt-6">
-                        <ShoppingBag className="w-8 h-8 text-[#a0a0a0] mb-3 opacity-50" />
-                        <p className="text-sm text-[#a0a0a0] mb-1">Tu lista está vacía</p>
+                    <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl px-4 py-8 text-center flex flex-col items-center justify-center mt-6">
+                        <ShoppingBag className="w-8 h-8 text-[var(--text-muted)] mb-3 opacity-50" />
+                        <p className="text-sm text-[var(--text-muted)] mb-1">Tu lista está vacía</p>
                         <p className="text-xs text-[#6b7fa3]">El plan no contiene alimentos básicos</p>
                     </div>
                 ) : (
@@ -86,11 +86,11 @@ export default async function ShoppingListPage() {
                         {categories.map(category => (
                             <div key={category}>
                                 <h3 className="text-sm font-semibold text-[#fb8500] uppercase tracking-wide mb-3 px-1">{category}</h3>
-                                <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl overflow-hidden divide-y divide-[rgba(255,255,255,0.04)]">
+                                <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl overflow-hidden divide-y divide-[var(--border)]">
                                     {grouped[category].map((item, i) => (
-                                        <div key={i} className="px-4 py-3 flex justify-between items-center bg-[rgba(255,255,255,0.01)] hover:bg-[rgba(255,255,255,0.03)] transition-colors">
-                                            <p className="text-sm font-medium text-[#e8e8e6]">{item.food_name}</p>
-                                            <span className="text-xs font-semibold px-2.5 py-1 bg-[rgba(255,255,255,0.05)] text-[#a0a0a0] rounded-md backdrop-blur-sm">
+                                        <div key={i} className="px-4 py-3 flex justify-between items-center bg-[var(--bg-elevated)] hover:bg-[var(--bg-elevated)] transition-colors">
+                                            <p className="text-sm font-medium text-[var(--text-primary)]">{item.food_name}</p>
+                                            <span className="text-xs font-semibold px-2.5 py-1 bg-[var(--bg-elevated)] text-[var(--text-muted)] rounded-md backdrop-blur-sm">
                                                 {formatQuantity(item.total_grams)}
                                             </span>
                                         </div>

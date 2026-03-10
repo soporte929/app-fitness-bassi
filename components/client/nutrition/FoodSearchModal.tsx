@@ -97,11 +97,11 @@ export function FoodSearchModal({ clientId, dateStr, trigger }: { clientId: stri
                     style={{ height: '85vh' }}
                     onClick={e => e.stopPropagation()}
                 >
-                    <div className="flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0 border-b border-[rgba(255,255,255,0.05)]">
-                        <h3 className="text-base font-semibold text-[#e8e8e6]">
+                    <div className="flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0 border-b border-[var(--border)]">
+                        <h3 className="text-base font-semibold text-[var(--text-primary)]">
                             {selectedItem ? 'Detalles del alimento' : 'Buscar alimento'}
                         </h3>
-                        <button onClick={closeSheet} className="text-[#a0a0a0] hover:text-white p-1">
+                        <button onClick={closeSheet} className="text-[var(--text-muted)] hover:text-white p-1">
                             <X className="w-5 h-5" />
                         </button>
                     </div>
@@ -110,13 +110,13 @@ export function FoodSearchModal({ clientId, dateStr, trigger }: { clientId: stri
                         {!selectedItem ? (
                             <div className="space-y-4">
                                 <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a0a0a0]" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                                     <input
                                         type="text"
                                         value={query}
                                         onChange={e => setQuery(e.target.value)}
                                         placeholder="Buscar comida (ej. manzana, pollo)..."
-                                        className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 pl-10 pr-4 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                                        className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                                         autoFocus
                                     />
                                     {loadingSearch && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#fb8500] animate-spin" />}
@@ -127,59 +127,59 @@ export function FoodSearchModal({ clientId, dateStr, trigger }: { clientId: stri
                                         <button
                                             key={item.id}
                                             onClick={() => handleSelect(item)}
-                                            className="w-full text-left bg-[#212121] p-3 rounded-xl border border-[rgba(255,255,255,0.04)] active:scale-[0.98] transition-transform"
+                                            className="w-full text-left bg-[var(--bg-surface)] p-3 rounded-xl border border-[var(--border)] active:scale-[0.98] transition-transform"
                                         >
-                                            <p className="text-sm font-medium text-[#e8e8e6]">{item.name}</p>
-                                            <p className="text-xs text-[#a0a0a0] mt-1">
+                                            <p className="text-sm font-medium text-[var(--text-primary)]">{item.name}</p>
+                                            <p className="text-xs text-[var(--text-muted)] mt-1">
                                                 {item.kcal_per_100g} kcal · {item.protein_per_100g}g P · {item.carbs_per_100g}g C · {item.fat_per_100g}g G <span className="opacity-50">(por 100g)</span>
                                             </p>
                                         </button>
                                     ))}
                                     {query && !loadingSearch && results.length === 0 && (
-                                        <p className="text-center text-[#a0a0a0] text-sm mt-4">No se encontraron resultados</p>
+                                        <p className="text-center text-[var(--text-muted)] text-sm mt-4">No se encontraron resultados</p>
                                     )}
                                 </div>
                             </div>
                         ) : (
                             <div className="space-y-6">
                                 <div>
-                                    <h4 className="text-lg font-medium text-[#e8e8e6]">{selectedItem.name}</h4>
-                                    <p className="text-sm text-[#a0a0a0] capitalize mt-0.5">{selectedItem.type === 'food' ? 'Alimento base' : 'Plato guardado'}</p>
+                                    <h4 className="text-lg font-medium text-[var(--text-primary)]">{selectedItem.name}</h4>
+                                    <p className="text-sm text-[var(--text-muted)] capitalize mt-0.5">{selectedItem.type === 'food' ? 'Alimento base' : 'Plato guardado'}</p>
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs text-[#a0a0a0] mb-2 uppercase tracking-wide">Cantidad consumida</label>
+                                    <label className="block text-xs text-[var(--text-muted)] mb-2 uppercase tracking-wide">Cantidad consumida</label>
                                     <div className="flex items-center gap-3">
                                         <input
                                             type="number"
                                             value={grams}
                                             onChange={e => setGrams(e.target.value)}
-                                            className="bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 px-4 text-lg text-[#e8e8e6] focus:outline-none focus:border-[#fb8500] w-32"
+                                            className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-3 px-4 text-lg text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500] w-32"
                                             min="1"
                                             autoFocus
                                         />
-                                        <span className="text-[#a0a0a0] font-medium">gramos (g)</span>
+                                        <span className="text-[var(--text-muted)] font-medium">gramos (g)</span>
                                     </div>
                                 </div>
 
-                                <div className="bg-[#212121] border border-[rgba(255,255,255,0.04)] rounded-xl p-4">
-                                    <p className="text-xs text-[#a0a0a0] mb-3 uppercase tracking-wide">Macros estimados</p>
+                                <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4">
+                                    <p className="text-xs text-[var(--text-muted)] mb-3 uppercase tracking-wide">Macros estimados</p>
                                     <div className="grid grid-cols-4 gap-2 text-center">
                                         <div>
-                                            <p className="text-lg font-semibold text-[#e8e8e6]">{Math.round(selectedItem.kcal_per_100g * factor)}</p>
-                                            <p className="text-[10px] text-[#a0a0a0] uppercase">Kcal</p>
+                                            <p className="text-lg font-semibold text-[var(--text-primary)]">{Math.round(selectedItem.kcal_per_100g * factor)}</p>
+                                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Kcal</p>
                                         </div>
                                         <div>
-                                            <p className="text-lg font-semibold text-[#e8e8e6]">{Math.round(selectedItem.protein_per_100g * factor)}g</p>
-                                            <p className="text-[10px] text-[#a0a0a0] uppercase">Pro</p>
+                                            <p className="text-lg font-semibold text-[var(--text-primary)]">{Math.round(selectedItem.protein_per_100g * factor)}g</p>
+                                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Pro</p>
                                         </div>
                                         <div>
-                                            <p className="text-lg font-semibold text-[#e8e8e6]">{Math.round(selectedItem.carbs_per_100g * factor)}g</p>
-                                            <p className="text-[10px] text-[#a0a0a0] uppercase">Car</p>
+                                            <p className="text-lg font-semibold text-[var(--text-primary)]">{Math.round(selectedItem.carbs_per_100g * factor)}g</p>
+                                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Car</p>
                                         </div>
                                         <div>
-                                            <p className="text-lg font-semibold text-[#e8e8e6]">{Math.round(selectedItem.fat_per_100g * factor)}g</p>
-                                            <p className="text-[10px] text-[#a0a0a0] uppercase">Gra</p>
+                                            <p className="text-lg font-semibold text-[var(--text-primary)]">{Math.round(selectedItem.fat_per_100g * factor)}g</p>
+                                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Gra</p>
                                         </div>
                                     </div>
                                 </div>
@@ -189,7 +189,7 @@ export function FoodSearchModal({ clientId, dateStr, trigger }: { clientId: stri
                                 <div className="flex gap-3 pt-4">
                                     <button
                                         onClick={() => setSelectedItem(null)}
-                                        className="flex-1 py-3 bg-[rgba(255,255,255,0.05)] rounded-xl text-sm font-medium text-[#e8e8e6] active:scale-[0.98]"
+                                        className="flex-1 py-3 bg-[var(--bg-elevated)] rounded-xl text-sm font-medium text-[var(--text-primary)] active:scale-[0.98]"
                                     >
                                         Atrás
                                     </button>

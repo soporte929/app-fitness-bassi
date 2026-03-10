@@ -55,8 +55,8 @@ export function NutritionChecklist({
 
   if (plan.meals.length === 0) {
     return (
-      <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5 text-center">
-        <p className="text-sm text-[#a0a0a0]">Tu entrenador aún no ha añadido comidas al plan</p>
+      <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl px-4 py-5 text-center">
+        <p className="text-sm text-[var(--text-muted)]">Tu entrenador aún no ha añadido comidas al plan</p>
       </div>
     )
   }
@@ -107,7 +107,7 @@ export function NutritionChecklist({
           return (
             <div
               key={meal.id}
-              className="bg-[#212121] rounded-xl px-4 py-3 flex items-center gap-3 border border-[rgba(255,255,255,0.07)]"
+              className="bg-[var(--bg-surface)] rounded-xl px-4 py-3 flex items-center gap-3 border border-[var(--border)]"
             >
               {/* Checkbox */}
               <button
@@ -117,7 +117,7 @@ export function NutritionChecklist({
                 className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
                   isCompleted
                     ? 'bg-[#6b7fa3] text-white'
-                    : 'border border-[rgba(255,255,255,0.2)] text-transparent'
+                    : 'border border-[var(--border)] text-transparent'
                 }`}
               >
                 {isCompleted && <Check size={12} color="white" />}
@@ -127,12 +127,12 @@ export function NutritionChecklist({
               <div className="flex-1 min-w-0">
                 <p
                   className={`text-sm font-medium truncate ${
-                    isCompleted ? 'text-[#a0a0a0] line-through opacity-70' : 'text-[#e8e8e6]'
+                    isCompleted ? 'text-[var(--text-muted)] line-through opacity-70' : 'text-[var(--text-primary)]'
                   }`}
                 >
                   {meal.name}
                 </p>
-                <p className="text-[11px] text-[#a0a0a0] mt-0.5">
+                <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
                   {macros.kcal} kcal · {macros.protein}g prot · {macros.carbs}g carbs · {macros.fat}g grasa
                 </p>
               </div>
@@ -140,7 +140,7 @@ export function NutritionChecklist({
               {/* Right: time + grams input */}
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 {meal.meal_time && (
-                  <span className="text-[11px] text-[#a0a0a0]">{meal.meal_time}</span>
+                  <span className="text-[11px] text-[var(--text-muted)]">{meal.meal_time}</span>
                 )}
                 <div className="flex items-center gap-1">
                   <input
@@ -150,9 +150,9 @@ export function NutritionChecklist({
                     onChange={(e) => handleGramsChange(meal.id, e.target.value)}
                     onBlur={() => handleGramsBlur(meal.id)}
                     aria-label={`Gramos de ${meal.name}`}
-                    className="w-14 text-[11px] text-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-md px-1 py-0.5 text-[#e8e8e6] focus:outline-none focus:border-[rgba(107,127,163,0.6)] transition-colors"
+                    className="w-14 text-[11px] text-center bg-[var(--bg-elevated)] border border-[var(--border)] rounded-md px-1 py-0.5 text-[var(--text-primary)] focus:outline-none focus:border-[rgba(107,127,163,0.6)] transition-colors"
                   />
-                  <span className="text-[11px] text-[#a0a0a0]">g</span>
+                  <span className="text-[11px] text-[var(--text-muted)]">g</span>
                 </div>
               </div>
             </div>

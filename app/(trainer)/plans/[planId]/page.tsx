@@ -133,13 +133,13 @@ export default async function PlanDetailPage({
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <Link
             href="/plans"
-            className="w-9 h-9 rounded-xl bg-[#2a2a2a] border border-[rgba(255,255,255,0.07)] flex items-center justify-center hover:bg-[rgba(255,255,255,0.08)] transition-colors flex-shrink-0"
+            className="w-9 h-9 rounded-xl bg-[#2a2a2a] border border-[var(--border)] flex items-center justify-center hover:bg-[var(--bg-elevated)] transition-colors flex-shrink-0"
           >
-            <ArrowLeft className="w-4 h-4 text-[#a0a0a0]" />
+            <ArrowLeft className="w-4 h-4 text-[var(--text-muted)]" />
           </Link>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-semibold text-[#e8e8e6] tracking-tight">{plan.name}</h1>
+              <h1 className="text-xl font-semibold text-[var(--text-primary)] tracking-tight">{plan.name}</h1>
               {plan.phase && (
                 <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(107,127,163,0.15)] text-[#6b7fa3]">
                   {phaseLabels[plan.phase]}
@@ -152,15 +152,15 @@ export default async function PlanDetailPage({
               )}
             </div>
             {plan.description && (
-              <p className="text-sm text-[#a0a0a0] mt-1">{plan.description}</p>
+              <p className="text-sm text-[var(--text-muted)] mt-1">{plan.description}</p>
             )}
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Routines section */}
-          <section className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-6">
-            <p className="text-xs font-medium text-[#a0a0a0] uppercase tracking-wider mb-4">
+          <section className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-6">
+            <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-4">
               Rutinas del plan
             </p>
             <PlanRoutinesManager
@@ -171,11 +171,11 @@ export default async function PlanDetailPage({
           </section>
 
           {/* Clients section */}
-          <section className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-6">
+          <section className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-6">
             <div className="flex items-center justify-between gap-2 mb-4">
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#a0a0a0]" />
-                <p className="text-xs font-medium text-[#a0a0a0] uppercase tracking-wider">
+                <Users className="w-4 h-4 text-[var(--text-muted)]" />
+                <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
                   Clientes con este plan
                 </p>
                 {clientsWithPlan.length > 0 && (
@@ -188,19 +188,19 @@ export default async function PlanDetailPage({
             </div>
 
             {clientsWithPlan.length === 0 ? (
-              <p className="text-sm text-[#a0a0a0]">Ningún cliente tiene este plan asignado</p>
+              <p className="text-sm text-[var(--text-muted)]">Ningún cliente tiene este plan asignado</p>
             ) : (
               <div className="space-y-1">
                 {clientsWithPlan.map((c) => (
                   <Link
                     key={c.id}
                     href={`/clients/${c.id}`}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[rgba(255,255,255,0.04)] transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--bg-elevated)] transition-colors"
                   >
                     <div className="w-7 h-7 rounded-full bg-[#2a2a2a] flex items-center justify-center flex-shrink-0">
                       <span className="text-xs font-semibold text-[#6b7fa3]">{c.name[0]}</span>
                     </div>
-                    <span className="text-sm text-[#e8e8e6]">{c.name}</span>
+                    <span className="text-sm text-[var(--text-primary)]">{c.name}</span>
                   </Link>
                 ))}
               </div>

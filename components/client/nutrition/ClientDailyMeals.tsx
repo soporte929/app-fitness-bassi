@@ -28,9 +28,9 @@ export function ClientDailyMeals({ clientId, dateStr, plan, logs }: ClientDailyM
     // If Type C, just show daily macros summary
     if (plan.diet_type === 'C') {
         return (
-            <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5 mb-6 text-center">
-                <p className="text-sm font-medium text-[#e8e8e6] mb-2">Dieta Flexible (Macros Libres)</p>
-                <p className="text-xs text-[#a0a0a0]">Tienes libertad para estructurar tus comidas como prefieras, respetando tus macros diarios.</p>
+            <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl px-4 py-5 mb-6 text-center">
+                <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Dieta Flexible (Macros Libres)</p>
+                <p className="text-xs text-[var(--text-muted)]">Tienes libertad para estructurar tus comidas como prefieras, respetando tus macros diarios.</p>
             </div>
         )
     }
@@ -92,11 +92,11 @@ export function ClientDailyMeals({ clientId, dateStr, plan, logs }: ClientDailyM
                 })
 
                 return (
-                    <div key={meal.id} className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl overflow-hidden">
-                        <div className="px-4 py-3 border-b border-[rgba(255,255,255,0.04)] flex justify-between items-center bg-[rgba(255,255,255,0.02)]">
+                    <div key={meal.id} className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl overflow-hidden">
+                        <div className="px-4 py-3 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-elevated)]">
                             <div>
-                                <h3 className="text-sm font-semibold text-[#e8e8e6]">{meal.name}</h3>
-                                <p className="text-xs text-[#a0a0a0] mt-0.5">
+                                <h3 className="text-sm font-semibold text-[var(--text-primary)]">{meal.name}</h3>
+                                <p className="text-xs text-[var(--text-muted)] mt-0.5">
                                     {Math.round(totalKcal)} kcal · {Math.round(totalProtein)}g P · {Math.round(totalCarbs)}g C · {Math.round(totalFat)}g G
                                 </p>
                             </div>
@@ -118,8 +118,8 @@ export function ClientDailyMeals({ clientId, dateStr, plan, logs }: ClientDailyM
                                 return (
                                     <div key={item.id} className="flex justify-between items-center">
                                         <div>
-                                            <p className="text-sm text-[#e8e8e6]">{source.name}</p>
-                                            <p className="text-xs text-[#a0a0a0]">{item.grams}g</p>
+                                            <p className="text-sm text-[var(--text-primary)]">{source.name}</p>
+                                            <p className="text-xs text-[var(--text-muted)]">{item.grams}g</p>
                                         </div>
                                     </div>
                                 )
@@ -127,8 +127,8 @@ export function ClientDailyMeals({ clientId, dateStr, plan, logs }: ClientDailyM
 
                             <div className="pt-2">
                                 {isLogged ? (
-                                    <div className="w-full py-2 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] text-center rounded-lg">
-                                        <span className="text-xs font-medium text-[#a0a0a0] flex items-center justify-center gap-1.5">
+                                    <div className="w-full py-2 bg-[var(--bg-elevated)] border border-[var(--border)] text-center rounded-lg">
+                                        <span className="text-xs font-medium text-[var(--text-muted)] flex items-center justify-center gap-1.5">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                             Registrado
                                         </span>

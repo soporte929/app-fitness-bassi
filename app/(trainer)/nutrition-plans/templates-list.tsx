@@ -58,29 +58,29 @@ export function TemplatesList({ clients }: TemplatesListProps) {
         {NUTRITION_TEMPLATES.map((template, index) => (
           <div
             key={template.name}
-            className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-5 flex flex-col relative"
+            className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 flex flex-col relative"
           >
             <div className="flex-1">
-              <h3 className="text-base font-semibold text-[#e8e8e6] mb-2">{template.name}</h3>
+              <h3 className="text-base font-semibold text-[var(--text-primary)] mb-2">{template.name}</h3>
               <div className="flex flex-wrap gap-1.5 mb-4">
                 <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(107,127,163,0.15)] text-[#6b7fa3]">
                   {template.kcal_target} kcal
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.06)] text-[#a0a0a0]">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-elevated)] text-[var(--text-muted)]">
                   {template.protein_target_g}g P
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.06)] text-[#a0a0a0]">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-elevated)] text-[var(--text-muted)]">
                   {template.carbs_target_g}g C
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.06)] text-[#a0a0a0]">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-elevated)] text-[var(--text-muted)]">
                   {template.fat_target_g}g G
                 </span>
               </div>
 
-              <p className="text-xs text-[#a0a0a0] mb-4">{template.meals.length} comidas configuradas</p>
+              <p className="text-xs text-[var(--text-muted)] mb-4">{template.meals.length} comidas configuradas</p>
             </div>
 
-            <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
+            <div className="pt-4 border-t border-[var(--border)]">
               <div className="relative">
                 <button
                   disabled={isPending}
@@ -106,7 +106,7 @@ export function TemplatesList({ clients }: TemplatesListProps) {
                       className="absolute right-0 mt-1 w-full z-50 rounded-xl overflow-hidden"
                       style={{
                         background: '#2a2a2a',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: '1px solid var(--border)',
                         boxShadow: '0 16px 32px rgba(0,0,0,0.6)',
                         maxHeight: '240px',
                         overflowY: 'auto',
@@ -121,10 +121,10 @@ export function TemplatesList({ clients }: TemplatesListProps) {
                           <button
                             key={client.id}
                             onClick={() => handleAssign(index, client)}
-                            className="w-full px-4 py-3 text-left text-sm hover:bg-[rgba(255,255,255,0.05)] transition-colors truncate"
+                            className="w-full px-4 py-3 text-left text-sm hover:bg-[var(--bg-elevated)] transition-colors truncate"
                             style={{
                               color: '#e8e8e6',
-                              borderBottom: '1px solid rgba(255,255,255,0.05)',
+                              borderBottom: '1px solid var(--border)',
                             }}
                           >
                             {client.name}

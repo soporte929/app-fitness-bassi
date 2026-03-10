@@ -58,10 +58,10 @@ export default async function PlansPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl xl:text-3xl font-bold text-[#e8e8e6] tracking-tight">
+            <h1 className="text-2xl xl:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
               Planes
             </h1>
-            <p className="text-[#a0a0a0] text-sm mt-0.5">{plans.length} planes creados</p>
+            <p className="text-[var(--text-muted)] text-sm mt-0.5">{plans.length} planes creados</p>
           </div>
           <Link
             href="/plans/new"
@@ -75,9 +75,9 @@ export default async function PlansPage() {
         {/* Grid */}
         {plans.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <Layers className="w-10 h-10 text-[#a0a0a0] mb-3 opacity-40" />
-            <p className="text-base font-semibold text-[#e8e8e6] mb-1">Sin planes</p>
-            <p className="text-sm text-[#a0a0a0]">
+            <Layers className="w-10 h-10 text-[var(--text-muted)] mb-3 opacity-40" />
+            <p className="text-base font-semibold text-[var(--text-primary)] mb-1">Sin planes</p>
+            <p className="text-sm text-[var(--text-muted)]">
               Crea tu primer plan para comenzar
             </p>
           </div>
@@ -86,12 +86,12 @@ export default async function PlansPage() {
             {plans.map((plan, i) => (
               <div
                 key={plan.id}
-                className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-5 flex flex-col animate-fade-in"
+                className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 flex flex-col animate-fade-in"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 {/* Name + badges */}
                 <div className="flex-1">
-                  <p className="text-base font-semibold text-[#e8e8e6] mb-2">{plan.name}</p>
+                  <p className="text-base font-semibold text-[var(--text-primary)] mb-2">{plan.name}</p>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {plan.phase && (
                       <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(107,127,163,0.15)] text-[#6b7fa3]">
@@ -105,15 +105,15 @@ export default async function PlansPage() {
                     )}
                   </div>
                   {plan.description && (
-                    <p className="text-xs text-[#a0a0a0] mb-3 line-clamp-2">{plan.description}</p>
+                    <p className="text-xs text-[var(--text-muted)] mb-3 line-clamp-2">{plan.description}</p>
                   )}
-                  <p className="text-xs text-[#a0a0a0]">
+                  <p className="text-xs text-[var(--text-muted)]">
                     {plan.routines_count} {plan.routines_count === 1 ? 'rutina' : 'rutinas'}
                   </p>
                 </div>
 
                 {/* Clientes asignados */}
-                <div className="mt-3 pt-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                <div className="mt-3 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
                   {plan.client_plans.length === 0 ? (
                     <p className="text-xs" style={{ color: '#a0a0a0' }}>Sin clientes asignados</p>
                   ) : (
@@ -133,7 +133,7 @@ export default async function PlansPage() {
                       ))}
                       {plan.client_plans.length > 3 && (
                         <span className="text-xs px-2 py-0.5 rounded-full"
-                          style={{ background: 'rgba(255,255,255,0.05)', color: '#a0a0a0' }}>
+                          style={{ background: 'var(--bg-elevated)', color: '#a0a0a0' }}>
                           +{plan.client_plans.length - 3} más
                         </span>
                       )}
@@ -142,7 +142,7 @@ export default async function PlansPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-[var(--border)]">
                   <DeletePlanButton planId={plan.id} />
                   <Link
                     href={`/plans/${plan.id}`}

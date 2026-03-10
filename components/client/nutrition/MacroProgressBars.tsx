@@ -58,23 +58,23 @@ export function MacroProgressBars({ targets, consumed }: MacroProgressBarsProps)
                     return (
                         <div
                             key={card.label}
-                            className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-2xl p-4 shadow-sm"
+                            className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 shadow-sm"
                             style={{
                                 opacity: mounted ? 1 : 0,
                                 transform: mounted ? 'translateY(0)' : 'translateY(10px)',
                                 transition: `all 0.4s ease-out ${index * 0.05}s`
                             }}
                         >
-                            <p className="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wider">{card.label}</p>
+                            <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">{card.label}</p>
                             <div className="mt-2 flex items-baseline gap-1.5">
-                                <p className="text-2xl font-bold font-[family-name:var(--font-geist-mono)] text-[#e8e8e6]">
+                                <p className="text-2xl font-bold font-[family-name:var(--font-geist-mono)] text-[var(--text-primary)]">
                                     {formatValue(card.consumed)}
                                 </p>
-                                <p className="text-xs text-[#a0a0a0] font-medium pb-0.5">
+                                <p className="text-xs text-[var(--text-muted)] font-medium pb-0.5">
                                     / {hasPlan && card.displayTarget !== undefined ? formatValue(card.displayTarget, 0) : '--'} {card.unit}
                                 </p>
                             </div>
-                            <div className="mt-3 h-[4px] bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden relative">
+                            <div className="mt-3 h-[4px] bg-[var(--bg-elevated)] rounded-full overflow-hidden relative">
                                 <div
                                     className="absolute left-0 top-0 bottom-0 rounded-full"
                                     style={{
@@ -90,7 +90,7 @@ export function MacroProgressBars({ targets, consumed }: MacroProgressBarsProps)
             </div>
             {!hasPlan && (
                 <p
-                    className="text-xs text-[#a0a0a0] mt-4 text-center p-3 bg-[rgba(255,255,255,0.03)] rounded-lg border border-[rgba(255,255,255,0.05)]"
+                    className="text-xs text-[var(--text-muted)] mt-4 text-center p-3 bg-[var(--bg-elevated)] rounded-lg border border-[var(--border)]"
                     style={{
                         opacity: mounted ? 1 : 0,
                         transition: 'opacity 0.4s ease-out 0.3s'

@@ -116,17 +116,17 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-[rgba(255,255,255,0.05)]">
+          <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-[var(--border)]">
             <div className="flex items-center gap-2">
               {(step === 'confirm' || step === 'fallback') && (
                 <button
                   onClick={goBackToInput}
-                  className="text-[#a0a0a0] hover:text-white p-1 -ml-1"
+                  className="text-[var(--text-muted)] hover:text-white p-1 -ml-1"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
               )}
-              <h3 className="text-base font-semibold text-[#e8e8e6]">
+              <h3 className="text-base font-semibold text-[var(--text-primary)]">
                 {step === 'input' && 'Analizar alimento con IA'}
                 {step === 'loading' && 'Analizando...'}
                 {step === 'confirm' && 'Confirmar macros estimados'}
@@ -134,7 +134,7 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
               </h3>
             </div>
             {step !== 'loading' && (
-              <button onClick={closeModal} className="text-[#a0a0a0] hover:text-white p-1">
+              <button onClick={closeModal} className="text-[var(--text-muted)] hover:text-white p-1">
                 <X className="w-5 h-5" />
               </button>
             )}
@@ -153,7 +153,7 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
                   }}
                   placeholder="Ej: un plato de lentejas con chorizo, una manzana mediana, 2 huevos revueltos..."
                   rows={4}
-                  className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 px-4 text-sm text-[#e8e8e6] placeholder-[#6b6b6b] focus:outline-none focus:border-[#fb8500] resize-none"
+                  className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-3 px-4 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#fb8500] resize-none"
                   autoFocus
                 />
                 {inputError && (
@@ -173,64 +173,64 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
             {step === 'loading' && (
               <div className="py-10 flex flex-col items-center justify-center gap-3">
                 <Loader2 className="w-8 h-8 text-[#fb8500] animate-spin" />
-                <p className="text-sm text-[#a0a0a0]">Claude está analizando...</p>
+                <p className="text-sm text-[var(--text-muted)]">Claude está analizando...</p>
               </div>
             )}
 
             {/* CONFIRM STEP */}
             {step === 'confirm' && estimate && (
               <>
-                <p className="text-xs text-[#a0a0a0] leading-relaxed">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   {estimate.description}
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Kcal
                     </label>
                     <input
                       type="number"
                       value={manualKcal}
                       onChange={(e) => setManualKcal(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Proteina (g)
                     </label>
                     <input
                       type="number"
                       value={manualProtein}
                       onChange={(e) => setManualProtein(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       step="0.1"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Carbos (g)
                     </label>
                     <input
                       type="number"
                       value={manualCarbs}
                       onChange={(e) => setManualCarbs(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       step="0.1"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Grasa (g)
                     </label>
                     <input
                       type="number"
                       value={manualFat}
                       onChange={(e) => setManualFat(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       step="0.1"
                     />
@@ -239,7 +239,7 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={goBackToInput}
-                    className="flex-1 py-3 bg-[rgba(255,255,255,0.05)] rounded-xl text-sm font-medium text-[#e8e8e6] active:scale-[0.98] transition-transform"
+                    className="flex-1 py-3 bg-[var(--bg-elevated)] rounded-xl text-sm font-medium text-[var(--text-primary)] active:scale-[0.98] transition-transform"
                   >
                     Atras
                   </button>
@@ -265,7 +265,7 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
                 )}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Nombre
                     </label>
                     <input
@@ -275,59 +275,59 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
                         // Update description for use in handleSave foodName
                         setDescription(e.target.value)
                       }}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Kcal
                     </label>
                     <input
                       type="number"
                       value={manualKcal}
                       onChange={(e) => setManualKcal(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Proteina (g)
                     </label>
                     <input
                       type="number"
                       value={manualProtein}
                       onChange={(e) => setManualProtein(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       step="0.1"
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Carbos (g)
                     </label>
                     <input
                       type="number"
                       value={manualCarbs}
                       onChange={(e) => setManualCarbs(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       step="0.1"
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs text-[var(--text-muted)] mb-1.5 uppercase tracking-wide">
                       Grasa (g)
                     </label>
                     <input
                       type="number"
                       value={manualFat}
                       onChange={(e) => setManualFat(e.target.value)}
-                      className="w-full bg-[#212121] border border-[rgba(255,255,255,0.08)] rounded-xl py-2.5 px-3 text-sm text-[#e8e8e6] focus:outline-none focus:border-[#fb8500]"
+                      className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#fb8500]"
                       min="0"
                       step="0.1"
                       placeholder="0"
@@ -337,7 +337,7 @@ export function AIFoodParserModal({ clientId }: { clientId: string }) {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={goBackToInput}
-                    className="flex-1 py-3 bg-[rgba(255,255,255,0.05)] rounded-xl text-sm font-medium text-[#e8e8e6] active:scale-[0.98] transition-transform"
+                    className="flex-1 py-3 bg-[var(--bg-elevated)] rounded-xl text-sm font-medium text-[var(--text-primary)] active:scale-[0.98] transition-transform"
                   >
                     Atras
                   </button>

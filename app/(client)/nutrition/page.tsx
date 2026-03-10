@@ -61,12 +61,12 @@ export default async function NutritionPage() {
       <div className="px-4 pt-6 pb-28">
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#e8e8e6] tracking-tight">Nutrición</h1>
-            <p className="text-sm text-[#a0a0a0] mt-0.5 capitalize">{dateLabel}</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Nutrición</h1>
+            <p className="text-sm text-[var(--text-muted)] mt-0.5 capitalize">{dateLabel}</p>
           </div>
           <Link
             href="/nutrition/shopping-list"
-            className="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] flex items-center justify-center text-[#e8e8e6] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+            className="w-10 h-10 rounded-full bg-[var(--bg-elevated)] border border-[var(--border)] flex items-center justify-center text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
             title="Lista de la compra"
           >
             <ShoppingBag className="w-5 h-5" />
@@ -96,8 +96,8 @@ export default async function NutritionPage() {
               logs={context.logs}
             />
           ) : (
-            <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-5 text-center">
-              <p className="text-sm text-[#a0a0a0]">No hay plan activo disponible</p>
+            <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl px-4 py-5 text-center">
+              <p className="text-sm text-[var(--text-muted)]">No hay plan activo disponible</p>
             </div>
           )}
         </section>
@@ -113,7 +113,7 @@ export default async function NutritionPage() {
                 clientId={client.id}
                 dateStr={currentDateString}
                 trigger={
-                  <button className="w-8 h-8 rounded-full bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center text-[#e8e8e6] hover:bg-[rgba(255,255,255,0.12)] transition-colors">
+                  <button className="w-8 h-8 rounded-full bg-[var(--bg-elevated)] border border-[var(--border)] flex items-center justify-center text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors">
                     <Plus className="w-4 h-4" strokeWidth={2.5} />
                   </button>
                 }
@@ -125,8 +125,8 @@ export default async function NutritionPage() {
             const freeLogs = context?.logs?.filter(l => l.meal_number === null) || []
             if (freeLogs.length === 0) {
               return (
-                <div className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl px-4 py-8 text-center flex flex-col items-center justify-center">
-                  <p className="text-sm text-[#a0a0a0] mb-2">No has registrado alimentos libres hoy</p>
+                <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl px-4 py-8 text-center flex flex-col items-center justify-center">
+                  <p className="text-sm text-[var(--text-muted)] mb-2">No has registrado alimentos libres hoy</p>
                   <p className="text-xs text-[#6b7fa3]">Usa el botón + para buscar y añadir comidas</p>
                 </div>
               )
@@ -138,13 +138,13 @@ export default async function NutritionPage() {
                   const name = item?.name || 'Comida'
                   const kcal = item ? Math.round(item.kcal_per_100g * (log.grams / 100)) : 0
                   return (
-                    <div key={log.id} className="bg-[#212121] border border-[rgba(255,255,255,0.07)] rounded-xl p-4 flex justify-between items-center">
+                    <div key={log.id} className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 flex justify-between items-center">
                       <div>
-                        <p className="text-sm font-medium text-[#e8e8e6]">{name}</p>
-                        <p className="text-xs text-[#a0a0a0] mt-0.5">{log.grams}g</p>
+                        <p className="text-sm font-medium text-[var(--text-primary)]">{name}</p>
+                        <p className="text-xs text-[var(--text-muted)] mt-0.5">{log.grams}g</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-[#e8e8e6]">{kcal} kcal</p>
+                        <p className="text-sm font-semibold text-[var(--text-primary)]">{kcal} kcal</p>
                       </div>
                     </div>
                   )
