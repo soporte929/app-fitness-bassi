@@ -34,8 +34,8 @@ export function WeightTrendChart({ data, clientNames }: Props) {
 
   return (
     <div style={{ width: '100%', overflowX: 'hidden' }}>
-      <ResponsiveContainer width="100%" height={220}>
-        <LineChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 8 }}>
+      <ResponsiveContainer width="100%" height={260}>
+        <LineChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 28 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
           <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#a0a0a0' }} tickLine={false} interval="preserveStartEnd" />
           <YAxis tick={{ fontSize: 11, fill: '#9b9b97' }} tickFormatter={(v: number) => `${v}`} />

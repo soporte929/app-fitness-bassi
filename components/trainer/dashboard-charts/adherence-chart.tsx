@@ -33,12 +33,12 @@ export function AdherenceChart({ data }: { data: AdherenceDataPoint[] }) {
 
   return (
     <div style={{ width: '100%', overflowX: 'hidden' }}>
-      <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 48 }}>
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 60 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 10, fill: '#a0a0a0' }}
+            tick={{ fontSize: 9, fill: '#a0a0a0' }}
             tickLine={false}
             interval="preserveStartEnd"
             angle={-35}
