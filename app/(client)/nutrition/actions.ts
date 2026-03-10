@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/lib/supabase/types'
+import type { MacroEstimate } from './ai-actions'
 
 type CreateNutritionLogInput = {
   clientId: string
@@ -255,6 +256,57 @@ export async function logFreeFoodAction(
   } catch (error: any) {
     return { success: false, error: error.message || 'Unknown error' }
   }
+}
+
+export async function logAIFoodEntryAction(
+  clientId: string,
+  estimate: MacroEstimate,
+  dateStr: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  const { data: ownClient } = await supabase
+    .from('clients')
+    .select('id')
+    .eq('profile_id', user.id)
+    .eq('id', clientId)
+    .maybeSingle()
+
+  if (!ownClient) return { success: false, error: 'Cliente no válido' }
+
+  const { data: dish, error: dishError } = await supabase
+    .from('saved_dishes')
+    .insert({
+      trainer_id: user.id,
+      name: estimate.description,
+      kcal_per_100g: estimate.kcal,
+      protein_per_100g: estimate.protein_g,
+      carbs_per_100g: estimate.carbs_g,
+      fat_per_100g: estimate.fat_g,
+    })
+    .select('id')
+    .single()
+
+  if (dishError || !dish) return { success: false, error: dishError?.message ?? 'Error creando entrada IA' }
+
+  const { error: logError } = await supabase.from('food_log').insert({
+    client_id: ownClient.id,
+    logged_date: dateStr,
+    dish_id: dish.id,
+    food_id: null,
+    grams: 100,
+    meal_number: null,
+  })
+
+  if (logError) return { success: false, error: logError.message }
+
+  revalidatePath('/nutrition')
+  return { success: true }
 }
 
 export async function generateWeeklyShoppingListAction(clientId: string) {
