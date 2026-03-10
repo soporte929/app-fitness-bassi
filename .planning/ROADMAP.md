@@ -250,6 +250,7 @@ Plans:
 Plans:
 - [ ] 18-01-PLAN.md — Subida de foto de perfil
 - [ ] 18-02-PLAN.md — Checklist Nutricional Diario Interactivo
+
 ### Phase 19: Trainer Settings & Modals
 **Goal**: El entrenador dispone de un hub central y la asignación de planes se simplifica usando un modal.
 **Depends on**: None
@@ -258,7 +259,10 @@ Plans:
   1. En el detalle del cliente (`/clients/[id]`), el botón secundario es "Asignar plan nutricional".
   2. Al pulsar el botón, se abre un Dialog que lista plantillas de planes de nutrición y permite asignarlas eligiendo la fecha de inicio.
   3. Existe una nueva ruta de Ajustes (Settings Hub) para el entrenador con secciones para gestión de cuenta/UI.
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 19-01-PLAN.md — Modal "Asignar plan nutricional" en detalle del cliente (V41-06)
+- [ ] 19-02-PLAN.md — Settings Hub: nueva ruta /settings + entrada en sidebar (V41-07)
 
 
 ## Progress
@@ -286,4 +290,4 @@ Plans:
 | 16. Branding & UI Corrections | v4.1 | 1/1 | Complete | 2026-03-10 |
 | 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Client App Improvements | 2/2 | Complete    | 2026-03-10 | - |
-| 19. Trainer Settings & Modals | v4.1 | 0/? | Not started | - |
+| 19. Trainer Settings & Modals | v4.1 | 0/2 | Planned | - |
