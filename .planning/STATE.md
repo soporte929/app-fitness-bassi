@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-10T10:31:41.645Z"
+last_updated: "2026-03-10T10:51:42.699Z"
 progress:
-  total_phases: 5
-  completed_phases: 3
-  total_plans: 8
-  completed_plans: 10
+  total_phases: 6
+  completed_phases: 4
+  total_plans: 10
+  completed_plans: 12
 ---
 
 # State
@@ -21,13 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
 
 ## Current Position
-- **Phase**: 13-ai-nutrition-parsing (COMPLETE — both plans done)
-- **Task**: 13-02 complete — Phase 13 done
+- **Phase**: 14-trainer-completar (COMPLETE — both plans done)
+- **Task**: 14-01 complete (14-02 already done)
 - **Status**: In Progress
-- **Last activity**: 2026-03-10 — Phase 13 Plan 02 executed. AIFoodParserModal built and wired into nutrition page.
+- **Last activity**: 2026-03-10 — Phase 14 Plan 01 executed. Exercises library page + filter component built, sidebar cleaned of dead links.
 
 ## Next Steps
-1. Execute Phase 14 (Trainer Completar)
+1. Execute Phase 15 (Bug Fixes & Logic Corrections)
 
 ## Progress Bar
 
@@ -40,7 +40,7 @@ Phase 10.1: [x] Persist Plan Metadata
 Phase 11:   [x] Client Nutrition View
 Phase 12:   [x] Progress Logging
 Phase 13:   [x] AI Nutrition Parsing (2/2 plans done)
-Phase 14:   [ ] Trainer Completar
+Phase 14:   [x] Trainer Completar (2/2 plans done)
 Phase 15:   [ ] Bug Fixes & Logic Corrections
 ```
 
@@ -132,3 +132,6 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 13-ai-nutrition-parsing]: max_tokens: 256 for Claude macro estimate — sufficient for JSON response without waste
 - [Phase 13-02]: AIFoodParserModal uses inline trigger button (not FAB) to avoid z-index conflict with FoodSearchModal's fixed FAB; overlay at z-[90]
 - [Phase 13-02]: step set to 'loading' before startTransition — ensures spinner renders immediately without React batching delay
+- [Phase 14-trainer-completar]: RLS en exercises filtra automáticamente por trainer_id via day_id → workout_plans — no se requiere filtro manual en la query
+- [Phase 14-02]: Reuse client HistoryFilters/SessionHistoryCard for trainer history view — identical SessionData shape, no duplication
+- [Phase 14-02]: notFound() on trainer_id mismatch (not redirect) — consistent with existing clients/[id]/page.tsx pattern
