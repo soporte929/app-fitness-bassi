@@ -10,8 +10,6 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import {
   LayoutDashboard,
   Users,
-  FileText,
-  Settings,
   Dumbbell,
   ClipboardList,
   Layers,
@@ -36,12 +34,7 @@ const navigation = [
       { label: "Planes", href: "/plans", icon: Layers },
       { label: "Nutrición", href: "/nutrition-plans", icon: UtensilsCrossed },
       { label: "Ejercicios", href: "/exercises", icon: Dumbbell },
-      { label: "Informes", href: "/reports", icon: FileText },
     ],
-  },
-  {
-    section: "Sistema",
-    items: [{ label: "Ajustes", href: "/settings", icon: Settings }],
   },
 ];
 
