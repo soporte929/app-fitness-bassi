@@ -374,9 +374,12 @@ export default async function ClientDetailPage({
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-[var(--text-primary)]">Últimos entrenamientos</p>
-                  <Button variant="ghost" size="sm">
+                  <Link
+                    href={`/clients/${id}/history`}
+                    className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] transition-colors font-medium"
+                  >
                     Ver historial <ChevronRight className="w-3.5 h-3.5" />
-                  </Button>
+                  </Link>
                 </div>
               </CardHeader>
               <CardContent className="p-0">
