@@ -1,7 +1,7 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Search, Plus, Trash2, ChefHat } from 'lucide-react'
 import type { Database } from '@/lib/supabase/types'
 
@@ -56,6 +56,30 @@ function calcSlotMacros(items: SelectedItem[]) {
     carbs: Math.round(carbs),
     fat: Math.round(fat),
   }
+}
+
+// Sub-componente para preservar foco del input entre re-renders del padre
+function FoodSearchInput({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  return (
+    <div className="relative">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)]" />
+      <input
+        ref={inputRef}
+        type="text"
+        placeholder="Buscar alimento o plato guardado..."
+        className="flex h-9 w-full rounded-md border border-[var(--border)] bg-[var(--bg-base)] pl-8 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  )
 }
 
 function FoodSearchSlot({
@@ -143,17 +167,8 @@ function FoodSearchSlot({
         <p className="font-medium text-sm text-[var(--text-primary)]">{optionLabel}</p>
       )}
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)]" />
-        <input
-          type="text"
-          placeholder="Buscar alimento o plato guardado..."
-          className="flex h-9 w-full rounded-md border border-[var(--border)] bg-[var(--bg-base)] pl-8 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </div>
+      {/* Search — FoodSearchInput con useRef para preservar foco entre re-renders */}
+      <FoodSearchInput value={query} onChange={setQuery} />
 
       {/* Results */}
       {filtered.length > 0 && (
