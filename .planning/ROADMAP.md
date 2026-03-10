@@ -192,7 +192,12 @@ Plans:
   13. FEAT-06: Perfil del cliente: foto de perfil y datos personales editables.
   14. LOGIC-01: El flujo correcto es Rutinas → Planes → Asignación al cliente. Nunca se asigna una rutina directamente. Revisar toda la UI y corregir cualquier flujo o botón que rompa esta lógica.
   15. LOGIC-02: Detalle del módulo Planes. Flujo completo validado: (1) Entrenador crea Rutinas. (2) Entrenador crea Planes semanales con rutinas. (3) Entrenador asigna un Plan (no rutina) al cliente con fecha inicio. (4) Cliente ve rutina del día según plan activo. (5) Sección Planes permite CRUD. (6) Botón "Asignar rutina" en detalle cliente se cambia a "Asignar plan".
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 15-01-PLAN.md — Production bugs + chart margins + food search focus fix (BUG-01, 02, 04, 06, 07, 08)
+- [ ] 15-02-PLAN.md — Business logic flow: replace AssignRoutineButton with AssignPlanButton (LOGIC-01, 02)
+- [ ] 15-03-PLAN.md — UI polish: FAB inline, ThemeToggle client, PWA manifest (FEAT-01, 03, 04, 05)
+- [ ] 15-04-PLAN.md — Pause timer, editable profile, verify RoutineBuilder state (BUG-03, FEAT-02, 06)
 
 
 ## Progress
