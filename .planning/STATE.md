@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-10T16:28:20.185Z"
+last_updated: "2026-03-10T16:32:20.341Z"
 progress:
   total_phases: 10
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 20
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # State
@@ -23,20 +23,20 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Current Position
 - **Milestone**: v4.1 Polish & Settings
 - **Phase**: 18
-- **Plan**: 1 of 2 complete
-- **Status**: In progress — 18-01 complete, 18-02 pending
-- **Last activity**: 2026-03-10 — Completed 18-01-PLAN.md (avatar photo upload)
+- **Plan**: 2 of 2 complete
+- **Status**: Phase 18 complete — all plans executed
+- **Last activity**: 2026-03-10 — Completed 18-02-PLAN.md (interactive nutrition checklist)
 
 ## Next Steps
-1. /execute 18 plan 2 — run 18-02 (nutrition UI improvements)
+1. /execute 19 plan 1 — start Phase 19 (Trainer Settings & Modals)
 
 ## Progress Bar
 
 ```text
-v4.1 Progress: [██████████████████░░░░░░░░░░░░░░░░░] 50% (2/4 phases)
+v4.1 Progress: [███████████████████████████░░░░░░░░] 75% (3/4 phases)
 Phase 16: [x] Branding & UI Corrections
 Phase 17: [x] Global Theme System
-Phase 18: [ ] Client App Improvements
+Phase 18: [x] Client App Improvements
 Phase 19: [ ] Trainer Settings & Modals
 ```
 
@@ -141,3 +141,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 15-04]: BUG-03 verificado como inexistente — RoutineBuilder ya mantiene estado entre steps sin cambios
 - [Phase 18-01]: upload path avatars/<userId>/<timestamp>.<ext> — namespaced by user, unique by timestamp, no collisions
 - [Phase 18-01]: userId passed as prop from server page component to EditProfileForm — avoids client-side auth fetch
+- [Phase 18]: checkedItems keyed by item.id (UUID) — stable across option slot toggles, no index drift
+- [Phase 18]: Log all items if none checked, only checked items if at least one is checked — preserves one-tap default flow
