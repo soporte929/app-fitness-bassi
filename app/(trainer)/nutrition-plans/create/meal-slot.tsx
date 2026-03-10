@@ -1,7 +1,7 @@
 'use client'
 
+import React, { forwardRef, useState, useRef } from 'react'
 import { Card } from '@/components/ui/card'
-import { useState, useRef } from 'react'
 import { Search, Plus, Trash2, ChefHat } from 'lucide-react'
 import type { Database } from '@/lib/supabase/types'
 
@@ -58,29 +58,23 @@ function calcSlotMacros(items: SelectedItem[]) {
   }
 }
 
-// Sub-componente para preservar foco del input entre re-renders del padre
-function FoodSearchInput({
-  value,
-  onChange,
-}: {
-  value: string
-  onChange: (v: string) => void
-}) {
-  const inputRef = useRef<HTMLInputElement>(null)
-  return (
-    <div className="relative">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)]" />
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Buscar alimento o plato guardado..."
-        className="flex h-9 w-full rounded-md border border-[var(--border)] bg-[var(--bg-base)] pl-8 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  )
-}
+// Input no controlado — React nunca toca el valor del DOM, preservando el foco entre keystrokes
+const FoodSearchInput = forwardRef<HTMLInputElement, { onSearch: (v: string) => void }>(
+  function FoodSearchInput({ onSearch }, ref) {
+    return (
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)]" />
+        <input
+          ref={ref}
+          type="text"
+          placeholder="Buscar alimento o plato guardado..."
+          className="flex h-9 w-full rounded-md border border-[var(--border)] bg-[var(--bg-base)] pl-8 pr-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
+          onChange={(e) => onSearch(e.target.value)}
+        />
+      </div>
+    )
+  }
+)
 
 function FoodSearchSlot({
   foods,
@@ -95,6 +89,7 @@ function FoodSearchSlot({
 }) {
   const [query, setQuery] = useState('')
   const [items, setItems] = useState<SelectedItem[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const allSearchable: SearchableItem[] = [
     ...foods.map((f): SearchableItem => ({ kind: 'food', food: f })),
@@ -141,6 +136,7 @@ function FoodSearchSlot({
       return next
     })
     setQuery('')
+    if (inputRef.current) inputRef.current.value = ''
   }
 
   function updateGrams(id: string, kind: 'food' | 'dish', grams: number) {
@@ -167,8 +163,8 @@ function FoodSearchSlot({
         <p className="font-medium text-sm text-[var(--text-primary)]">{optionLabel}</p>
       )}
 
-      {/* Search — FoodSearchInput con useRef para preservar foco entre re-renders */}
-      <FoodSearchInput value={query} onChange={setQuery} />
+      {/* Input no controlado — foco preservado natively */}
+      <FoodSearchInput ref={inputRef} onSearch={setQuery} />
 
       {/* Results */}
       {filtered.length > 0 && (
