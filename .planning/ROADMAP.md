@@ -215,5 +215,5 @@ Plans:
 | 11. Client Nutrition View | v4.0 | 0/4 | Planned | - |
 | 12. Progress Logging | v4.0 | 2/2 | Complete | 2026-03-10 |
 | 13. AI Nutrition Parsing | 2/2 | Complete    | 2026-03-10 | - |
-| 14. Trainer Completar | 2/2 | Complete   | 2026-03-10 | - |
+| 14. Trainer Completar | 2/2 | Complete    | 2026-03-10 | - |
 | 15. Bug Fixes & Logic Corrections | v4.0 | 0/? | Not started | - |
