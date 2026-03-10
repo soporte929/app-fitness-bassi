@@ -77,7 +77,7 @@ export function FeedbackEditor({ revisionId, initialFeedback }: Props) {
           onClick={handleSave}
           disabled={isPending}
           className="text-xs font-semibold px-4 py-1.5 rounded-md transition-opacity disabled:opacity-50"
-          style={{ background: '#e8e8e6', color: '#191919' }}
+          style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}
         >
           {isPending ? 'Guardando…' : 'Guardar'}
         </button>

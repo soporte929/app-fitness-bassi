@@ -46,7 +46,7 @@ export default function LoginPage() {
     <main
       className="min-h-screen flex flex-col items-center justify-center px-4 py-12 md:py-20 lg:py-0"
       style={{
-        background: "radial-gradient(ellipse at center, #1f1f1f 0%, #191919 70%)",
+        background: "radial-gradient(ellipse at center, var(--bg-surface) 0%, var(--bg-base) 70%)",
       }}
     >
       <style>{`
@@ -132,8 +132,8 @@ export default function LoginPage() {
       <div
         className="w-full max-w-sm md:max-w-md mx-auto rounded-2xl p-6 md:p-8 lg:p-10"
         style={{
-          background: "#212121",
-          border: "1px solid rgba(255,255,255,0.07)",
+          background: "var(--bg-surface)",
+          border: "1px solid var(--border)",
           backdropFilter: "blur(8px)",
           boxShadow: "0 24px 48px rgba(0,0,0,0.4)",
           animation: "fadeInUp 500ms ease-out 0.4s forwards",

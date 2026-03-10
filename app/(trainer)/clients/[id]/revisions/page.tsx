@@ -56,7 +56,7 @@ export default async function TrainerClientRevisionsPage({
   const revisions = (rawRevisions ?? []) as Revision[]
 
   return (
-    <div className="min-h-screen p-5 lg:p-8" style={{ background: '#191919', color: '#e8e8e6' }}>
+    <div className="min-h-screen p-5 lg:p-8" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
       {/* Header */}
       <div className="flex items-center justify-between gap-4 mb-7">
         <div className="flex items-center gap-3">
@@ -79,7 +79,7 @@ export default async function TrainerClientRevisionsPage({
         <Link
           href={`/clients/${id}/revisions/new`}
           className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-md transition-opacity hover:opacity-80"
-          style={{ background: '#e8e8e6', color: '#191919' }}
+          style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}
         >
           <Plus className="w-4 h-4" />
           Nueva revisión
@@ -98,7 +98,7 @@ export default async function TrainerClientRevisionsPage({
           <Link
             href={`/clients/${id}/revisions/new`}
             className="text-sm font-semibold px-5 py-2.5 rounded-md"
-            style={{ background: '#e8e8e6', color: '#191919' }}
+            style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}
           >
             Crear primera revisión
           </Link>
@@ -113,8 +113,8 @@ export default async function TrainerClientRevisionsPage({
                 key={rev.id}
                 className="rounded-xl overflow-hidden"
                 style={{
-                  background: '#212121',
-                  border: '1px solid rgba(255,255,255,0.07)',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
                 }}
               >
                 {/* Card header */}

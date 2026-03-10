@@ -106,7 +106,7 @@ export function TodayExercisesProgress({ exercises, sessionId, sessionStartedAt,
     <>
       <div
         className="sticky top-0 z-20 -mx-4 px-4 pt-3 pb-3"
-        style={{ background: '#191919', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        style={{ background: 'var(--bg-base)', borderBottom: '1px solid var(--border)' }}
       >
         {/* Line 1 — exercises + timer + percentage */}
         <div className="flex justify-between items-center mb-1">
@@ -195,10 +195,10 @@ export function TodayExercisesProgress({ exercises, sessionId, sessionStartedAt,
                 <div
                   className="rounded-xl flex items-center justify-between px-4 py-3"
                   style={{
-                    background: '#212121',
+                    background: 'var(--bg-surface)',
                     border: dragOverIndex === index && dragIndex !== index
                       ? '1px solid rgba(107,127,163,0.5)'
-                      : '1px solid rgba(255,255,255,0.07)',
+                      : '1px solid var(--border)',
                   }}
                 >
                   <div>

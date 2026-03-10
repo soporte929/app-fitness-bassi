@@ -8,14 +8,14 @@ import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen" style={{ background: '#111111' }}>
+    <div className="min-h-screen" style={{ background: 'var(--bg-base)' }}>
       <div
         className="relative mx-auto min-h-screen w-full max-w-[430px] md:shadow-2xl flex flex-col"
-        style={{ background: '#191919' }}
+        style={{ background: 'var(--bg-base)' }}
       >
         <header
           className="sticky top-0 z-30 flex items-center justify-between px-4"
-          style={{ height: '44px', background: '#191919', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ height: '44px', background: 'var(--bg-base)', borderBottom: '1px solid var(--border)' }}
         >
           <Image
             src="/2.png"

@@ -78,7 +78,7 @@ export function LoadingScreen() {
 
       <div
         className="min-h-screen flex flex-col items-center justify-center"
-        style={{ background: '#191919' }}
+        style={{ background: 'var(--bg-base)' }}
       >
         <div className="ls-wrapper flex flex-col items-center gap-6">
 

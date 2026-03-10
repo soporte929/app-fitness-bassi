@@ -55,7 +55,7 @@ export default async function NewRevisionPage({
   }
 
   return (
-    <div className="min-h-screen p-5 lg:p-8" style={{ background: '#191919', color: '#e8e8e6' }}>
+    <div className="min-h-screen p-5 lg:p-8" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-7">
         <Link
@@ -79,7 +79,7 @@ export default async function NewRevisionPage({
         {/* Fechas */}
         <div
           className="rounded-xl p-5 space-y-4"
-          style={{ background: '#212121', border: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
           <p className="text-sm font-semibold" style={{ color: '#e8e8e6' }}>
             Fechas
@@ -115,7 +115,7 @@ export default async function NewRevisionPage({
         {/* Métricas */}
         <div
           className="rounded-xl p-5 space-y-4"
-          style={{ background: '#212121', border: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
           <p className="text-sm font-semibold" style={{ color: '#e8e8e6' }}>
             Métricas <span style={{ color: '#555', fontWeight: 400 }}>(opcionales)</span>
@@ -164,7 +164,7 @@ export default async function NewRevisionPage({
         {/* Notas y feedback */}
         <div
           className="rounded-xl p-5 space-y-4"
-          style={{ background: '#212121', border: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
         >
           <p className="text-sm font-semibold" style={{ color: '#e8e8e6' }}>
             Notas y feedback
@@ -200,7 +200,7 @@ export default async function NewRevisionPage({
           <button
             type="submit"
             className="font-semibold text-sm px-6 py-2.5 rounded-md transition-opacity hover:opacity-80"
-            style={{ background: '#e8e8e6', color: '#191919' }}
+            style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}
           >
             Guardar revisión
           </button>

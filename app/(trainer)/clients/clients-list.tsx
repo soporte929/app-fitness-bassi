@@ -223,7 +223,7 @@ export function ClientsListUI({
               <div
                 key={client.id}
                 className="rounded-xl p-4"
-                style={{ background: '#212121', border: '1px solid rgba(255,255,255,0.07)' }}
+                style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-sm" style={{ color: '#e8e8e6' }}>
