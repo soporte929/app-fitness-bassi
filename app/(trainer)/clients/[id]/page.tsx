@@ -13,6 +13,8 @@ import { computeAlerts } from '@/lib/alerts'
 import { EditClientPanel } from './edit-panel'
 import { EditNutritionPlanModal } from './edit-nutrition-plan-modal'
 import { AssignPlanButton } from './assign-plan-button'
+import { AssignNutritionPlanModal } from './assign-nutrition-plan-modal'
+import type { NutritionTemplate } from './nutrition-actions'
 import { ArrowLeft, Flame, ChevronRight, ClipboardList } from 'lucide-react'
 
 export default async function ClientDetailPage({
@@ -41,7 +43,7 @@ export default async function ClientDetailPage({
 
   if (!rawClient) notFound()
 
-  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, plansRes, activeNutritionPlanRaw] = await Promise.all([
+  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, plansRes, activeNutritionPlanRaw, nutritionTemplatesRes] = await Promise.all([
     supabase
       .from('weight_logs')
       .select('weight_kg, logged_at')
@@ -85,6 +87,12 @@ export default async function ClientDetailPage({
       .eq('client_id', id)
       .eq('active', true)
       .maybeSingle(),
+    supabase
+      .from('nutrition_plans' as any)
+      .select('id, name, kcal_target, protein_target_g, carbs_target_g, fat_target_g, meals_count, diet_type')
+      .eq('trainer_id', user.id)
+      .eq('is_template', true)
+      .order('created_at', { ascending: false }),
   ])
 
   const weightLogs = weightLogsRes.data ?? []
@@ -99,6 +107,7 @@ export default async function ClientDetailPage({
   } | null
   type PlanOption = { id: string; name: string; description: string | null; phase: string | null; level: string | null }
   const trainerPlans = (plansRes.data ?? []) as PlanOption[]
+  const nutritionTemplates = (nutritionTemplatesRes.data ?? []) as unknown as NutritionTemplate[]
 
   const activeNutritionPlanData = activeNutritionPlanRaw.data
   const activeNutritionPlan = activeNutritionPlanData ? {
@@ -236,7 +245,7 @@ export default async function ClientDetailPage({
               </p>
             </div>
           </div>
-          <div className="flex gap-2 flex-shrink-0">
+          <div className="flex gap-2 flex-wrap flex-shrink-0">
             <Link
               href={`/clients/${id}/revisions`}
               className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl border transition-colors hover:bg-[var(--bg-overlay)] bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -244,6 +253,11 @@ export default async function ClientDetailPage({
               <ClipboardList className="w-4 h-4" />
               Revisiones
             </Link>
+            <AssignNutritionPlanModal
+              clientId={rawClient.id}
+              clientName={clientName}
+              templates={nutritionTemplates}
+            />
             <AssignPlanButton clientId={rawClient.id} plans={trainerPlans} />
           </div>
         </div>
