@@ -35,17 +35,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} dark`}
-      data-theme="dark"
+      className={`${geistSans.variable} ${geistMono.variable} ${anton.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(!t){t='dark';}if(t==='dark'){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light');}}catch(e){document.documentElement.classList.add('dark');document.documentElement.setAttribute('data-theme','dark');}})();`,
-          }}
-        />
-      </head>
       <body className="antialiased">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
