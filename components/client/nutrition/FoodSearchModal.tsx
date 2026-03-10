@@ -4,7 +4,7 @@ import React, { useState, useTransition, useEffect } from 'react'
 import { Plus, X, Loader2, Search } from 'lucide-react'
 import { searchFoodsAction, logFreeFoodAction } from '@/app/(client)/nutrition/actions'
 
-export function FoodSearchModal({ clientId, dateStr }: { clientId: string; dateStr: string }) {
+export function FoodSearchModal({ clientId, dateStr, trigger }: { clientId: string; dateStr: string; trigger?: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false)
     const [query, setQuery] = useState('')
     const [results, setResults] = useState<any[]>([])
@@ -72,13 +72,19 @@ export function FoodSearchModal({ clientId, dateStr }: { clientId: string; dateS
 
     return (
         <>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="fixed z-50 flex items-center justify-center rounded-full shadow-xl transition-transform active:scale-95 hover:brightness-110"
-                style={{ bottom: 80, right: 16, width: 56, height: 56, background: '#fb8500' }}
-            >
-                <Plus className="w-6 h-6 text-white" strokeWidth={2.5} />
-            </button>
+            {trigger ? (
+                <div onClick={() => setIsOpen(true)} className="cursor-pointer">
+                    {trigger}
+                </div>
+            ) : (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="fixed z-50 flex items-center justify-center rounded-full shadow-xl transition-transform active:scale-95 hover:brightness-110"
+                    style={{ bottom: 80, right: 16, width: 56, height: 56, background: '#fb8500' }}
+                >
+                    <Plus className="w-6 h-6 text-white" strokeWidth={2.5} />
+                </button>
+            )}
 
             <div
                 className={`fixed inset-0 z-[80] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}

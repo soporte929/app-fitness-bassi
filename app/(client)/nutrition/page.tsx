@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, Plus } from 'lucide-react'
 import { PageTransition } from '@/components/ui/page-transition'
 import { MacroProgressBars } from '@/components/client/nutrition/MacroProgressBars'
 import { ClientDailyMeals } from '@/components/client/nutrition/ClientDailyMeals'
@@ -107,7 +107,18 @@ export default async function NutritionPage() {
             <p className="text-xs font-medium text-[#6b7fa3] tracking-wide uppercase">
               Registro libre
             </p>
-            <AIFoodParserModal clientId={client.id} />
+            <div className="flex items-center gap-2">
+              <AIFoodParserModal clientId={client.id} />
+              <FoodSearchModal
+                clientId={client.id}
+                dateStr={currentDateString}
+                trigger={
+                  <button className="w-8 h-8 rounded-full bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center text-[#e8e8e6] hover:bg-[rgba(255,255,255,0.12)] transition-colors">
+                    <Plus className="w-4 h-4" strokeWidth={2.5} />
+                  </button>
+                }
+              />
+            </div>
           </div>
 
           {(() => {
@@ -144,7 +155,6 @@ export default async function NutritionPage() {
         </section>
       </div>
 
-      <FoodSearchModal clientId={client.id} dateStr={currentDateString} />
     </PageTransition>
   )
 }
