@@ -4,6 +4,7 @@ import { ClientNav } from '@/components/client/nav'
 import { RestTimer } from '@/components/client/rest-timer'
 import LoadingScreen from '@/components/ui/loading-screen'
 import { ActiveSessionBanner } from '@/components/client/active-session-banner'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         style={{ background: '#191919' }}
       >
         <header
-          className="sticky top-0 z-30 flex items-center px-4"
+          className="sticky top-0 z-30 flex items-center justify-between px-4"
           style={{ height: '44px', background: '#191919', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
         >
           <Image
@@ -24,6 +25,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             className="object-contain"
             style={{ mixBlendMode: 'screen' }}
           />
+          <ThemeToggle />
         </header>
         <main className="flex-1 pb-20">
           <Suspense fallback={<LoadingScreen />}>{children}</Suspense>
