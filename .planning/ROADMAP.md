@@ -57,7 +57,7 @@
 - [x] **Phase 12: Progress Logging** — Client registers body weight and measurements from /progress; target weight reference line on chart
 - [x] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback (completed 2026-03-10)
 - [x] **Phase 14: Trainer Completar** — Exercises library page, client history link, and dead sidebar links resolved (completed 2026-03-10)
-- [ ] **Phase 15: Bug Fixes & Logic Corrections** — UI/UX polish, form state persistence, chart margins, and flow logic corrections (Routine vs Plan assignment)
+- [x] **Phase 15: Bug Fixes & Logic Corrections** — UI/UX polish, form state persistence, chart margins, and flow logic corrections (Routine vs Plan assignment) (completed 2026-03-10)
 
 </details>
 
@@ -221,4 +221,4 @@ Plans:
 | 12. Progress Logging | v4.0 | 2/2 | Complete | 2026-03-10 |
 | 13. AI Nutrition Parsing | 2/2 | Complete    | 2026-03-10 | - |
 | 14. Trainer Completar | 2/2 | Complete    | 2026-03-10 | - |
-| 15. Bug Fixes & Logic Corrections | 3/4 | In Progress|  | - |
+| 15. Bug Fixes & Logic Corrections | 4/4 | Complete   | 2026-03-10 | - |

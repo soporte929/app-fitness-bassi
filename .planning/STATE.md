@@ -21,13 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
 
 ## Current Position
-- **Phase**: 15-bug-fixes-logic-corrections (3/4 plans done)
-- **Task**: 15-03 complete, 15-04 pending
-- **Status**: In Progress
-- **Last activity**: 2026-03-10 — Phase 15 Plans 01-03 executed in parallel. 01: Charts/dropdown/focus fixed. 02: AssignPlanButton replaces AssignRoutineButton (LOGIC-01/02). 03: ThemeToggle client layout, FoodSearchModal inline trigger, PWA manifest.
+- **Phase**: 15-bug-fixes-logic-corrections (4/4 plans done — COMPLETE)
+- **Task**: All tasks complete
+- **Status**: Verifying
+- **Last activity**: 2026-03-10 — Phase 15 all 4 plans executed. 04: EditProfileForm, updateProfileAction, RestTimer pause, BUG-03 verified (non-existent).
 
 ## Next Steps
-1. Execute Phase 15 Plan 04 (profile edit + timer pause — checkpoint plan)
+1. Phase 15 verification
 
 ## Progress Bar
 
@@ -41,7 +41,7 @@ Phase 11:   [x] Client Nutrition View
 Phase 12:   [x] Progress Logging
 Phase 13:   [x] AI Nutrition Parsing (2/2 plans done)
 Phase 14:   [x] Trainer Completar (2/2 plans done)
-Phase 15:   [~] Bug Fixes & Logic Corrections (3/4 plans done)
+Phase 15:   [~] Bug Fixes & Logic Corrections (4/4 plans done — verifying)
 ```
 
 ## Performance Metrics
@@ -141,3 +141,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 15-02]: PlanOption type definido localmente en page.tsx — subset de tabla plans para uso puntual, no tipo global
 - [Phase 15-03]: FoodSearchModal trigger?: React.ReactNode — FAB como fallback para compatibilidad con otros usos
 - [Phase 15-03]: MetadataRoute.Manifest purpose separado en entries individuales ('any' / 'maskable') — string combinado no válido en TypeScript
+- [Phase 15-04]: full_name.trim() || undefined (no null) — profiles.Update es Partial<Insert> donde full_name es string | undefined
+- [Phase 15-04]: BUG-03 verificado como inexistente — RoutineBuilder ya mantiene estado entre steps sin cambios
