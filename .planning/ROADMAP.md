@@ -218,7 +218,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. En el sidebar del trainer (desktop y móvil), debajo de la imagen del logo aparece "FITNESS BASSI" usando la fuente Anton y el color #F5C518 o #6b7fa3.
   2. Las gráficas del dashboard (Adherencia, Progreso, etc.) tienen sus márgenes ajustados (`margin={{ top, right, bottom, left }}`) de forma que no se recortan en resoluciones estrechas.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 16-01-PLAN.md — Branding del trainer (fuente Anton) & corrección de recortes en gráficas
 
 ### Phase 17: Global Theme System
 **Goal**: Todo el sistema de interfaz soporta Dark/Light mode, persistiendo las preferencias del usuario mediante `next-themes`.
@@ -274,7 +276,7 @@ Plans:
 | 13. AI Nutrition Parsing | 2/2 | Complete    | 2026-03-10 | - |
 | 14. Trainer Completar | 2/2 | Complete    | 2026-03-10 | - |
 | 15. Bug Fixes & Logic Corrections | 4/4 | Complete   | 2026-03-10 | - |
-| 16. Branding & UI Corrections | v4.1 | 0/? | Not started | - |
+| 16. Branding & UI Corrections | v4.1 | 0/1 | Planned | - |
 | 17. Global Theme System | v4.1 | 0/? | Not started | - |
 | 18. Client App Improvements | v4.1 | 0/? | Not started | - |
 | 19. Trainer Settings & Modals | v4.1 | 0/? | Not started | - |

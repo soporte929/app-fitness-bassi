@@ -101,14 +101,19 @@ export function TrainerSidebar({
         >
           <div className={cn("flex items-center gap-3 min-w-0", isMobile && collapsed && "justify-center")}>
             {(!isMobile || !collapsed) ? (
-              <Image
-                src="/2.png"
-                alt="Fitness Bassi"
-                width={120}
-                height={40}
-                className="object-contain"
-                priority
-              />
+              <div className="flex flex-col items-center w-full">
+                <Image
+                  src="/2.png"
+                  alt="Fitness Bassi"
+                  width={120}
+                  height={40}
+                  className="object-contain"
+                  priority
+                />
+                <span className="font-anton text-[#F5C518] text-xl tracking-wide mt-1 text-center w-full">
+                  FITNESS BASSI
+                </span>
+              </div>
             ) : (
               <div className="w-8 h-8 bg-[var(--text-primary)] rounded-lg flex items-center justify-center flex-shrink-0">
                 <Dumbbell className="w-4 h-4 text-[var(--bg-base)]" strokeWidth={2.5} />
