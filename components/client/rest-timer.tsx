@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Minus, Plus, X } from 'lucide-react'
+import { Minus, Pause, Play, Plus, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function RestTimer() {
   const pathname = usePathname()
   const [seconds, setSeconds] = useState(0)
   const [active, setActive] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Reset timer when navigating to a different page
@@ -16,6 +17,7 @@ export function RestTimer() {
     if (intervalRef.current) clearInterval(intervalRef.current)
     setActive(false)
     setSeconds(0)
+    setIsPaused(false)
   }, [pathname])
 
   useEffect(() => {
@@ -23,13 +25,14 @@ export function RestTimer() {
       const detail = (e as CustomEvent<{ seconds: number }>).detail
       setSeconds(detail.seconds)
       setActive(true)
+      setIsPaused(false)
     }
     window.addEventListener('startRestTimer', handleStart)
     return () => window.removeEventListener('startRestTimer', handleStart)
   }, [])
 
   useEffect(() => {
-    if (!active) return
+    if (!active || isPaused) return
     intervalRef.current = setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
@@ -44,7 +47,7 @@ export function RestTimer() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [active])
+  }, [active, isPaused])
 
   const adjust = (delta: number) => setSeconds((prev) => Math.max(0, prev + delta))
 
@@ -52,6 +55,7 @@ export function RestTimer() {
     if (intervalRef.current) clearInterval(intervalRef.current)
     setActive(false)
     setSeconds(0)
+    setIsPaused(false)
   }
 
   const mins = Math.floor(seconds / 60)
@@ -72,6 +76,14 @@ export function RestTimer() {
             Descanso
           </p>
           <p className="text-2xl font-bold text-[var(--text-primary)] tabular-nums">{display}</p>
+          <button
+            type="button"
+            onClick={() => setIsPaused((p) => !p)}
+            className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors mt-0.5"
+          >
+            {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+            {isPaused ? 'Reanudar' : 'Pausar'}
+          </button>
         </div>
         <div className="flex items-center gap-1.5">
           <button
