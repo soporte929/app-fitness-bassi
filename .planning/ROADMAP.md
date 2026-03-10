@@ -322,7 +322,9 @@ Plans:
   2. REQUIREMENTS.md marca PROG-01, PROG-02 y PROG-03 como `[x]` (implementados por Phase 12, VERIFICATION.md ya lo confirma)
   3. REQUIREMENTS.md traceability table incluye V41-01 a V41-07 con sus fases asignadas
   4. Coverage count actualizado en REQUIREMENTS.md
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 23-01-PLAN.md — Marcar CALC-01-05 como [x], añadir sección V41, corregir traceability V41-01/02/03
 
 
 ## Progress
