@@ -55,7 +55,7 @@
 - [x] **Phase 10.1: Persist Plan Metadata** — Gap closure: persist diet_type, meals_count, and is_template to nutrition_plans so Phase 11 can reconstruct any plan's structure
 - [ ] **Phase 11: Client Nutrition View** — Client sees daily calorie/macro progress bars, meal list with equivalents, food logging, and weekly shopping list
 - [x] **Phase 12: Progress Logging** — Client registers body weight and measurements from /progress; target weight reference line on chart
-- [ ] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback
+- [x] **Phase 13: AI Nutrition Parsing** — Claude API food description → macro estimation with confirmation step and manual fallback (completed 2026-03-10)
 - [ ] **Phase 14: Trainer Completar** — Exercises library page, client history link, and dead sidebar links resolved
 - [ ] **Phase 15: Bug Fixes & Logic Corrections** — UI/UX polish, form state persistence, chart margins, and flow logic corrections (Routine vs Plan assignment)
 
@@ -214,6 +214,6 @@ Plans:
 | 10.1. Persist Plan Metadata | v4.0 | 1/1 | Complete | 2026-03-09 |
 | 11. Client Nutrition View | v4.0 | 0/4 | Planned | - |
 | 12. Progress Logging | v4.0 | 2/2 | Complete | 2026-03-10 |
-| 13. AI Nutrition Parsing | 1/2 | In Progress|  | - |
+| 13. AI Nutrition Parsing | 2/2 | Complete   | 2026-03-10 | - |
 | 14. Trainer Completar | v4.0 | 0/? | Not started | - |
 | 15. Bug Fixes & Logic Corrections | v4.0 | 0/? | Not started | - |

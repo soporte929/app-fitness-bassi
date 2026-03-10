@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-10T10:24:37.525Z"
+last_updated: "2026-03-10T10:27:37.000Z"
 progress:
   total_phases: 5
   completed_phases: 2
@@ -21,13 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
 
 ## Current Position
-- **Phase**: 13-ai-nutrition-parsing (in progress — plan 01 of 2 complete)
-- **Task**: 13-01 complete, 13-02 next
+- **Phase**: 13-ai-nutrition-parsing (COMPLETE — both plans done)
+- **Task**: 13-02 complete — Phase 13 done
 - **Status**: In Progress
-- **Last activity**: 2026-03-10 — Phase 13 Plan 01 executed. parseNutritionAction Server Action created.
+- **Last activity**: 2026-03-10 — Phase 13 Plan 02 executed. AIFoodParserModal built and wired into nutrition page.
 
 ## Next Steps
-1. Execute 13-02 (AI Nutrition UI)
+1. Execute Phase 14 (Trainer Completar)
 
 ## Progress Bar
 
@@ -39,7 +39,7 @@ Phase 10:   [x] Trainer Plan Meals + Assignment
 Phase 10.1: [x] Persist Plan Metadata
 Phase 11:   [x] Client Nutrition View
 Phase 12:   [x] Progress Logging
-Phase 13:   [~] AI Nutrition Parsing (1/2 plans done)
+Phase 13:   [x] AI Nutrition Parsing (2/2 plans done)
 Phase 14:   [ ] Trainer Completar
 Phase 15:   [ ] Bug Fixes & Logic Corrections
 ```
@@ -130,3 +130,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 10-03]: mealItems optional in AssignNutritionPlanInput — plans without food selections are valid; no empty rows inserted
 - [Phase 13-ai-nutrition-parsing]: AI Server Action in separate ai-actions.ts file — keeps Claude API logic isolated from Supabase mutations
 - [Phase 13-ai-nutrition-parsing]: max_tokens: 256 for Claude macro estimate — sufficient for JSON response without waste
+- [Phase 13-02]: AIFoodParserModal uses inline trigger button (not FAB) to avoid z-index conflict with FoodSearchModal's fixed FAB; overlay at z-[90]
+- [Phase 13-02]: step set to 'loading' before startTransition — ensures spinner renders immediately without React batching delay
