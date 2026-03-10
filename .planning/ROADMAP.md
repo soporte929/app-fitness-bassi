@@ -351,7 +351,7 @@ Plans:
 | 17. Global Theme System | v4.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Client App Improvements | 2/2 | Complete    | 2026-03-10 | - |
 | 19. Trainer Settings & Modals | 2/2 | Complete    | 2026-03-10 | - |
-| 20. Integration Bug Fixes | v4.2 | 0/? | Not started | - |
+| 20. Integration Bug Fixes | 1/2 | In Progress|  | - |
 | 21. Retroactive Verification (10, 10.1, 16, 17) | v4.2 | 0/? | Not started | - |
 | 22. Retroactive Verification (11) | v4.2 | 0/? | Not started | - |
 | 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |

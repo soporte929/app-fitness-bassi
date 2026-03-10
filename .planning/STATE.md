@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-10T21:17:10.384Z"
+last_updated: "2026-03-10T21:51:52.252Z"
 progress:
-  total_phases: 11
+  total_phases: 15
   completed_phases: 9
-  total_plans: 22
-  completed_plans: 24
+  total_plans: 24
+  completed_plans: 25
 ---
 
 # State
@@ -21,14 +21,14 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 17: Global Theme System
 
 ## Current Position
-- **Milestone**: v4.1 Polish & Settings
-- **Phase**: 19
-- **Plan**: 2 of 2 complete
-- **Status**: Phase 19 complete — all plans executed
-- **Last activity**: 2026-03-10 — Completed 19-02-PLAN.md (trainer Settings Hub + sidebar entry)
+- **Milestone**: v4.2 Gap Closure
+- **Phase**: 20
+- **Plan**: 1 of 2 complete
+- **Status**: Phase 20 in progress
+- **Last activity**: 2026-03-10 — Completed 20-01-PLAN.md (AI food parser bug fix — writes to food_log via saved_dishes)
 
 ## Next Steps
-1. Phase 19 complete — v4.1 milestone complete
+1. Execute 20-02-PLAN.md
 
 ## Progress Bar
 
@@ -145,3 +145,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 18]: Log all items if none checked, only checked items if at least one is checked — preserves one-tap default flow
 - [Phase 19-02]: Settings Hub secciones Cuenta y Apariencia — cubre V41-07; entry en sección Principal del sidebar junto a Dashboard y Clientes
 - [Phase 19-02]: profile?.email ?? user.email fallback — garantiza email visible aunque profiles.email sea null
+- [Phase 20-01]: logAIFoodEntryAction inserts saved_dishes with trainer_id=user.id then food_log with grams=100 so macros match estimate exactly (factor=1)
