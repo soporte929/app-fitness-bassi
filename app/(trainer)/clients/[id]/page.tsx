@@ -12,7 +12,7 @@ import { calculateNutrition } from '@/lib/calculations/nutrition'
 import { computeAlerts } from '@/lib/alerts'
 import { EditClientPanel } from './edit-panel'
 import { EditNutritionPlanModal } from './edit-nutrition-plan-modal'
-import { AssignRoutineButton } from './assign-routine-button'
+import { AssignPlanButton } from './assign-plan-button'
 import { ArrowLeft, Flame, ChevronRight, ClipboardList } from 'lucide-react'
 
 export default async function ClientDetailPage({
@@ -41,7 +41,7 @@ export default async function ClientDetailPage({
 
   if (!rawClient) notFound()
 
-  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, templatesRes, activeNutritionPlanRaw] = await Promise.all([
+  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, plansRes, activeNutritionPlanRaw] = await Promise.all([
     supabase
       .from('weight_logs')
       .select('weight_kg, logged_at')
@@ -74,15 +74,9 @@ export default async function ClientDetailPage({
       .limit(1)
       .maybeSingle(),
     supabase
-      .from('workout_plans')
-      .select(
-        `id, name, description, days_per_week,
-        workout_days (
-          exercises (id)
-        )`
-      )
+      .from('plans')
+      .select('id, name, description, phase, level')
       .eq('trainer_id', user.id)
-      .eq('is_template', true)
       .eq('active', true)
       .order('created_at', { ascending: false }),
     supabase
@@ -103,19 +97,8 @@ export default async function ClientDetailPage({
     phase: string | null
     level: string | null
   } | null
-  const templates = ((templatesRes.data ?? []) as unknown as Array<{
-    id: string
-    name: string
-    description: string | null
-    days_per_week: number
-    workout_days: Array<{ exercises: Array<{ id: string }> | null }> | null
-  }>).map((plan) => ({
-    id: plan.id,
-    name: plan.name,
-    description: plan.description,
-    days_per_week: plan.days_per_week,
-    total_exercises: (plan.workout_days ?? []).reduce((acc, day) => acc + (day.exercises?.length ?? 0), 0),
-  }))
+  type PlanOption = { id: string; name: string; description: string | null; phase: string | null; level: string | null }
+  const trainerPlans = (plansRes.data ?? []) as PlanOption[]
 
   const activeNutritionPlanData = activeNutritionPlanRaw.data
   const activeNutritionPlan = activeNutritionPlanData ? {
@@ -261,7 +244,7 @@ export default async function ClientDetailPage({
               <ClipboardList className="w-4 h-4" />
               Revisiones
             </Link>
-            <AssignRoutineButton clientId={rawClient.id} templates={templates} />
+            <AssignPlanButton clientId={rawClient.id} plans={trainerPlans} />
           </div>
         </div>
 
