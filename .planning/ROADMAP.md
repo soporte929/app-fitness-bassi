@@ -285,7 +285,10 @@ Plans:
   1. Cuando el cliente usa el AI Food Parser y confirma los macros estimados, el alimento aparece en los totales diarios de calorías y macros (progress bars actualizados)
   2. Cuando el entrenador asigna un plan nutricional vía el modal "Asignar plan nutricional", el cliente ve las comidas con sus alimentos y cantidades en `/nutrition`
   3. Los archivos `NutritionFreeLogSheet.tsx`, `add-meal-fab.tsx`, `nutrition-checklist.tsx` (legacy) y las actions `createNutritionLogAction`/`deleteNutritionLogAction` están eliminados o archivados
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 20-01-PLAN.md — Fix AI food parser: logAIFoodEntryAction (saved_dishes + food_log) + rewire AIFoodParserModal
+- [ ] 20-02-PLAN.md — Clone meal_plan_items en assignNutritionTemplateToClientAction + eliminar legacy files
 
 ### Phase 21: Retroactive Verification — Phases 10, 10.1, 16, 17
 **Goal**: Las cuatro fases implementadas pero no verificadas tienen VERIFICATION.md — el audit puede confirmar su estado sin bloqueos
