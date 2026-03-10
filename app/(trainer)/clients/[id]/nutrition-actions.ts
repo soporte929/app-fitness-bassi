@@ -180,6 +180,31 @@ export async function assignNutritionTemplateToClientAction(
         }
     }
 
+    // Clone meal_plan_items from template
+    const { data: templateItems } = await supabase
+        .from('meal_plan_items' as any)
+        .select('meal_number, food_id, dish_id, option_slot, grams')
+        .eq('plan_id', templatePlanId)
+
+    if (templateItems && (templateItems as any[]).length > 0) {
+        const itemsToInsert = (templateItems as any[]).map((item) => ({
+            plan_id: newPlanId,
+            meal_number: item.meal_number,
+            food_id: item.food_id ?? null,
+            dish_id: item.dish_id ?? null,
+            option_slot: item.option_slot ?? null,
+            grams: item.grams ?? null,
+        }))
+
+        const { error: itemsError } = await supabase
+            .from('meal_plan_items' as any)
+            .insert(itemsToInsert)
+
+        if (itemsError) {
+            return { success: false, error: 'Error clonando items del plan: ' + itemsError.message }
+        }
+    }
+
     revalidatePath(`/clients/${clientId}`)
     return { success: true }
 }
