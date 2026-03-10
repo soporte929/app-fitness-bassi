@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageTransition } from "@/components/ui/page-transition";
 import { LogoutButton } from "./logout-button";
+import { EditProfileForm } from "./edit-profile-form";
 import {
   User,
   Bell,
@@ -81,7 +82,7 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, email, role")
+    .select("full_name, email, role, avatar_url")
     .eq("id", user.id)
     .single();
 
@@ -135,8 +136,6 @@ export default async function ProfilePage() {
     }
   }
 
-  const initial = profile.full_name?.[0]?.toUpperCase() ?? "?";
-
   return (
     <PageTransition>
       <div className="px-4 pt-6 pb-24">
@@ -144,30 +143,24 @@ export default async function ProfilePage() {
           Perfil
         </h1>
 
-        {/* User card */}
+        {/* User card — editable */}
         <Card className="mb-5">
           <CardContent className="py-5 px-5">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/30 flex items-center justify-center flex-shrink-0">
-                <span className="text-[var(--accent)] text-xl font-bold">
-                  {initial}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <p className="text-base font-semibold text-[var(--text-primary)] truncate">
-                  {profile.full_name}
-                </p>
-                <p className="text-sm text-[var(--text-secondary)] truncate">
-                  {profile.email}
-                </p>
-                {profile.role === "client" && phaseLabel && (
-                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                    {phaseLabel}
-                    {joinedDate && ` · Desde ${joinedDate}`}
-                  </p>
-                )}
-              </div>
-            </div>
+            <EditProfileForm
+              initial={{
+                full_name: profile.full_name ?? null,
+                avatar_url: profile.avatar_url ?? null,
+              }}
+            />
+            <p className="text-sm text-[var(--text-secondary)] truncate mt-3">
+              {profile.email}
+            </p>
+            {profile.role === "client" && phaseLabel && (
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                {phaseLabel}
+                {joinedDate && ` · Desde ${joinedDate}`}
+              </p>
+            )}
           </CardContent>
         </Card>
 
