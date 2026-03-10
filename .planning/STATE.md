@@ -21,13 +21,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** Phase 13 — AI Nutrition Parsing (next to plan)
 
 ## Current Position
-- **Phase**: 15-bug-fixes-logic-corrections (1/4 plans done)
-- **Task**: 15-01 complete
+- **Phase**: 15-bug-fixes-logic-corrections (3/4 plans done)
+- **Task**: 15-03 complete, 15-04 pending
 - **Status**: In Progress
-- **Last activity**: 2026-03-10 — Phase 15 Plan 01 executed. Charts margins fixed, AssignRoutineButton dropdown corrected, FoodSearchInput useRef extracted.
+- **Last activity**: 2026-03-10 — Phase 15 Plans 01-03 executed in parallel. 01: Charts/dropdown/focus fixed. 02: AssignPlanButton replaces AssignRoutineButton (LOGIC-01/02). 03: ThemeToggle client layout, FoodSearchModal inline trigger, PWA manifest.
 
 ## Next Steps
-1. Execute Phase 15 Plan 02 (Bug Fixes & Logic Corrections continued)
+1. Execute Phase 15 Plan 04 (profile edit + timer pause — checkpoint plan)
 
 ## Progress Bar
 
@@ -41,7 +41,7 @@ Phase 11:   [x] Client Nutrition View
 Phase 12:   [x] Progress Logging
 Phase 13:   [x] AI Nutrition Parsing (2/2 plans done)
 Phase 14:   [x] Trainer Completar (2/2 plans done)
-Phase 15:   [~] Bug Fixes & Logic Corrections (1/4 plans done)
+Phase 15:   [~] Bug Fixes & Logic Corrections (3/4 plans done)
 ```
 
 ## Performance Metrics
@@ -137,3 +137,7 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 14-02]: notFound() on trainer_id mismatch (not redirect) — consistent with existing clients/[id]/page.tsx pattern
 - [Phase 15-01]: FoodSearchInput extraído con useRef como sub-componente estático (key no dinámica) — garantiza estabilidad del nodo DOM del input entre re-renders de FoodSearchSlot
 - [Phase 15-01]: BUG-06/07/08 no requerían cambios de lógica — createClientAction ya usaba admin client, sidebar ya tenía rutas correctas
+- [Phase 15-02]: AssignPlanButton reemplaza AssignRoutineButton — usa tabla plans + assignPlanToClientAction (client_plans), no clona workout_plan templates
+- [Phase 15-02]: PlanOption type definido localmente en page.tsx — subset de tabla plans para uso puntual, no tipo global
+- [Phase 15-03]: FoodSearchModal trigger?: React.ReactNode — FAB como fallback para compatibilidad con otros usos
+- [Phase 15-03]: MetadataRoute.Manifest purpose separado en entries individuales ('any' / 'maskable') — string combinado no válido en TypeScript
