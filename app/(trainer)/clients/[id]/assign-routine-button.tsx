@@ -69,7 +69,7 @@ export function AssignRoutineButton({ clientId, templates }: Props) {
             className="fixed inset-0 z-40 bg-black/40"
             onClick={close}
           />
-          <div className="absolute top-full left-0 mt-2 z-50 min-w-[280px] max-h-[70vh] overflow-y-auto bg-[#2a2a2a] rounded-xl shadow-xl border border-[rgba(255,255,255,0.08)] p-3 space-y-2">
+          <div className="absolute top-full right-0 mt-2 z-50 min-w-[280px] max-w-[calc(100vw-2rem)] max-h-[70vh] overflow-y-auto bg-[#2a2a2a] rounded-xl shadow-xl border border-[rgba(255,255,255,0.08)] p-3 space-y-2">
             <div className="px-1 pb-1">
               <p className="text-xs font-semibold text-[var(--text-primary)]">Asignar rutina</p>
               <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Selecciona un template para clonar</p>

@@ -135,6 +135,7 @@ export async function createClientAction(data: {
   }
 
   // Crear registro de cliente
+  // PRODUCTION: requires SUPABASE_SERVICE_ROLE_KEY env var in Vercel
   const goal = objectiveToGoal(data.objective, data.phase)
   const { data: newClient, error: clientError } = await admin
     .from('clients')
