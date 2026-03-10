@@ -6,6 +6,7 @@ import { PageTransition } from '@/components/ui/page-transition'
 import { MacroProgressBars } from '@/components/client/nutrition/MacroProgressBars'
 import { ClientDailyMeals } from '@/components/client/nutrition/ClientDailyMeals'
 import { FoodSearchModal } from '@/components/client/nutrition/FoodSearchModal'
+import { AIFoodParserModal } from '@/components/client/nutrition/AIFoodParserModal'
 import { getClientNutritionContextAction } from './actions'
 import type { Database } from '@/lib/supabase/types'
 
@@ -106,6 +107,7 @@ export default async function NutritionPage() {
             <p className="text-xs font-medium text-[#6b7fa3] tracking-wide uppercase">
               Registro libre
             </p>
+            <AIFoodParserModal clientId={client.id} />
           </div>
 
           {(() => {
