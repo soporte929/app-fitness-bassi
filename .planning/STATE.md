@@ -23,12 +23,12 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Current Position
 - **Milestone**: v4.2 Gap Closure
 - **Phase**: 20
-- **Plan**: 1 of 2 complete
-- **Status**: Phase 20 in progress
-- **Last activity**: 2026-03-10 — Completed 20-01-PLAN.md (AI food parser bug fix — writes to food_log via saved_dishes)
+- **Plan**: 2 of 2 complete
+- **Status**: Phase 20 complete
+- **Last activity**: 2026-03-10 — Completed 20-02-PLAN.md (meal_plan_items clone fix + legacy cleanup)
 
 ## Next Steps
-1. Execute 20-02-PLAN.md
+1. Execute Phase 21 (next phase)
 
 ## Progress Bar
 
@@ -146,3 +146,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 19-02]: Settings Hub secciones Cuenta y Apariencia — cubre V41-07; entry en sección Principal del sidebar junto a Dashboard y Clientes
 - [Phase 19-02]: profile?.email ?? user.email fallback — garantiza email visible aunque profiles.email sea null
 - [Phase 20-01]: logAIFoodEntryAction inserts saved_dishes with trainer_id=user.id then food_log with grams=100 so macros match estimate exactly (factor=1)
+- [Phase 20-02]: SELECT meal_plan_items uses templatePlanId (source) and INSERT uses newPlanId (destination) — direction explicit to avoid clone confusion

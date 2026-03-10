@@ -35,7 +35,7 @@ Requirements para milestone v4.0 — Módulo Nutrición.
 
 - [x] **CNUTR-01**: El cliente ve sus calorías diarias consumidas vs objetivo con barra de progreso
 - [x] **CNUTR-02**: El cliente ve barras de progreso para proteínas, grasas y carbohidratos del día
-- [ ] **CNUTR-03**: El cliente ve la lista de comidas del día con alimentos, cantidades y macros por comida
+- [x] **CNUTR-03**: El cliente ve la lista de comidas del día con alimentos, cantidades y macros por comida
 - [ ] **CNUTR-04**: El cliente puede seleccionar una alternativa equivalente para cada alimento (planes tipo B)
 - [x] **CNUTR-05**: El cliente puede registrar un alimento en su diario alimentario con cantidad en tiempo real
 - [ ] **CNUTR-06**: El cliente puede ver una lista de la compra semanal generada automáticamente desde su plan
@@ -129,7 +129,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TPLAN-08 | Phase 21 | Pending |
 | CNUTR-01 | Phase 22 | Complete |
 | CNUTR-02 | Phase 22 | Complete |
-| CNUTR-03 | Phase 22 | Pending |
+| CNUTR-03 | Phase 22 | Complete |
 | CNUTR-04 | Phase 22 | Pending |
 | CNUTR-05 | Phase 22 | Complete |
 | CNUTR-06 | Phase 22 | Pending |
@@ -148,7 +148,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | V41-03 | Phase 21 | Pending |
 | V41-04 | Phase 18 | Complete |
 | V41-05 | Phase 20 | Complete |
-| V41-06 | Phase 20 | Pending |
+| V41-06 | Phase 20 | Complete |
 | V41-07 | Phase 19 | Complete |
 
 **Coverage:**
