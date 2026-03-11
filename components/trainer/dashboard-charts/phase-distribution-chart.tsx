@@ -36,9 +36,9 @@ export function PhaseDistributionChart({ data, total }: Props) {
   }
 
   return (
-    <div style={{ width: '100%', overflowX: 'hidden' }}>
-      <ResponsiveContainer width="100%" height={280}>
-        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+    <div style={{ width: '100%' }}>
+      <ResponsiveContainer width="100%" height={320}>
+        <PieChart margin={{ top: 0, right: 16, bottom: 0, left: 16 }}>
           <Pie
             data={data}
             cx="50%"
