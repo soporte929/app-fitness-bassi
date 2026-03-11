@@ -636,7 +636,7 @@ Plans:
 | 25. Active Session Banner Fix | 1/1 | Complete   | 2026-03-11 | - |
 | 26. Progress & Chart Fixes | v5.0 | 0/1 | Superseded by P28 | - |
 | 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
-| 28. Progress Page Full Fix | v5.1 | 0/? | Not started | - |
+| 28. Progress Page Full Fix | 1/2 | In Progress|  | - |
 | 29. Performance Optimization | v5.1 | 0/? | Not started | - |
 | 30. Business Logic | v5.2 | 0/? | Not started | - |
 | 31. UX & Forms | v5.2 | 0/? | Not started | - |

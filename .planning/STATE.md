@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-11T12:28:01.849Z"
+last_updated: "2026-03-11T12:47:50.795Z"
 progress:
-  total_phases: 17
+  total_phases: 18
   completed_phases: 12
-  total_plans: 27
-  completed_plans: 28
+  total_plans: 29
+  completed_plans: 29
 ---
 
 # State
@@ -149,3 +149,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 20-01]: logAIFoodEntryAction inserts saved_dishes with trainer_id=user.id then food_log with grams=100 so macros match estimate exactly (factor=1)
 - [Phase 20-02]: SELECT meal_plan_items uses templatePlanId (source) and INSERT uses newPlanId (destination) — direction explicit to avoid clone confusion
 - [Phase 25-active-session-banner-fix]: BUG-03: CustomEvent workoutFinished dispatched before await action() — banner clears synchronously before server navigation to /history
+- [Phase 28-progress-page-full-fix]: Single combined early return for both query errors in progress/page.tsx — avoids partial render with one data set missing
+- [Phase 28-progress-page-full-fix]: Remove overflowX:hidden from PhaseDistributionChart wrapper + height 320px — sole cause of legend clipping
