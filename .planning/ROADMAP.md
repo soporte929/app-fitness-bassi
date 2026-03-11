@@ -99,10 +99,10 @@
 </details>
 
 <details open>
-<summary>📋 v5.1 Progress Fix & Performance (Phases 28-29) — NOT STARTED</summary>
+<summary>📋 v5.1 Progress Fix & Performance (Phases 28-29) — IN PROGRESS</summary>
 
 - [x] **Phase 28: Progress Page Full Fix** — Deep fix of /progress: Supabase queries, RLS policies (client_measurements profile_id vs client_id), empty-array component guards, real test data verification (completed 2026-03-11)
-- [ ] **Phase 29: Performance Optimization** — Parallelize sequential queries with Promise.all, add unstable_cache, review missing Supabase indexes on frequently filtered columns
+- [x] **Phase 29: Performance Optimization** — Parallelize sequential queries with Promise.all, add unstable_cache, review missing Supabase indexes on frequently filtered columns (completed 2026-03-11)
 
 </details>
 
@@ -641,7 +641,7 @@ Plans:
 | 26. Progress & Chart Fixes | v5.0 | 0/1 | Superseded by P28 | - |
 | 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
 | 28. Progress Page Full Fix | 2/2 | Complete    | 2026-03-11 | - |
-| 29. Performance Optimization | 2/3 | In Progress|  | - |
+| 29. Performance Optimization | 3/3 | Complete| 2026-03-11 | - |
 | 30. Business Logic | v5.2 | 0/? | Not started | - |
 | 31. UX & Forms | v5.2 | 0/? | Not started | - |
 | 32. Visual Fixes | v5.2 | 0/? | Not started | - |

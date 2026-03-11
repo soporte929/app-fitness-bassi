@@ -21,15 +21,14 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** 🚨 v5.0 Emergency Hotfix — Production bugs
 
 ## Current Position
-- **Milestone**: v5.0 Emergency Hotfix
-- **Phase**: 28
+- **Milestone**: v5.1 Progress Fix & Performance
+- **Phase**: 29
 - **Status**: Complete
-- **Last activity**: 2026-03-11 — Executed Phase 28 (28-02-PLAN.md complete)
+- **Last activity**: 2026-03-11 — Executed Phase 29 (29-03-PLAN.md complete)
 
 ## Next Steps
-1. Deploy after phases 24+25+28 complete (critical fixes) — READY
-2. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT
-3. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT
+1. Deploy after phase 29 completes
+2. `/plan 30` — Plan Phase 30 (Business Logic) 🔴 CRITICAL
 
 ## Progress Bar
 
