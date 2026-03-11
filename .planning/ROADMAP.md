@@ -9,6 +9,7 @@
 - 📋 **v4.1 Polish & Settings** — Phases 16-19 (planned 2026-03-10)
 - 📋 **v4.2 Gap Closure** — Phases 20-23 (planned 2026-03-10)
 - 🚨 **v5.0 Emergency Hotfix** — Phases 24-27 (planned 2026-03-11)
+- 📋 **v5.1 Progress Fix & Performance** — Phases 28-29 (planned 2026-03-11)
 
 ## Phases
 
@@ -89,8 +90,16 @@
 
 - [ ] **Phase 24: Middleware Prefix Fix** — 🔴 CRITICAL: Fix prefix collision in middleware causing /routines-templates and /nutrition-plans to redirect trainers to dashboard (BUG-01, BUG-02)
 - [ ] **Phase 25: Active Session Banner Fix** — 🔴 CRITICAL: Fix "Entrenamiento activo" banner persisting after workout completion via event-based signal (BUG-03)
-- [ ] **Phase 26: Progress & Chart Fixes** — 🟡 IMPORTANT: Fix /progress metrics not showing + PhaseDistribution chart margin clipping (BUG-04, BUG-05)
-- [ ] **Phase 27: Performance Optimization** — 🟢 IMPROVEMENT: Parallelize queries, add DB indexes, reduce waterfall loading (BUG-06)
+- [ ] **Phase 26: Progress & Chart Fixes** — 🟡 IMPORTANT: Fix /progress metrics not showing + PhaseDistribution chart margin clipping (BUG-04, BUG-05) → **Superseded by Phase 28**
+- [ ] **Phase 27: Performance Optimization** — 🟢 IMPROVEMENT: Parallelize queries, add DB indexes, reduce waterfall loading (BUG-06) → **Superseded by Phase 29**
+
+</details>
+
+<details open>
+<summary>📋 v5.1 Progress Fix & Performance (Phases 28-29) — NOT STARTED</summary>
+
+- [ ] **Phase 28: Progress Page Full Fix** — Deep fix of /progress: Supabase queries, RLS policies (client_measurements profile_id vs client_id), empty-array component guards, real test data verification
+- [ ] **Phase 29: Performance Optimization** — Parallelize sequential queries with Promise.all, add unstable_cache, review missing Supabase indexes on frequently filtered columns
 
 </details>
 
@@ -395,6 +404,35 @@ Plans:
 - [ ] 27-01-PLAN.md — Parallelize queries + evaluate caching
 
 
+### Phase 28: Progress Page Full Fix
+**Goal**: La página /progress del cliente muestra correctamente todos los datos de peso, medidas y sesiones de entrenamiento, con manejo robusto de errores y compatible con datos reales en producción
+**Depends on**: None (hotfix independiente, supersede Phase 26)
+**Priority**: 🟡 IMPORTANT — funcionalidad rota en producción
+**Supersedes**: v5.0 Phase 26 (BUG-04, BUG-05) — scope ampliado
+**Test Client**: `client_id: 24646591-53ec-4d1a-b92a-08f00e8d365b`
+**Success Criteria** (what must be TRUE):
+  1. La query a `client_measurements` filtra correctamente por `client_id` (no por `profile_id`) y las RLS policies permiten al cliente autenticado leer sus propios registros
+  2. Si `client_measurements` devuelve array vacío, la UI muestra un estado vacío descriptivo ("Sin registros de peso") en vez de ocultar silenciosamente las gráficas
+  3. Si hay error en la query (RLS, tabla inexistente, etc.), se muestra un mensaje de error descriptivo visible al usuario
+  4. Con el cliente de prueba (`24646591-53ec-4d1a-b92a-08f00e8d365b`), las gráficas de peso y medidas se renderizan correctamente con datos reales
+  5. El componente `ProgressCharts` no falla ni muestra blank cuando recibe `weightLogs=[]` o `measurements=[]`
+  6. El gráfico "Distribución por fase" en dashboard trainer muestra pie + leyenda completos sin recorte en todas las resoluciones
+**Plans**: TBD
+
+### Phase 29: Performance Optimization
+**Goal**: Reducir tiempo de carga en páginas principales paralelizando queries secuenciales, añadiendo cache donde tenga sentido, y verificando índices DB en columnas frecuentemente filtradas
+**Depends on**: Phase 28 (los fixes funcionales van primero)
+**Priority**: 🟢 IMPROVEMENT
+**Supersedes**: v5.0 Phase 27 (BUG-06) — scope ampliado
+**Success Criteria** (what must be TRUE):
+  1. Todas las queries secuenciales en Server Components están envueltas en `Promise.all` donde no tengan dependencia entre sí
+  2. Las consultas más pesadas (dashboard trainer, today, progress) usan `unstable_cache` con revalidation tags apropiados
+  3. Existen índices en Supabase para las columnas más frecuentemente filtradas: `client_measurements.client_id`, `workout_sessions.client_id`, `food_log.client_id`, `set_logs.session_id`
+  4. Las páginas principales (dashboard, today, progress) cargan en < 2s en producción (Vercel)
+  5. No hay regresiones funcionales tras la optimización
+**Plans**: TBD
+
+
 ## Progress
 
 **v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
@@ -427,5 +465,7 @@ Plans:
 | 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |
 | 24. Middleware Prefix Fix | v5.0 | 0/1 | Not started | - |
 | 25. Active Session Banner Fix | v5.0 | 0/1 | Not started | - |
-| 26. Progress & Chart Fixes | v5.0 | 0/1 | Not started | - |
-| 27. Performance Optimization | v5.0 | 0/1 | Not started | - |
+| 26. Progress & Chart Fixes | v5.0 | 0/1 | Superseded by P28 | - |
+| 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
+| 28. Progress Page Full Fix | v5.1 | 0/? | Not started | - |
+| 29. Performance Optimization | v5.1 | 0/? | Not started | - |
