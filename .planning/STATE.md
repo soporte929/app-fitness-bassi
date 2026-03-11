@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-11T13:26:55.454Z"
+last_updated: "2026-03-11T13:30:36.170Z"
 progress:
   total_phases: 19
   completed_phases: 13
   total_plans: 32
-  completed_plans: 31
+  completed_plans: 32
 ---
 
 # State
@@ -154,3 +154,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 28-progress-page-full-fix]: RLS policy on client_measurements uses indirect join via clients table (client_id IN SELECT id FROM clients WHERE profile_id = auth.uid()) — clients is the bridge between auth.uid() and measurements
 - [Phase 29-01]: unstable_cache wraps all 3 Supabase dashboard queries (clients/sessions/weight_logs) with TTL 60s and tag trainer-dashboard, using createAdminClient (no cookie dependency)
 - [Phase 29-01]: revalidateTag second arg passes empty CacheLifeConfig {} — required by Next.js 16 type signature for cache invalidation
+- [Phase 29-performance-optimization]: revalidateTag requires 2nd arg {} in Next.js 16 — same pattern as Phase 29-01 (trainer-dashboard)
+- [Phase 29-performance-optimization]: Auth and clients query remain uncached in ProgressPage — only heavy historical data queries cached

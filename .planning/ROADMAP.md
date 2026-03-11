@@ -641,7 +641,7 @@ Plans:
 | 26. Progress & Chart Fixes | v5.0 | 0/1 | Superseded by P28 | - |
 | 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
 | 28. Progress Page Full Fix | 2/2 | Complete    | 2026-03-11 | - |
-| 29. Performance Optimization | 1/3 | In Progress|  | - |
+| 29. Performance Optimization | 2/3 | In Progress|  | - |
 | 30. Business Logic | v5.2 | 0/? | Not started | - |
 | 31. UX & Forms | v5.2 | 0/? | Not started | - |
 | 32. Visual Fixes | v5.2 | 0/? | Not started | - |
