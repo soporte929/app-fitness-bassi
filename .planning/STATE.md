@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-11T12:47:50.795Z"
+last_updated: "2026-03-11T12:57:21.128Z"
 progress:
   total_phases: 18
-  completed_phases: 12
+  completed_phases: 13
   total_plans: 29
-  completed_plans: 29
+  completed_plans: 30
 ---
 
 # State
@@ -22,13 +22,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v5.0 Emergency Hotfix
-- **Phase**: 25
+- **Phase**: 28
 - **Status**: Complete
-- **Last activity**: 2026-03-11 — Executed Phase 25 (25-01-PLAN.md complete)
+- **Last activity**: 2026-03-11 — Executed Phase 28 (28-02-PLAN.md complete)
 
 ## Next Steps
-1. Deploy after phases 24+25 complete (critical fixes) — READY
-2. `/plan 28` — Plan Phase 28 (Progress Page Full Fix) 🟡 IMPORTANT
+1. Deploy after phases 24+25+28 complete (critical fixes) — READY
+2. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT
 3. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT
 
 ## Progress Bar
@@ -151,3 +151,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 25-active-session-banner-fix]: BUG-03: CustomEvent workoutFinished dispatched before await action() — banner clears synchronously before server navigation to /history
 - [Phase 28-progress-page-full-fix]: Single combined early return for both query errors in progress/page.tsx — avoids partial render with one data set missing
 - [Phase 28-progress-page-full-fix]: Remove overflowX:hidden from PhaseDistributionChart wrapper + height 320px — sole cause of legend clipping
+- [Phase 28-progress-page-full-fix]: RLS policy on client_measurements uses indirect join via clients table (client_id IN SELECT id FROM clients WHERE profile_id = auth.uid()) — clients is the bridge between auth.uid() and measurements
