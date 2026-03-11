@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function logClientMeasurementAction(
     clientId: string,
@@ -35,6 +35,7 @@ export async function logClientMeasurementAction(
         }
 
         revalidatePath("/progress");
+        revalidateTag("client-progress", {});
         return { success: true };
     } catch (err: any) {
         console.error("Action error logging measurements:", err.message);
