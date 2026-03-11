@@ -21,14 +21,14 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** 🚨 v5.0 Emergency Hotfix — Production bugs
 
 ## Current Position
-- **Milestone**: v5.1 Progress Fix & Performance
-- **Phase**: 29
-- **Status**: Complete
-- **Last activity**: 2026-03-11 — Executed Phase 29 (29-03-PLAN.md complete)
+- **Milestone**: v5.2 Trainer UX & Logic Fixes
+- **Phase**: 30
+- **Task**: Planning complete
+- **Status**: Ready for execution
+- **Last activity**: 2026-03-11 — Planned Phase 30 (1 plan, 1 wave)
 
 ## Next Steps
-1. Deploy after phase 29 completes
-2. `/plan 30` — Plan Phase 30 (Business Logic) 🔴 CRITICAL
+1. `/execute 30` — Execute Phase 30 (Business Logic) 🔴 CRITICAL
 
 ## Progress Bar
 
