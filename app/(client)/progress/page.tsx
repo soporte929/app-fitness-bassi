@@ -1,10 +1,42 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { unstable_cache } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { PageTransition } from '@/components/ui/page-transition'
 import { ProgressCharts } from '@/components/client/progress-charts'
 import { LogWeightModal } from '@/components/client/progress/LogWeightModal'
 import { LogMeasurementsModal } from '@/components/client/progress/LogMeasurementsModal'
 import type { WeightLog, Measurement, SessionForProgress } from '@/components/client/progress-charts'
+
+const getClientProgressData = unstable_cache(
+  async (clientId: string) => {
+    const supabase = createAdminClient()
+
+    const [measurementsResult, sessionsResult] = await Promise.all([
+      supabase
+        .from('client_measurements')
+        .select('measured_at, weight_kg, body_fat_pct, waist_cm, hip_cm, chest_cm, arm_cm, thigh_cm')
+        .eq('client_id', clientId)
+        .order('measured_at', { ascending: true }),
+
+      supabase
+        .from('workout_sessions')
+        .select(
+          `id, started_at, finished_at, completed,
+          set_logs!set_logs_session_id_fkey (
+            id, weight_kg, reps,
+            exercise:exercises!set_logs_exercise_id_fkey (id, name)
+          )`
+        )
+        .eq('client_id', clientId)
+        .order('started_at', { ascending: true }),
+    ])
+
+    return { measurementsResult, sessionsResult }
+  },
+  ['client-progress-data'],
+  { revalidate: 30, tags: ['client-progress'] }
+)
 
 export default async function ProgressPage() {
   const supabase = await createClient()
@@ -21,25 +53,7 @@ export default async function ProgressPage() {
 
   if (!client) redirect('/login')
 
-  const [measurementsResult, sessionsResult] = await Promise.all([
-    supabase
-      .from('client_measurements')
-      .select('measured_at, weight_kg, body_fat_pct, waist_cm, hip_cm, chest_cm, arm_cm, thigh_cm')
-      .eq('client_id', client.id)
-      .order('measured_at', { ascending: true }),
-
-    supabase
-      .from('workout_sessions')
-      .select(
-        `id, started_at, finished_at, completed,
-        set_logs!set_logs_session_id_fkey (
-          id, weight_kg, reps,
-          exercise:exercises!set_logs_exercise_id_fkey (id, name)
-        )`
-      )
-      .eq('client_id', client.id)
-      .order('started_at', { ascending: true }),
-  ])
+  const { measurementsResult, sessionsResult } = await getClientProgressData(client.id)
 
   if (measurementsResult.error || sessionsResult.error) {
     const errorMsg = measurementsResult.error?.message ?? sessionsResult.error?.message
