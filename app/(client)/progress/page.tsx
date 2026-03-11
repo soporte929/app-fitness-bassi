@@ -41,11 +41,19 @@ export default async function ProgressPage() {
       .order('started_at', { ascending: true }),
   ])
 
-  if (measurementsResult.error) {
-    console.error('Measurements query error:', measurementsResult.error)
-  }
-  if (sessionsResult.error) {
-    console.error('Sessions query error:', sessionsResult.error)
+  if (measurementsResult.error || sessionsResult.error) {
+    const errorMsg = measurementsResult.error?.message ?? sessionsResult.error?.message
+    return (
+      <PageTransition>
+        <div className="px-4 pt-6 pb-24">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight mb-5">Progreso</h1>
+          <div className="rounded-xl border border-[var(--danger)]/20 bg-[var(--danger)]/5 p-4 text-center">
+            <p className="text-sm font-medium text-[var(--danger)] mb-1">Error cargando datos</p>
+            <p className="text-xs text-[var(--text-secondary)]">{errorMsg}</p>
+          </div>
+        </div>
+      </PageTransition>
+    )
   }
 
   const rawMeasurements = measurementsResult.data ?? []
