@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-11T13:03:52.957Z"
+last_updated: "2026-03-11T13:26:55.454Z"
 progress:
-  total_phases: 18
+  total_phases: 19
   completed_phases: 13
-  total_plans: 29
-  completed_plans: 30
+  total_plans: 32
+  completed_plans: 31
 ---
 
 # State
@@ -152,3 +152,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 28-progress-page-full-fix]: Single combined early return for both query errors in progress/page.tsx — avoids partial render with one data set missing
 - [Phase 28-progress-page-full-fix]: Remove overflowX:hidden from PhaseDistributionChart wrapper + height 320px — sole cause of legend clipping
 - [Phase 28-progress-page-full-fix]: RLS policy on client_measurements uses indirect join via clients table (client_id IN SELECT id FROM clients WHERE profile_id = auth.uid()) — clients is the bridge between auth.uid() and measurements
+- [Phase 29-01]: unstable_cache wraps all 3 Supabase dashboard queries (clients/sessions/weight_logs) with TTL 60s and tag trainer-dashboard, using createAdminClient (no cookie dependency)
+- [Phase 29-01]: revalidateTag second arg passes empty CacheLifeConfig {} — required by Next.js 16 type signature for cache invalidation
