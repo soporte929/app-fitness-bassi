@@ -41,6 +41,13 @@ export default async function ProgressPage() {
       .order('started_at', { ascending: true }),
   ])
 
+  if (measurementsResult.error) {
+    console.error('Measurements query error:', measurementsResult.error)
+  }
+  if (sessionsResult.error) {
+    console.error('Sessions query error:', sessionsResult.error)
+  }
+
   const rawMeasurements = measurementsResult.data ?? []
 
   const weightLogs = rawMeasurements

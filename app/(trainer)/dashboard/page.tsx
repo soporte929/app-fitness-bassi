@@ -46,26 +46,26 @@ export default async function TrainerDashboard() {
   const allClients = rawClients ?? []
   const clientIds = allClients.map((c) => c.id)
 
-  // 2. Sessions últimos 30 días
-  const { data: sessions } =
+  // 2 & 3. Sessions + Weight logs últimos 30 días (parallel)
+  const [{ data: sessions }, { data: weightLogs }] =
     clientIds.length > 0
-      ? await supabase
-        .from('workout_sessions')
-        .select('client_id, started_at, completed')
-        .in('client_id', clientIds)
-        .gte('started_at', thirtyDaysAgo.toISOString())
-      : { data: [] as { client_id: string; started_at: string; completed: boolean }[] }
-
-  // 3. Weight logs últimos 30 días
-  const { data: weightLogs } =
-    clientIds.length > 0
-      ? await supabase
-        .from('weight_logs')
-        .select('client_id, weight_kg, logged_at')
-        .in('client_id', clientIds)
-        .gte('logged_at', thirtyDaysAgo.toISOString())
-        .order('logged_at', { ascending: true })
-      : { data: [] as { client_id: string; weight_kg: number; logged_at: string }[] }
+      ? await Promise.all([
+        supabase
+          .from('workout_sessions')
+          .select('client_id, started_at, completed')
+          .in('client_id', clientIds)
+          .gte('started_at', thirtyDaysAgo.toISOString()),
+        supabase
+          .from('weight_logs')
+          .select('client_id, weight_kg, logged_at')
+          .in('client_id', clientIds)
+          .gte('logged_at', thirtyDaysAgo.toISOString())
+          .order('logged_at', { ascending: true }),
+      ])
+      : [
+        { data: [] as { client_id: string; started_at: string; completed: boolean }[] },
+        { data: [] as { client_id: string; weight_kg: number; logged_at: string }[] },
+      ]
 
   const allSessions = sessions ?? []
   const allWeightLogs = weightLogs ?? []

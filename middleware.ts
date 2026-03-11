@@ -60,6 +60,10 @@ export async function middleware(request: NextRequest) {
     .eq("id", user.id)
     .single();
 
+  // IMPORTANT: isTrainerRoute must be checked BEFORE isClientRoute because
+  // some client prefixes ("/routines", "/nutrition") collide with trainer
+  // routes ("/routines-templates", "/nutrition-plans"). We check trainer
+  // first and return early to avoid the false positive.
   const isTrainerRoute = pathname.startsWith("/dashboard") ||
     pathname.startsWith("/clients") ||
     pathname.startsWith("/routines-templates") ||
@@ -69,20 +73,22 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/reports") ||
     pathname.startsWith("/settings");
 
+  if (isTrainerRoute) {
+    if (profile?.role !== "trainer") {
+      return NextResponse.redirect(new URL("/today", request.url));
+    }
+    return supabaseResponse;
+  }
+
   const isClientRoute = pathname.startsWith("/today") ||
     pathname.startsWith("/history") ||
-    pathname.startsWith("/nutrition") ||
+    pathname === "/nutrition" || pathname.startsWith("/nutrition/") ||
     pathname.startsWith("/progress") ||
     pathname.startsWith("/audit") ||
     pathname.startsWith("/profile") ||
-    pathname.startsWith("/routines") ||
-    pathname.startsWith("/routines/") ||
+    pathname === "/routines" || pathname.startsWith("/routines/") ||
     pathname.startsWith("/workout") ||
     pathname.startsWith("/revisions");
-
-  if (isTrainerRoute && profile?.role !== "trainer") {
-    return NextResponse.redirect(new URL("/today", request.url));
-  }
 
   if (isClientRoute && profile?.role !== "client") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -93,8 +99,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/nutrition",
-    "/nutrition/:path*",
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

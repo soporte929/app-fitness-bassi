@@ -37,14 +37,14 @@ export function PhaseDistributionChart({ data, total }: Props) {
 
   return (
     <div style={{ width: '100%', overflowX: 'hidden' }}>
-      <ResponsiveContainer width="100%" height={220}>
-        <PieChart>
+      <ResponsiveContainer width="100%" height={280}>
+        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <Pie
             data={data}
             cx="50%"
-            cy="45%"
-            innerRadius={60}
-            outerRadius={95}
+            cy="42%"
+            innerRadius={55}
+            outerRadius={85}
             paddingAngle={3}
             dataKey="count"
             nameKey="label"
@@ -70,7 +70,9 @@ export function PhaseDistributionChart({ data, total }: Props) {
             }}
           />
           <Legend
-            wrapperStyle={{ fontSize: 12, color: 'var(--text-secondary)' }}
+            verticalAlign="bottom"
+            align="center"
+            wrapperStyle={{ fontSize: 12, color: 'var(--text-secondary)', paddingTop: 8 }}
             formatter={(value: string) => value}
           />
         </PieChart>

@@ -90,6 +90,17 @@ export function ActiveSessionBanner() {
     return () => clearInterval(interval)
   }, [pathname])
 
+  // Listen for immediate workout completion signal (dispatched by FinishWorkoutButton)
+  useEffect(() => {
+    function handleFinished() {
+      setActiveSession(null)
+      setTotalSets(0)
+      setCompletedSets(0)
+    }
+    window.addEventListener('workoutFinished', handleFinished)
+    return () => window.removeEventListener('workoutFinished', handleFinished)
+  }, [])
+
   useEffect(() => {
     if (!activeSession) return
     setElapsed(formatElapsed(activeSession.started_at))

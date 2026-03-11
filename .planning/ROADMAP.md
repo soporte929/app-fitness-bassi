@@ -8,6 +8,7 @@
 - 📋 **v4.0 Módulo Nutrición** — Phases 8-15 (planned 2026-03-09)
 - 📋 **v4.1 Polish & Settings** — Phases 16-19 (planned 2026-03-10)
 - 📋 **v4.2 Gap Closure** — Phases 20-23 (planned 2026-03-10)
+- 🚨 **v5.0 Emergency Hotfix** — Phases 24-27 (planned 2026-03-11)
 
 ## Phases
 
@@ -80,6 +81,16 @@
 - [x] **Phase 17: Global Theme System** — ThemeToggle persistido y funcional (App Cliente y Trainer) usando next-themes, clases en :root y localStorage. (completed 2026-03-10)
 - [x] **Phase 18: Client App Improvements** — Restaurar checklist de nutrición, foto de perfil desde galería a Supabase Storage y actualización de avatar_url. (completed 2026-03-10)
 - [x] **Phase 19: Trainer Settings & Modals** — Detalle de Cliente: Cambiar botón a "Asignar plan nutricional" con Modal, Settings Hub: Nueva vista de Ajustes. (completed 2026-03-10)
+
+</details>
+
+<details open>
+<summary>🚨 v5.0 Emergency Hotfix (Phases 24-27) — IN PROGRESS</summary>
+
+- [ ] **Phase 24: Middleware Prefix Fix** — 🔴 CRITICAL: Fix prefix collision in middleware causing /routines-templates and /nutrition-plans to redirect trainers to dashboard (BUG-01, BUG-02)
+- [ ] **Phase 25: Active Session Banner Fix** — 🔴 CRITICAL: Fix "Entrenamiento activo" banner persisting after workout completion via event-based signal (BUG-03)
+- [ ] **Phase 26: Progress & Chart Fixes** — 🟡 IMPORTANT: Fix /progress metrics not showing + PhaseDistribution chart margin clipping (BUG-04, BUG-05)
+- [ ] **Phase 27: Performance Optimization** — 🟢 IMPROVEMENT: Parallelize queries, add DB indexes, reduce waterfall loading (BUG-06)
 
 </details>
 
@@ -327,6 +338,63 @@ Plans:
 - [ ] 23-01-PLAN.md — Marcar CALC-01-05 como [x], añadir sección V41, corregir traceability V41-01/02/03
 
 
+### Phase 24: Middleware Prefix Fix
+**Goal**: El trainer puede navegar a /routines-templates y /nutrition-plans sin ser redirigido al dashboard
+**Depends on**: None (hotfix independiente)
+**Priority**: 🔴 CRITICAL — producción rota
+**Bugs**: BUG-01, BUG-02
+**Root Cause**: `isClientRoute` usa `pathname.startsWith("/routines")` y `pathname.startsWith("/nutrition")` que matchean también las rutas trainer `/routines-templates` y `/nutrition-plans`. Ambos booleans son `true` simultáneamente y el check `isClientRoute && role !== "client"` redirige al trainer a `/dashboard`.
+**Success Criteria** (what must be TRUE):
+  1. Un trainer autenticado puede navegar a `/routines-templates` y ver la página de plantillas de rutinas sin redirect
+  2. Un trainer autenticado puede navegar a `/nutrition-plans` y ver la página de planes nutricionales sin redirect
+  3. Un cliente autenticado puede navegar a `/routines` y `/nutrition` sin cambios de comportamiento
+  4. Rutas de client `/routines/[planId]` y `/nutrition/shopping-list` siguen funcionando correctamente
+**Plans**: 1 plan
+Plans:
+- [ ] 24-01-PLAN.md — Fix prefix collision in middleware isClientRoute checks
+
+### Phase 25: Active Session Banner Fix
+**Goal**: El banner "Entrenamiento activo" desaparece inmediatamente al finalizar un entrenamiento
+**Depends on**: None (hotfix independiente)
+**Priority**: 🔴 CRITICAL — UX rota
+**Bug**: BUG-03
+**Root Cause**: `ActiveSessionBanner` solo depende de polling cada 10s y `pathname` changes. No hay señal inmediata cuando `finishWorkout` completa la sesión. Race condition entre redirect y re-fetch.
+**Success Criteria** (what must be TRUE):
+  1. Al pulsar "Finalizar entrenamiento", el banner desaparece instantáneamente (< 1s)
+  2. El banner sigue apareciendo correctamente cuando hay una sesión activa real
+  3. El banner no reaparece después de finalizar (no regresión)
+**Plans**: 1 plan
+Plans:
+- [ ] 25-01-PLAN.md — Custom event dispatch on finishWorkout + banner listener + immediate state clear
+
+### Phase 26: Progress & Chart Fixes
+**Goal**: /progress muestra las métricas correctamente y el gráfico de distribución por fase no recorta contenido
+**Depends on**: None (hotfix independiente)
+**Priority**: 🟡 IMPORTANT — funcionalidad rota
+**Bugs**: BUG-04, BUG-05
+**Root Cause BUG-04**: La query de `client_measurements` no maneja errores silenciosos; posible issue de RLS o datos vacíos sin feedback al usuario.
+**Root Cause BUG-05**: `PhaseDistributionChart` tiene height fijo de 220px con Legend que se desborda. El wrapper `overflowX: hidden` recorta el contenido.
+**Success Criteria** (what must be TRUE):
+  1. En /progress, si hay datos de peso registrados, se muestran las gráficas correctamente
+  2. En /progress, si hay errores de query, se muestran mensajes descriptivos (no página vacía silenciosa)
+  3. El gráfico "Distribución por fase" en dashboard trainer muestra pie + leyenda completos sin recorte en todas las resoluciones
+**Plans**: 1 plan
+Plans:
+- [ ] 26-01-PLAN.md — Error handling en progress queries + chart height/margin fix
+
+### Phase 27: Performance Optimization
+**Goal**: Reducir tiempo de carga en app trainer y cliente paralelizando queries y eliminando waterfalls
+**Depends on**: Phases 24-26 (los fixes funcionales van primero)
+**Priority**: 🟢 IMPROVEMENT
+**Bug**: BUG-06
+**Success Criteria** (what must be TRUE):
+  1. Dashboard trainer paraleliza las 3 queries principales (clients, sessions, weightLogs) en un solo Promise.all
+  2. Las páginas principales cargan en < 2s en producción (Vercel)
+**Plans**: 1 plan
+Plans:
+- [ ] 27-01-PLAN.md — Parallelize queries + evaluate caching
+
+
 ## Progress
 
 **v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
@@ -357,3 +425,7 @@ Plans:
 | 21. Retroactive Verification (10, 10.1, 16, 17) | v4.2 | Complete    | 2026-03-10 | - |
 | 22. Retroactive Verification (11) | v4.2 | 0/? | Not started | - |
 | 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |
+| 24. Middleware Prefix Fix | v5.0 | 0/1 | Not started | - |
+| 25. Active Session Banner Fix | v5.0 | 0/1 | Not started | - |
+| 26. Progress & Chart Fixes | v5.0 | 0/1 | Not started | - |
+| 27. Performance Optimization | v5.0 | 0/1 | Not started | - |

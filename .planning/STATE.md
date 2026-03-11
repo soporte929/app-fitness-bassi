@@ -18,17 +18,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 **Core value:** El loop de entrenamiento funciona de extremo a extremo — si esto falla, nada más importa.
-**Current focus:** Phase 17: Global Theme System
+**Current focus:** 🚨 v5.0 Emergency Hotfix — Production bugs
 
 ## Current Position
-- **Milestone**: v4.2 Gap Closure
-- **Phase**: 20
-- **Plan**: 2 of 2 complete
-- **Status**: Phase 20 complete
-- **Last activity**: 2026-03-10 — Completed 20-02-PLAN.md (meal_plan_items clone fix + legacy cleanup)
+- **Milestone**: v5.0 Emergency Hotfix
+- **Phase**: 24 (Middleware Prefix Fix)
+- **Plan**: 0 of 1 complete
+- **Status**: Milestone planned — ready to execute
+- **Last activity**: 2026-03-11 — Created v5.0 Emergency Hotfix milestone (6 bugs, 4 phases)
 
 ## Next Steps
-1. Execute Phase 21 (next phase)
+1. `/plan 24` — Plan Phase 24 (Middleware Prefix Fix — BUG-01, BUG-02) 🔴 CRITICAL
+2. `/execute 24` — Execute Phase 24
+3. `/plan 25` — Plan Phase 25 (Active Session Banner Fix — BUG-03) 🔴 CRITICAL
+4. Deploy after phases 24+25 complete (critical fixes)
 
 ## Progress Bar
 

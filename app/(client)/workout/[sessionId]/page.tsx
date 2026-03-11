@@ -2,8 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { PageTransition } from '@/components/ui/page-transition'
 import { Button } from '@/components/ui/button'
-import { CheckCircle2 } from 'lucide-react'
 import { finishWorkout } from '@/app/(client)/today/actions'
+import { FinishWorkoutButton } from '@/components/client/finish-workout-button'
 import { TodayExercisesProgress } from '@/components/client/today-exercises-progress'
 import { computePRBestsByClient } from '@/lib/pr-detection'
 
@@ -105,12 +105,7 @@ export default async function WorkoutSessionPage({
 
         {/* Finish button */}
         <div className="mt-6">
-          <form action={finishAction}>
-            <Button type="submit" className="w-full" size="lg">
-              <CheckCircle2 className="w-5 h-5" />
-              Finalizar entrenamiento
-            </Button>
-          </form>
+          <FinishWorkoutButton action={finishAction} />
         </div>
       </div>
     </PageTransition>
