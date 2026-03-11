@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { unstable_cache } from 'next/cache'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -18,6 +20,54 @@ import {
   ArrowRight,
 } from 'lucide-react'
 
+const getTrainerDashboardData = unstable_cache(
+  async (trainerId: string, thirtyDaysAgo: string) => {
+    const supabase = createAdminClient()
+
+    const { data: rawClients } = await supabase
+      .from('clients')
+      .select(
+        `id, phase, weight_kg,
+        profile:profiles!clients_profile_id_fkey (full_name)`
+      )
+      .eq('trainer_id', trainerId)
+      .eq('active', true)
+
+    const allClients = rawClients ?? []
+    const clientIds = allClients.map((c) => c.id)
+
+    if (clientIds.length === 0) {
+      return {
+        clients: allClients,
+        sessions: [] as { client_id: string; started_at: string; completed: boolean }[],
+        weightLogs: [] as { client_id: string; weight_kg: number; logged_at: string }[],
+      }
+    }
+
+    const [{ data: sessions }, { data: weightLogs }] = await Promise.all([
+      supabase
+        .from('workout_sessions')
+        .select('client_id, started_at, completed')
+        .in('client_id', clientIds)
+        .gte('started_at', thirtyDaysAgo),
+      supabase
+        .from('weight_logs')
+        .select('client_id, weight_kg, logged_at')
+        .in('client_id', clientIds)
+        .gte('logged_at', thirtyDaysAgo)
+        .order('logged_at', { ascending: true }),
+    ])
+
+    return {
+      clients: allClients,
+      sessions: sessions ?? [],
+      weightLogs: weightLogs ?? [],
+    }
+  },
+  ['trainer-dashboard-data'],
+  { revalidate: 60, tags: ['trainer-dashboard'] }
+)
+
 function getClientAlert(alertInput: ClientAlertInput): string | null {
   const alerts = computeAlerts(alertInput)
   return alerts.length > 0 ? alerts[0].message : null
@@ -33,42 +83,14 @@ export default async function TrainerDashboard() {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  // 1. Clients activos del trainer
-  const { data: rawClients } = await supabase
-    .from('clients')
-    .select(
-      `id, phase, weight_kg,
-      profile:profiles!clients_profile_id_fkey (full_name)`
-    )
-    .eq('trainer_id', user.id)
-    .eq('active', true)
+  const { clients: allClients, sessions, weightLogs } = await getTrainerDashboardData(
+    user.id,
+    thirtyDaysAgo.toISOString()
+  )
 
-  const allClients = rawClients ?? []
+  const allSessions = sessions
+  const allWeightLogs = weightLogs
   const clientIds = allClients.map((c) => c.id)
-
-  // 2 & 3. Sessions + Weight logs últimos 30 días (parallel)
-  const [{ data: sessions }, { data: weightLogs }] =
-    clientIds.length > 0
-      ? await Promise.all([
-        supabase
-          .from('workout_sessions')
-          .select('client_id, started_at, completed')
-          .in('client_id', clientIds)
-          .gte('started_at', thirtyDaysAgo.toISOString()),
-        supabase
-          .from('weight_logs')
-          .select('client_id, weight_kg, logged_at')
-          .in('client_id', clientIds)
-          .gte('logged_at', thirtyDaysAgo.toISOString())
-          .order('logged_at', { ascending: true }),
-      ])
-      : [
-        { data: [] as { client_id: string; started_at: string; completed: boolean }[] },
-        { data: [] as { client_id: string; weight_kg: number; logged_at: string }[] },
-      ]
-
-  const allSessions = sessions ?? []
-  const allWeightLogs = weightLogs ?? []
   const now = new Date()
 
   // Compute per-client stats
