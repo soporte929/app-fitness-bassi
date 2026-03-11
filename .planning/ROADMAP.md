@@ -10,6 +10,9 @@
 - 📋 **v4.2 Gap Closure** — Phases 20-23 (planned 2026-03-10)
 - 🚨 **v5.0 Emergency Hotfix** — Phases 24-27 (planned 2026-03-11)
 - 📋 **v5.1 Progress Fix & Performance** — Phases 28-29 (planned 2026-03-11)
+- 📋 **v5.2 Trainer UX & Logic Fixes** — Phases 30-32 (planned 2026-03-11)
+- 📋 **v5.3 Nutrition & Data Fixes** — Phases 33-37 (planned 2026-03-11)
+- 📋 **v5.4 Trainer UX & Routine Logic (ampliado)** — Phases 38-43 (planned 2026-03-11)
 
 ## Phases
 
@@ -89,7 +92,7 @@
 <summary>🚨 v5.0 Emergency Hotfix (Phases 24-27) — IN PROGRESS</summary>
 
 - [x] **Phase 24: Middleware Prefix Fix** — 🔴 CRITICAL: Fix prefix collision in middleware causing /routines-templates and /nutrition-plans to redirect trainers to dashboard (BUG-01, BUG-02) (completed 2026-03-11)
-- [ ] **Phase 25: Active Session Banner Fix** — 🔴 CRITICAL: Fix "Entrenamiento activo" banner persisting after workout completion via event-based signal (BUG-03)
+- [x] **Phase 25: Active Session Banner Fix** — 🔴 CRITICAL: Fix "Entrenamiento activo" banner persisting after workout completion via event-based signal (BUG-03) (completed 2026-03-11)
 - [ ] **Phase 26: Progress & Chart Fixes** — 🟡 IMPORTANT: Fix /progress metrics not showing + PhaseDistribution chart margin clipping (BUG-04, BUG-05) → **Superseded by Phase 28**
 - [ ] **Phase 27: Performance Optimization** — 🟢 IMPROVEMENT: Parallelize queries, add DB indexes, reduce waterfall loading (BUG-06) → **Superseded by Phase 29**
 
@@ -100,6 +103,38 @@
 
 - [ ] **Phase 28: Progress Page Full Fix** — Deep fix of /progress: Supabase queries, RLS policies (client_measurements profile_id vs client_id), empty-array component guards, real test data verification
 - [ ] **Phase 29: Performance Optimization** — Parallelize sequential queries with Promise.all, add unstable_cache, review missing Supabase indexes on frequently filtered columns
+
+</details>
+
+<details open>
+<summary>📋 v5.2 Trainer UX & Logic Fixes (Phases 30-32) — NOT STARTED</summary>
+
+- [ ] **Phase 30: Business Logic** — 🔴 CRITICAL: Eliminate assigning routines to clients; enforce Routine → Plan → Client flow
+- [ ] **Phase 31: UX & Forms** — 🟡 IMPORTANT: Remove "Plan para cliente" in routine templates, reorder form steps, update selector text
+- [ ] **Phase 32: Visual Fixes** — 🟢 IMPROVEMENT: Fix "Alertas activas" margin, correct Recharts tooltip contrast in dark mode
+
+</details>
+
+<details open>
+<summary>📋 v5.3 Nutrition & Data Fixes (Phases 33-37) — NOT STARTED</summary>
+
+- [ ] **Phase 33: Supabase Schema Cache Fix** — 🔴 BUG CRÍTICO: La columna `diet_type` no existe en schema cache prod.
+- [ ] **Phase 34: Rediseño formulario de comida** — 🟡 FEAT: Dividir form de comida en plantilla en Bloques Datos e Ingredientes.
+- [ ] **Phase 35: Datos demo reales** — 🟡 FEAT: Sustituir clientes mock por clientes demo representativos.
+- [ ] **Phase 36: Ingredientes en app cliente** — 🟡 FEAT: Registro/visualización de comidas por ingredientes detallados.
+- [ ] **Phase 37: Crear ejercicios** — 🟡 FEAT: Trainer puede crear ejercicios on the fly desde `/ejercicios`.
+
+</details>
+
+<details open>
+<summary>📋 v5.4 Trainer UX & Routine Logic (ampliado) (Phases 38-43) — NOT STARTED</summary>
+
+- [ ] **Phase 38: Lógica CRÍTICA Rutinas** — 🔴 CRÍTICO: Eliminar asignación directa; forzar flujo Rutina → Plan → Cliente.
+- [ ] **Phase 39: Formulario nueva rutina** — 🔴 CRÍTICO: Corregir pérdida de estado en wizard inter-pasos.
+- [ ] **Phase 40: UX formulario nueva rutina** — 🟡 UX: Limpieza UI, rename de plan, popup refactor.
+- [ ] **Phase 41: Gestión de planes** — 🟡 FEAT: Quitar planes de cliente, elegir rutina de un plan activo en app.
+- [ ] **Phase 42: Visual** — 🟢 VISUAL: Márgenes alertas activas, tooltip recharts de modo oscuro.
+- [ ] **Phase 43: Stats y notificaciones en cliente** — 🟢 FEAT: % muscular en plan actual, resumen de rutinas, alertas.
 
 </details>
 
@@ -432,6 +467,137 @@ Plans:
   5. No hay regresiones funcionales tras la optimización
 **Plans**: TBD
 
+### Phase 30: Business Logic
+**Goal**: Enforce strict business logic: Routine → Plan → Client. Routines are templates, not directly assignable.
+**Depends on**: None
+**Priority**: 🔴 CRITICAL
+**Success Criteria** (what must be TRUE):
+  1. All buttons/flows allowing direct assignment of a Routine to a Client are removed or redirected.
+  2. All audited components and Server Actions handling assignments respect the Routine → Plan → Client loop.
+**Plans**: TBD
+
+### Phase 31: UX & Forms
+**Goal**: Polish routine template forms and UX nomenclature to prevent confusion between global templates and client assignments.
+**Depends on**: None
+**Priority**: 🟡 IMPORTANT
+**Success Criteria** (what must be TRUE):
+  1. No "Plan para cliente" button exists in `/routines-templates/new`.
+  2. Type selector text reads "Plantilla rutina" instead of "Template global".
+  3. Form steps in new routine are ordered: 1. Info básica → 2. Ejercicios → 3. Días.
+**Plans**: TBD
+
+### Phase 32: Visual Fixes
+**Goal**: Correct layout issues in trainer dashboard and chart visibility issues in dark mode.
+**Depends on**: None
+**Priority**: 🟢 IMPROVEMENT
+**Success Criteria** (what must be TRUE):
+  1. "Alertas activas" section in trainer dashboard has correct margins.
+  2. All Recharts tooltips display correct contrast in dark mode by overriding `contentStyle` across the project.
+**Plans**: TBD
+
+### Phase 33: Supabase Schema Cache Fix (/nutrition-plans roto)
+**Goal**: Resolver el error `Could not find the 'diet_type' column of 'nutrition_plans' en schema cache` en el entorno de producción.
+**Depends on**: None
+**Priority**: 🔴 CRITICAL
+**Success Criteria** (what must be TRUE):
+  1. Verificar que la migración de Phase 10.1 se aplicó en el entorno de producción.
+  2. Forzar reload de la caché de Supabase en producción.
+  3. Carga correcta de `/nutrition-plans` y del modal "Crear plantilla" en producción.
+**Plans**: TBD
+
+### Phase 34: Rediseño formulario de comida en plantilla nutricional
+**Goal**: Separar visualmente y organizar los campos en el "Crear plantilla" para comidas.
+**Depends on**: None
+**Priority**: 🟡 FEAT
+**Success Criteria** (what must be TRUE):
+  1. El form presenta un Bloque 1 explícito para Datos generales (Título, Hora, Macros generales).
+  2. El form presenta un Bloque 2 para Ingredientes (Ingrediente + Gramos por ingrediente expuestos explícitamente).
+**Plans**: TBD
+
+### Phase 35: Datos demo reales
+**Goal**: Reemplazar clientes mock triviales por data realista en dashboard.
+**Depends on**: None
+**Priority**: 🟡 FEAT
+**Success Criteria** (what must be TRUE):
+  1. Los clientes mock actuales del dashboard trainer son eliminados.
+  2. Se sustituyen por clientes demo listos: uno con plan activo, uno sin plan, uno con alertas activas y uno con historial real de entrenamientos.
+**Plans**: TBD
+
+### Phase 36: Lógica comida con ingredientes en app cliente
+**Goal**: Migrar visualización de comida hacia un modelo detallado.
+**Depends on**: Phase 34
+**Priority**: 🟡 FEAT
+**Success Criteria** (what must be TRUE):
+  1. Al visualizar una comida desde el cliente, se expone el desglose en ingredientes y miligramos/gramos de cada uno.
+  2. El registro de comida por parte del cliente permite hacerlo mediante cantidades detalladas de esos ingredientes, no solo con un subtotal de macros puro.
+**Plans**: TBD
+
+### Phase 37: Trainer Exercises - Crear Ejercicios
+**Goal**: Permitir creación manual de un nuevo ejercicio orgánicamente desde panel global en `/ejercicios`.
+**Depends on**: None
+**Priority**: 🟡 FEAT
+**Success Criteria** (what must be TRUE):
+  1. Interfaz de `/ejercicios` (trainer) expone un botón "Crear ejercicio".
+  2. Formulario habilita la inserción manual, y esto se refleja en el estado DB global.
+**Plans**: TBD
+
+### Phase 38: Lógica Crítica — Rutinas → Plan → Cliente
+**Goal**: Limpiar ambigüedades e imponer el flujo estructural top-down (Planificación vs Ejercicio).
+**Depends on**: None
+**Priority**: 🔴 CRITICAL
+**Success Criteria** (what must be TRUE):
+  1. No existe ningún botón o componente en todo el trainer panel que ofrezca "Asignar Rutina directa" al cliente.
+  2. Auditar todo componente que hace dispatch al backend relacionado con asignaciones. El flujo rígido debe ser Rutina → se asigna a Plan → se asigna Plan a Cliente.
+**Plans**: TBD
+
+### Phase 39: Formulario nueva rutina — pérdida de datos
+**Goal**: Evitar flush de inputs nativos en el formulario wizard/multi-steps de creación de rutina.
+**Depends on**: None
+**Priority**: 🔴 CRITICAL
+**Success Criteria** (what must be TRUE):
+  1. Identificar la causa raíz en inter-mounts, persistiendo el field array y context root entre vistas.
+  2. El form state sobrevive enteramente al avanzar o retroceder de info básica / ejercicios / días. Ningún drop.
+**Plans**: TBD
+
+### Phase 40: UX Formulario Nueva Rutina
+**Goal**: Limpiar overhead confuso y fallos de styling menores alrededor del template de rutinas.
+**Depends on**: Phase 39
+**Priority**: 🟡 UX
+**Success Criteria** (what must be TRUE):
+  1. El action "Plan para cliente" fue removido permanentemente en `/routines-templates`.
+  2. El label viejo en dropdown de "Template global" renombrado exitosamente a "Plantilla rutina".
+  3. Los pasos en wizard para creación son en orden secuencial estricto: (1) Info general, (2) Ejercicios, (3) Días.
+  4. Fix absolute forms y rectificación visual correctiva de pop-up de ejercicios con alineamientos lógicos.
+  5. Sumado un paso validatorio "Resumen/Confirmación" anterior a someter todo contra BD.
+**Plans**: TBD
+
+### Phase 41: Gestión de planes asignados al cliente
+**Goal**: Dar control de baja del plan para que un cliente pueda tener periodos nulos o swaps.
+**Depends on**: Phase 38
+**Priority**: 🟡 FEAT
+**Success Criteria** (what must be TRUE):
+  1. Botón o trigger destructivo en tarjeta del cliente, permitiendo remover un plan que venía activo.
+  2. Cliente end-user puede interactuar o conmutar rutinas a escoger expuestas por el plan semanal desde la interfaz cliente.
+**Plans**: TBD
+
+### Phase 42: Visual
+**Goal**: Mejoras estéticas y erradicaciones puntuales gráficas del trainer y modo oscuro.
+**Depends on**: None
+**Priority**: 🟢 IMPROVEMENT
+**Success Criteria** (what must be TRUE):
+  1. Redondear flex boxes y gaps correctos en "Alertas activas", dashboard trainer y detalle de cliente para que no se apiñe al hacer viewport resize.
+  2. Tooltip de gráficas Recharts pasa de desastroso en default a una variante que propaga bien el `contentStyle` Dark mode.
+**Plans**: TBD
+
+### Phase 43: App Cliente — Stats del plan & Notificaciones
+**Goal**: Brindar resúmenes macroscópicos del effort y notificaciones que integren todo.
+**Depends on**: None
+**Priority**: 🟢 IMPROVEMENT
+**Success Criteria** (what must be TRUE):
+  1. Overview del plan a alto nivel expone desgloses porcentuales relativos al esfuerzo aportado por cada grupo muscular.
+  2. Mostrar un resumen claro y tabulado de cada rutina que lo compone del plan.
+  3. App cliente recibe y pinta notificaciones con listados de links a los eventos de asignaciones de plantilla con la debida verbosidad.
+**Plans**: TBD
 
 ## Progress
 
@@ -464,8 +630,22 @@ Plans:
 | 22. Retroactive Verification (11) | v4.2 | 0/? | Not started | - |
 | 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |
 | 24. Middleware Prefix Fix | v5.0 | 1/1 | Complete | 2026-03-11 |
-| 25. Active Session Banner Fix | v5.0 | 0/1 | Not started | - |
+| 25. Active Session Banner Fix | 1/1 | Complete   | 2026-03-11 | - |
 | 26. Progress & Chart Fixes | v5.0 | 0/1 | Superseded by P28 | - |
 | 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
 | 28. Progress Page Full Fix | v5.1 | 0/? | Not started | - |
 | 29. Performance Optimization | v5.1 | 0/? | Not started | - |
+| 30. Business Logic | v5.2 | 0/? | Not started | - |
+| 31. UX & Forms | v5.2 | 0/? | Not started | - |
+| 32. Visual Fixes | v5.2 | 0/? | Not started | - |
+| 33. Fix /nutrition-plans | v5.3 | 0/? | Not started | - |
+| 34. Rediseño form comida | v5.3 | 0/? | Not started | - |
+| 35. Datos demo reales | v5.3 | 0/? | Not started | - |
+| 36. Ingredientes app cliente | v5.3 | 0/? | Not started | - |
+| 37. Crear ejercicios | v5.3 | 0/? | Not started | - |
+| 38. Lógica Rutinas → Plan | v5.4 | 0/? | Not started | - |
+| 39. Form nueva rutina bugs | v5.4 | 0/? | Not started | - |
+| 40. UX form nueva rutina | v5.4 | 0/? | Not started | - |
+| 41. Gestión planes asignados | v5.4 | 0/? | Not started | - |
+| 42. Visual Fixes | v5.4 | 0/? | Not started | - |
+| 43. Stats & Notif. Cliente | v5.4 | 0/? | Not started | - |

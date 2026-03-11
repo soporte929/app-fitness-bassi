@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-10T22:11:33.698Z"
+last_updated: "2026-03-11T12:28:01.849Z"
 progress:
-  total_phases: 15
-  completed_phases: 10
-  total_plans: 24
-  completed_plans: 26
+  total_phases: 17
+  completed_phases: 12
+  total_plans: 27
+  completed_plans: 28
 ---
 
 # State
@@ -23,15 +23,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Current Position
 - **Milestone**: v5.0 Emergency Hotfix
 - **Phase**: 25
-- **Status**: Needs Planning
-- **Last activity**: 2026-03-11 — Executed Phase 24
+- **Status**: Complete
+- **Last activity**: 2026-03-11 — Executed Phase 25 (25-01-PLAN.md complete)
 
 ## Next Steps
-1. `/plan 25` — Plan Phase 25 (Active Session Banner Fix — BUG-03) 🔴 CRITICAL
-2. `/execute 25` — Execute Phase 25
-3. Deploy after phases 24+25 complete (critical fixes)
-4. `/plan 28` — Plan Phase 28 (Progress Page Full Fix) 🟡 IMPORTANT
-5. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT
+1. Deploy after phases 24+25 complete (critical fixes) — READY
+2. `/plan 28` — Plan Phase 28 (Progress Page Full Fix) 🟡 IMPORTANT
+3. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT
 
 ## Progress Bar
 
@@ -150,3 +148,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 19-02]: profile?.email ?? user.email fallback — garantiza email visible aunque profiles.email sea null
 - [Phase 20-01]: logAIFoodEntryAction inserts saved_dishes with trainer_id=user.id then food_log with grams=100 so macros match estimate exactly (factor=1)
 - [Phase 20-02]: SELECT meal_plan_items uses templatePlanId (source) and INSERT uses newPlanId (destination) — direction explicit to avoid clone confusion
+- [Phase 25-active-session-banner-fix]: BUG-03: CustomEvent workoutFinished dispatched before await action() — banner clears synchronously before server navigation to /history
