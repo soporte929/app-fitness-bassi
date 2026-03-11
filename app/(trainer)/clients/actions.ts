@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import type {
   ActivityLevel,
   Goal,
@@ -72,6 +72,7 @@ export async function updateClientAction(
   if (error) throw new Error(error.message)
   revalidatePath(`/clients/${clientId}`)
   revalidatePath('/clients')
+  revalidateTag('trainer-dashboard', {})
 }
 
 export async function createClientAction(data: {
@@ -168,6 +169,7 @@ export async function createClientAction(data: {
   }
 
   revalidatePath('/clients')
+  revalidateTag('trainer-dashboard', {})
   return { success: true, id: newClient.id }
 }
 
@@ -195,6 +197,7 @@ export async function assignPlanToClientAction(
   if (error) return { success: false, error: error.message }
   revalidatePath('/clients')
   revalidatePath(`/clients/${clientId}`)
+  revalidateTag('trainer-dashboard', {})
   return { success: true }
 }
 
@@ -226,5 +229,6 @@ export async function deleteClientAction(
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/clients')
+  revalidateTag('trainer-dashboard', {})
   return { success: true }
 }
