@@ -4,7 +4,6 @@ import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PageTransition } from '@/components/ui/page-transition'
 import { RoutineBuilder } from '@/components/trainer/routine-builder'
-import { AssignTemplateButton } from '@/components/trainer/assign-template-button'
 import type { RoutineBuilderInitial, RoutineClientOption } from '../types'
 
 type PlanParams = {
@@ -154,7 +153,7 @@ export default async function RoutineTemplateDetailPage({
             </div>
           </div>
 
-          {plan.is_template && <AssignTemplateButton planId={plan.id} planName={plan.name} clients={clients} />}
+
         </div>
 
         <RoutineBuilder

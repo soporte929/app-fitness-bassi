@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/server'
 import { PageTransition } from '@/components/ui/page-transition'
 import { Button } from '@/components/ui/button'
 import { TemplateCard, type RoutineTemplateCardItem } from '@/components/trainer/template-card'
-import type { RoutineClientOption } from './types'
 
 type RawPlanRow = {
   id: string
@@ -25,12 +24,7 @@ type RawPlanRow = {
   }> | null
 }
 
-type RawClientRow = {
-  id: string
-  profile: {
-    full_name: string
-  } | null
-}
+
 
 export default async function RoutinesTemplatesPage() {
   const supabase = await createClient()
@@ -40,7 +34,7 @@ export default async function RoutinesTemplatesPage() {
 
   if (!user) redirect('/login')
 
-  const [{ data: rawPlans }, { data: rawClients }] = await Promise.all([
+  const [{ data: rawPlans }] = await Promise.all([
     supabase
       .from('workout_plans')
       .select(
@@ -56,18 +50,8 @@ export default async function RoutinesTemplatesPage() {
       .eq('trainer_id', user.id)
       .eq('active', true)
       .order('created_at', { ascending: false }),
-    supabase
-      .from('clients')
-      .select('id, profile:profiles!clients_profile_id_fkey(full_name)')
-      .eq('trainer_id', user.id)
-      .eq('active', true)
-      .order('joined_date', { ascending: false }),
   ])
 
-  const clients: RoutineClientOption[] = ((rawClients ?? []) as unknown as RawClientRow[]).map((client) => ({
-    id: client.id,
-    name: client.profile?.full_name ?? 'Sin nombre',
-  }))
 
   const plans: RoutineTemplateCardItem[] = ((rawPlans ?? []) as unknown as RawPlanRow[]).map((plan) => {
     const totalExercises = (plan.workout_days ?? []).reduce((acc, day) => {
@@ -130,7 +114,7 @@ export default async function RoutinesTemplatesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
               {templates.map((plan, index) => (
                 <div key={plan.id} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
-                  <TemplateCard plan={plan} clients={clients} />
+                  <TemplateCard plan={plan} />
                 </div>
               ))}
             </div>
@@ -151,7 +135,7 @@ export default async function RoutinesTemplatesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
               {assignedPlans.map((plan, index) => (
                 <div key={plan.id} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
-                  <TemplateCard plan={plan} clients={clients} />
+                  <TemplateCard plan={plan} />
                 </div>
               ))}
             </div>

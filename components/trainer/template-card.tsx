@@ -6,9 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, Trash2, UserRound } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { AssignTemplateModal } from '@/components/trainer/assign-template-modal'
 import { deletePlanAction } from '@/app/(trainer)/routines-templates/actions'
-import type { RoutineClientOption } from '@/app/(trainer)/routines-templates/types'
 
 export type RoutineTemplateCardItem = {
   id: string
@@ -23,13 +21,12 @@ export type RoutineTemplateCardItem = {
 
 type Props = {
   plan: RoutineTemplateCardItem
-  clients: RoutineClientOption[]
 }
 
-export function TemplateCard({ plan, clients }: Props) {
+export function TemplateCard({ plan }: Props) {
   const router = useRouter()
   const [deleteOpen, setDeleteOpen] = useState(false)
-  const [assignOpen, setAssignOpen] = useState(false)
+
   const [serverError, setServerError] = useState<string | null>(null)
   const [pendingDelete, startDelete] = useTransition()
 
@@ -88,11 +85,7 @@ export function TemplateCard({ plan, clients }: Props) {
               </Button>
             </Link>
 
-            {plan.is_template && (
-              <Button size="sm" onClick={() => setAssignOpen(true)} disabled={clients.length === 0}>
-                Asignar a cliente
-              </Button>
-            )}
+
 
             <Button variant="danger" size="sm" onClick={() => setDeleteOpen(true)}>
               <Trash2 className="w-3.5 h-3.5" /> Eliminar
@@ -101,16 +94,7 @@ export function TemplateCard({ plan, clients }: Props) {
         </CardContent>
       </Card>
 
-      {plan.is_template && (
-        <AssignTemplateModal
-          open={assignOpen}
-          onOpenChange={setAssignOpen}
-          planId={plan.id}
-          planName={plan.name}
-          clients={clients}
-          onAssigned={(newPlanId) => router.push(`/routines-templates/${newPlanId}`)}
-        />
-      )}
+
 
       {deleteOpen && (
         <div
