@@ -22,14 +22,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v5.0 Emergency Hotfix
-- **Phase**: 24
-- **Plan**: Planning complete
-- **Status**: Ready for execution
-- **Last activity**: 2026-03-11 — Planned Phase 24
+- **Phase**: 25
+- **Status**: Needs Planning
+- **Last activity**: 2026-03-11 — Executed Phase 24
 
 ## Next Steps
-1. `/execute 24` — Execute Phase 24 (Middleware Prefix Fix — BUG-01, BUG-02) 🔴 CRITICAL
-2. `/plan 25` — Plan Phase 25 (Active Session Banner Fix — BUG-03) 🔴 CRITICAL
+1. `/plan 25` — Plan Phase 25 (Active Session Banner Fix — BUG-03) 🔴 CRITICAL
+2. `/execute 25` — Execute Phase 25
 3. Deploy after phases 24+25 complete (critical fixes)
 4. `/plan 28` — Plan Phase 28 (Progress Page Full Fix) 🟡 IMPORTANT
 5. `/plan 29` — Plan Phase 29 (Performance Optimization) 🟢 IMPROVEMENT

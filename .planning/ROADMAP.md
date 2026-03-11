@@ -88,7 +88,7 @@
 <details open>
 <summary>🚨 v5.0 Emergency Hotfix (Phases 24-27) — IN PROGRESS</summary>
 
-- [ ] **Phase 24: Middleware Prefix Fix** — 🔴 CRITICAL: Fix prefix collision in middleware causing /routines-templates and /nutrition-plans to redirect trainers to dashboard (BUG-01, BUG-02)
+- [x] **Phase 24: Middleware Prefix Fix** — 🔴 CRITICAL: Fix prefix collision in middleware causing /routines-templates and /nutrition-plans to redirect trainers to dashboard (BUG-01, BUG-02) (completed 2026-03-11)
 - [ ] **Phase 25: Active Session Banner Fix** — 🔴 CRITICAL: Fix "Entrenamiento activo" banner persisting after workout completion via event-based signal (BUG-03)
 - [ ] **Phase 26: Progress & Chart Fixes** — 🟡 IMPORTANT: Fix /progress metrics not showing + PhaseDistribution chart margin clipping (BUG-04, BUG-05) → **Superseded by Phase 28**
 - [ ] **Phase 27: Performance Optimization** — 🟢 IMPROVEMENT: Parallelize queries, add DB indexes, reduce waterfall loading (BUG-06) → **Superseded by Phase 29**
@@ -463,7 +463,7 @@ Plans:
 | 21. Retroactive Verification (10, 10.1, 16, 17) | v4.2 | Complete    | 2026-03-10 | - |
 | 22. Retroactive Verification (11) | v4.2 | 0/? | Not started | - |
 | 23. CALC Audit + Traceability Cleanup | v4.2 | 0/? | Not started | - |
-| 24. Middleware Prefix Fix | v5.0 | 0/1 | Not started | - |
+| 24. Middleware Prefix Fix | v5.0 | 1/1 | Complete | 2026-03-11 |
 | 25. Active Session Banner Fix | v5.0 | 0/1 | Not started | - |
 | 26. Progress & Chart Fixes | v5.0 | 0/1 | Superseded by P28 | - |
 | 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
