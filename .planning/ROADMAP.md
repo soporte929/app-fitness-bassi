@@ -452,7 +452,10 @@ Plans:
   4. Con el cliente de prueba (`24646591-53ec-4d1a-b92a-08f00e8d365b`), las gráficas de peso y medidas se renderizan correctamente con datos reales
   5. El componente `ProgressCharts` no falla ni muestra blank cuando recibe `weightLogs=[]` o `measurements=[]`
   6. El gráfico "Distribución por fase" en dashboard trainer muestra pie + leyenda completos sin recorte en todas las resoluciones
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — Error rendering visible en progress/page.tsx + PhaseDistributionChart fix
+- [ ] 28-02-PLAN.md — RLS policy audit/fix en Supabase + seed datos de prueba + verificación visual
 
 ### Phase 29: Performance Optimization
 **Goal**: Reducir tiempo de carga en páginas principales paralelizando queries secuenciales, añadiendo cache donde tenga sentido, y verificando índices DB en columnas frecuentemente filtradas
