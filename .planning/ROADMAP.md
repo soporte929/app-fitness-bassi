@@ -468,7 +468,11 @@ Plans:
   3. Existen índices en Supabase para las columnas más frecuentemente filtradas: `client_measurements.client_id`, `workout_sessions.client_id`, `food_log.client_id`, `set_logs.session_id`
   4. Las páginas principales (dashboard, today, progress) cargan en < 2s en producción (Vercel)
   5. No hay regresiones funcionales tras la optimización
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 29-01-PLAN.md — unstable_cache en dashboard trainer + revalidateTag en client actions
+- [ ] 29-02-PLAN.md — unstable_cache en progress/page.tsx + revalidateTag en progress actions
+- [ ] 29-03-PLAN.md — Índices DB en Supabase (4 columnas frecuentemente filtradas)
 
 ### Phase 30: Business Logic
 **Goal**: Enforce strict business logic: Routine → Plan → Client. Routines are templates, not directly assignable.
