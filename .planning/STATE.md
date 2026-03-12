@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 - **Phase**: 30 (completed)
 - **Task**: All tasks complete
 - **Status**: Verified
-- **Last activity**: 2026-03-11 — Executed Phase 30 (1 plan, 2 tasks, 2 commits)
+- **Last activity**: 2026-03-12 - Completed quick task 1: Hide nutrition feature from navigation and routes (keep code intact)
 
 ## Next Steps
 1. `/plan 31` — Plan Phase 31 (UX & Forms) 🟡 IMPORTANT
@@ -100,6 +100,12 @@ Phase 19: [x] Trainer Settings & Modals
 ## Pending Todos
 
 (none — roadmap just created)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Hide nutrition feature from navigation and routes (keep code intact) | 2026-03-12 | 987969d | [1-hide-nutrition-feature-from-navigation-a](./quick/1-hide-nutrition-feature-from-navigation-a/) |
 
 ## Decisions
 
