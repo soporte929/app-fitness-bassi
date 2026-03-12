@@ -80,9 +80,13 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
+  // Nutrición deshabilitada — redirigir a /today
+  if (pathname === "/nutrition" || pathname.startsWith("/nutrition/")) {
+    return NextResponse.redirect(new URL("/today", request.url));
+  }
+
   const isClientRoute = pathname.startsWith("/today") ||
     pathname.startsWith("/history") ||
-    pathname === "/nutrition" || pathname.startsWith("/nutrition/") ||
     pathname.startsWith("/progress") ||
     pathname.startsWith("/audit") ||
     pathname.startsWith("/profile") ||
