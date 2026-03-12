@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useTransition } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import { Check, CheckCircle2, ChevronDown, Trophy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { saveSetLog } from '@/app/(client)/today/actions'
@@ -38,7 +38,7 @@ type SetState = {
 const inputClass =
   'w-full h-10 px-1 rounded-lg text-sm text-center border transition-all focus:outline-none bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-primary)] focus:border-[var(--accent)]'
 
-export function ExerciseCard({
+export const ExerciseCard = React.memo(function ExerciseCard({
   exercise,
   sessionId,
   lastSetLogs = [],
@@ -309,4 +309,4 @@ export function ExerciseCard({
       )}
     </div>
   )
-}
+})
