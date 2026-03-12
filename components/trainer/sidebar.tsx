@@ -13,7 +13,6 @@ import {
   Dumbbell,
   ClipboardList,
   Layers,
-  UtensilsCrossed,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -34,7 +33,6 @@ const navigation = [
     items: [
       { label: "Rutinas", href: "/routines-templates", icon: ClipboardList },
       { label: "Planes", href: "/plans", icon: Layers },
-      { label: "Nutrición", href: "/nutrition-plans", icon: UtensilsCrossed },
       { label: "Ejercicios", href: "/exercises", icon: Dumbbell },
     ],
   },
