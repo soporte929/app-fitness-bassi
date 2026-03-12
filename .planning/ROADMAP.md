@@ -493,7 +493,9 @@ Plans:
   1. No "Plan para cliente" button exists in `/routines-templates/new`.
   2. Type selector text reads "Plantilla rutina" instead of "Template global".
   3. Form steps in new routine are ordered: 1. Info básica → 2. Ejercicios → 3. Días.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 31-01-PLAN.md — Renombrar selector, eliminar botón Plan para cliente, reordenar pasos
 
 ### Phase 32: Visual Fixes
 **Goal**: Correct layout issues in trainer dashboard and chart visibility issues in dark mode.
