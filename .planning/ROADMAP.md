@@ -107,9 +107,9 @@
 </details>
 
 <details open>
-<summary>📋 v5.2 Trainer UX & Logic Fixes (Phases 30-32) — NOT STARTED</summary>
+<summary>📋 v5.2 Trainer UX & Logic Fixes (Phases 30-32) — IN PROGRESS</summary>
 
-- [ ] **Phase 30: Business Logic** — 🔴 CRITICAL: Eliminate assigning routines to clients; enforce Routine → Plan → Client flow
+- [x] **Phase 30: Business Logic** — 🔴 CRITICAL: Eliminate assigning routines to clients; enforce Routine → Plan → Client flow (completed 2026-03-11)
 - [ ] **Phase 31: UX & Forms** — 🟡 IMPORTANT: Remove "Plan para cliente" in routine templates, reorder form steps, update selector text
 - [ ] **Phase 32: Visual Fixes** — 🟢 IMPROVEMENT: Fix "Alertas activas" margin, correct Recharts tooltip contrast in dark mode
 
@@ -481,9 +481,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. All buttons/flows allowing direct assignment of a Routine to a Client are removed or redirected.
   2. All audited components and Server Actions handling assignments respect the Routine → Plan → Client loop.
-**Plans**: 1 plan
+**Status**: ✅ Complete
 Plans:
-- [ ] 30-01-PLAN.md — Remove direct routine-to-client assignment flows (AssignRoutineButton, AssignTemplateModal, clonePlanToClientAction)
+- [x] 30-01-PLAN.md — Remove direct routine-to-client assignment flows (AssignRoutineButton, AssignTemplateModal, clonePlanToClientAction)
 
 ### Phase 31: UX & Forms
 **Goal**: Polish routine template forms and UX nomenclature to prevent confusion between global templates and client assignments.
@@ -644,7 +644,7 @@ Plans:
 | 27. Performance Optimization | v5.0 | 0/1 | Superseded by P29 | - |
 | 28. Progress Page Full Fix | 2/2 | Complete    | 2026-03-11 | - |
 | 29. Performance Optimization | 3/3 | Complete| 2026-03-11 | - |
-| 30. Business Logic | v5.2 | 0/1 | Planned | - |
+| 30. Business Logic | v5.2 | 1/1 | Complete | 2026-03-11 |
 | 31. UX & Forms | v5.2 | 0/? | Not started | - |
 | 32. Visual Fixes | v5.2 | 0/? | Not started | - |
 | 33. Fix /nutrition-plans | v5.3 | 0/? | Not started | - |

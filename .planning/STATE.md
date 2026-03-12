@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-11T13:30:36.170Z"
+last_updated: "2026-03-11T22:52:51.000Z"
 progress:
   total_phases: 19
   completed_phases: 13
@@ -22,13 +22,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v5.2 Trainer UX & Logic Fixes
-- **Phase**: 30
-- **Task**: Planning complete
-- **Status**: Ready for execution
-- **Last activity**: 2026-03-11 — Planned Phase 30 (1 plan, 1 wave)
+- **Phase**: 30 (completed)
+- **Task**: All tasks complete
+- **Status**: Verified
+- **Last activity**: 2026-03-11 — Executed Phase 30 (1 plan, 2 tasks, 2 commits)
 
 ## Next Steps
-1. `/execute 30` — Execute Phase 30 (Business Logic) 🔴 CRITICAL
+1. `/plan 31` — Plan Phase 31 (UX & Forms) 🟡 IMPORTANT
 
 ## Progress Bar
 
@@ -154,4 +154,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 29-01]: unstable_cache wraps all 3 Supabase dashboard queries (clients/sessions/weight_logs) with TTL 60s and tag trainer-dashboard, using createAdminClient (no cookie dependency)
 - [Phase 29-01]: revalidateTag second arg passes empty CacheLifeConfig {} — required by Next.js 16 type signature for cache invalidation
 - [Phase 29-performance-optimization]: revalidateTag requires 2nd arg {} in Next.js 16 — same pattern as Phase 29-01 (trainer-dashboard)
-- [Phase 29-performance-optimization]: Auth and clients query remain uncached in ProgressPage — only heavy historical data queries cached
+- [Phase 30-business-logic]: Direct routine-to-client assignment files deleted (assign-routine-button, assign-template-modal, assign-template-button); clonePlanToClientAction removed; TemplateCard no longer has "Asignar a cliente" button; routines-templates page no longer queries clients (perf win)

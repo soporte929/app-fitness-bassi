@@ -3,11 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Dumbbell, Apple, TrendingUp, Video } from "lucide-react";
+import { Dumbbell, TrendingUp, Video } from "lucide-react";
 
 const tabs = [
   { label: "Hoy", href: "/today", icon: Dumbbell },
-  { label: "Nutrición", href: "/nutrition", icon: Apple },
   { label: "Progreso", href: "/progress", icon: TrendingUp },
   { label: "Auditoría", href: "/audit", icon: Video },
 ];

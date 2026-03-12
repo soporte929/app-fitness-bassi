@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Dumbbell, History, TrendingUp, ClipboardList, UserCircle, UtensilsCrossed } from "lucide-react";
+import { Dumbbell, History, TrendingUp, ClipboardList, UserCircle } from "lucide-react";
 
 const tabs = [
   { label: "Hoy", href: "/today", icon: Dumbbell },
   { label: "Historial", href: "/history", icon: History },
   { label: "Rutinas", href: "/routines", icon: ClipboardList },
   { label: "Progreso", href: "/progress", icon: TrendingUp },
-  { label: "Nutrición", href: "/nutrition", icon: UtensilsCrossed },
   { label: "Perfil", href: "/profile", icon: UserCircle },
 ];
 
