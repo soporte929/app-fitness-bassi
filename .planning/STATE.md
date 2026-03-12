@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 - **Phase**: 30 (completed)
 - **Task**: All tasks complete
 - **Status**: Verified
-- **Last activity**: 2026-03-12 - Completed quick task 1: Hide nutrition feature from navigation and routes (keep code intact)
+- **Last activity**: 2026-03-12 - Completed quick task 2: Performance optimization (React.memo, loading.tsx skeletons, WebP/AVIF)
 
 ## Next Steps
 1. `/plan 31` — Plan Phase 31 (UX & Forms) 🟡 IMPORTANT
@@ -106,6 +106,7 @@ Phase 19: [x] Trainer Settings & Modals
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Hide nutrition feature from navigation and routes (keep code intact) | 2026-03-12 | 987969d | [1-hide-nutrition-feature-from-navigation-a](./quick/1-hide-nutrition-feature-from-navigation-a/) |
+| 2 | Performance optimization: React.memo ExerciseCard, 4 loading.tsx skeletons, WebP/AVIF image formats | 2026-03-12 | 9810669 | [2-performance-optimization-fix-re-renders-](./quick/2-performance-optimization-fix-re-renders-/) |
 
 ## Decisions
 
