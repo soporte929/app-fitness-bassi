@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 - **Phase**: 30 (completed)
 - **Task**: All tasks complete
 - **Status**: Verified
-- **Last activity**: 2026-03-12 - Completed quick task 2: Performance optimization (React.memo, loading.tsx skeletons, WebP/AVIF)
+- **Last activity**: 2026-03-13 - Completed quick task 3: Ocultar Nutrición del sidebar del trainer
 
 ## Next Steps
 1. `/plan 31` — Plan Phase 31 (UX & Forms) 🟡 IMPORTANT
@@ -107,6 +107,7 @@ Phase 19: [x] Trainer Settings & Modals
 |---|-------------|------|--------|-----------|
 | 1 | Hide nutrition feature from navigation and routes (keep code intact) | 2026-03-12 | 987969d | [1-hide-nutrition-feature-from-navigation-a](./quick/1-hide-nutrition-feature-from-navigation-a/) |
 | 2 | Performance optimization: React.memo ExerciseCard, 4 loading.tsx skeletons, WebP/AVIF image formats | 2026-03-12 | 9810669 | [2-performance-optimization-fix-re-renders-](./quick/2-performance-optimization-fix-re-renders-/) |
+| 3 | Ocultar item Nutrición del sidebar del trainer (enlace /nutrition-plans) | 2026-03-13 | 588afa7 | [3-ocultar-nutrition-plans-en-la-app-traine](./quick/3-ocultar-nutrition-plans-en-la-app-traine/) |
 
 ## Decisions
 
