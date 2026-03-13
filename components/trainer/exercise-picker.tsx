@@ -122,22 +122,14 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop & Modal Container */}
       <div
         className={cn(
-          'fixed inset-0 bg-black/40 z-40 transition-opacity duration-200',
-          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          'fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4',
+          'transition-colors duration-200',
+          open ? 'pointer-events-auto bg-black/40' : 'pointer-events-none bg-transparent'
         )}
         onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div
-        className={cn(
-          'fixed inset-0 flex items-end md:items-center justify-center z-50 p-0 md:p-4',
-          'pointer-events-none',
-          open && 'pointer-events-auto'
-        )}
       >
         <div
           className={cn(
@@ -156,7 +148,7 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+          <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
             <h3 className="text-base font-semibold text-[var(--text-primary)]">Añadir ejercicio</h3>
             <button
               type="button"
@@ -168,7 +160,7 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
           </div>
 
           {/* Search */}
-          <div className="px-4 py-3 border-b border-[var(--border)]">
+          <div className="flex-shrink-0 px-4 py-3 border-b border-[var(--border)]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
               <input
@@ -182,7 +174,7 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
           </div>
 
           {/* Muscle filter chips */}
-          <div className="px-4 py-2 flex gap-1.5 overflow-x-auto border-b border-[var(--border)] scrollbar-none">
+          <div className="flex-shrink-0 px-4 py-2 flex gap-1.5 overflow-x-auto border-b border-[var(--border)] scrollbar-none">
             <button
               type="button"
               onClick={() => setFilter(null)}
