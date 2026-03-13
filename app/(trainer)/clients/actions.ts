@@ -110,11 +110,14 @@ export async function createClientAction(data: {
 
   // 1. Crear usuario en auth.users primero (admin client bypass RLS)
   const admin = createAdminClient()
-  const { data: authData, error: authError } = await admin.auth.admin.createUser({
-    email: data.email,
-    password: crypto.randomUUID(), // temporal — cliente puede hacer reset password
-    email_confirm: true,
-  })
+  const { data: authData, error: authError } = await admin.auth.admin.inviteUserByEmail(
+    data.email,
+    {
+      data: {
+        full_name: data.full_name,
+      },
+    }
+  )
   if (authError) return { success: false, error: authError.message }
 
   const profileId = authData.user.id

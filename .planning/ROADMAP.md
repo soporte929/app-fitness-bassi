@@ -674,7 +674,10 @@ Plans:
   1. Al crear un cliente desde el trainer panel, se crea un usuario en Supabase Auth.
   2. El cliente recibe automáticamente un email para establecer su contraseña.
   3. Una vez el cliente establece su password, puede hacer login en la app cliente.
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 46-01-PLAN.md — Cambiar createClientAction a inviteUserByEmail + crear auth/callback route
 
 ### Phase 47: Ajustes cliente — desactivar opciones no funcionales
 **Goal**: En /profile del cliente, ocultar o desactivar todo lo que no funciona aún en v1.
