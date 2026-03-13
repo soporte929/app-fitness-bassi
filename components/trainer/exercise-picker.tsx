@@ -134,7 +134,10 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
       {/* Backdrop & Modal Container */}
       <div
         className={cn(
-          'fixed inset-0 z-50 flex items-end min-[431px]:items-center justify-center p-0 min-[431px]:p-4',
+          'fixed inset-0 z-50 flex',
+          'items-end justify-center',
+          'min-[431px]:items-center min-[431px]:justify-center',
+          'min-[431px]:p-4',
           'transition-colors duration-200',
           open ? 'pointer-events-auto bg-black/40' : 'pointer-events-none bg-transparent'
         )}
@@ -143,12 +146,14 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
         <div
           className={cn(
             'w-full min-[431px]:max-w-md',
+            'max-h-[75dvh]',
+            'rounded-t-xl min-[431px]:rounded-xl',
             'bg-[var(--bg-surface)] border border-[var(--border)]',
-            'rounded-t-xl min-[431px]:rounded-xl shadow-2xl',
-            'max-h-[75dvh] flex flex-col min-h-0 pb-[env(safe-area-inset-bottom,0px)]',
+            'shadow-2xl flex flex-col min-h-0',
+            'pb-[env(safe-area-inset-bottom,0px)] min-[431px]:pb-0',
             'transition-all duration-300 ease-out',
-            open 
-              ? 'translate-y-0 min-[431px]:scale-100 opacity-100' 
+            open
+              ? 'translate-y-0 min-[431px]:scale-100 opacity-100'
               : 'translate-y-full min-[431px]:translate-y-0 opacity-0 min-[431px]:scale-95'
           )}
           onClick={(e) => e.stopPropagation()}
