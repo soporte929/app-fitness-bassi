@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-13T13:52:50.324Z"
+last_updated: "2026-03-13T14:36:37.238Z"
 progress:
   total_phases: 43
   completed_phases: 21
@@ -175,3 +175,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 045-01]: calculateNutrition() y StatCard FFM conservados — calculan Masa libre grasa, no son UI de planes nutricionales
 - [Phase 46-01]: inviteUserByEmail en lugar de createUser+password-aleatorio — cliente recibe email de Supabase con enlace para establecer contraseña
 - [Phase 46-01]: origin dinámico en callback/route.ts — funciona en local y producción sin hardcodear URLs
+- [Phase 46]: type=invite detectado en callback para redirigir a /set-password — separa flujo invitación del flujo login normal
