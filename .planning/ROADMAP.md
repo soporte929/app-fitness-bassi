@@ -145,7 +145,7 @@
 - [ ] **Phase 44: Modal "Añadir ejercicio" rediseño** — 🔴 CRÍTICO: Bottom sheet en móvil (max-w-[430px]), modal centrado en desktop. Sin overflow ni cortes. Cierre fiable.
 - [ ] **Phase 45: Ocultar nutrición en trainer panel vista cliente** — 🔴 CRÍTICO: Eliminar toda referencia a nutrición en /clients/[id] y subrutas del trainer panel.
 - [x] **Phase 46: Lógica creación de cliente con Auth** — 🟡 IMPORTANTE: Trainer crea cliente → Supabase Auth crea el usuario → cliente recibe email automático para setear su password. (completed 2026-03-13)
-- [ ] **Phase 47: Ajustes cliente — desactivar opciones no funcionales** — 🟡 IMPORTANTE: En /profile del cliente, ocultar o desactivar todo lo que no funciona aún en v1.
+- [x] **Phase 47: Ajustes cliente — desactivar opciones no funcionales** — 🟡 IMPORTANTE: En /profile del cliente, ocultar o desactivar todo lo que no funciona aún en v1. (completed 2026-03-13)
 - [ ] **Phase 48: Logo sidebar trainer — tipografía bold** — 🟢 VISUAL: Mejorar visualmente el logo/título del sidebar trainer con tipografía más bold/profesional.
 - [ ] **Phase 49: Ajustes trainer — contenido mínimo v1** — 🟢 VISUAL: Definir e implementar qué mostrar en /settings del trainer para v1.
 
@@ -764,6 +764,6 @@ Plans:
 | 44. Modal "Añadir ejercicio" rediseño | v5.5 | 2/2 | Complete | 2026-03-13 |
 | 45. Ocultar nutrición trainer | v5.5 | 0/? | Not started | - |
 | 46. Lógica creación cliente Auth | 1/1 | Complete   | 2026-03-13 | - |
-| 47. Ajustes cliente v1 | v5.5 | 0/? | Not started | - |
+| 47. Ajustes cliente v1 | 1/1 | Complete   | 2026-03-13 | - |
 | 48. Logo sidebar tipografía | v5.5 | 0/? | Not started | - |
 | 49. Ajustes trainer v1 | v5.5 | 0/? | Not started | - |

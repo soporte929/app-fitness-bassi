@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-13T14:36:37.238Z"
+last_updated: "2026-03-13T15:25:44.748Z"
 progress:
   total_phases: 43
-  completed_phases: 21
-  total_plans: 44
-  completed_plans: 44
+  completed_phases: 22
+  total_plans: 45
+  completed_plans: 45
 ---
 
 # State
@@ -115,6 +115,7 @@ Phase 19: [x] Trainer Settings & Modals
 | 5 | Rewrite ExercisePicker as simple centered modal for all viewports | 2026-03-13 | 6fa5b73 | [5-rewrite-exercisepicker-as-simple-centere](./quick/5-rewrite-exercisepicker-as-simple-centere/) |
 | Phase 045-ocultar-nutricion-en-trainer-panel-vista-cliente P01 | 10 | 2 tasks | 1 files |
 | Phase 46-logica-creacion-cliente-con-auth P01 | 8 | 2 tasks | 2 files |
+| Phase 47-ajustes-cliente-desactivar-opciones-no-funcionales P01 | 10 | 2 tasks | 1 files |
 
 ## Decisions
 
@@ -178,3 +179,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 46-01]: /auth/callback convertido a page.tsx (Client Component): lee window.location.hash, llama setSession(), redirige según type
 - [Phase 46-01]: redirectTo: /auth/callback en inviteUserByEmail para que el hash llegue a la página correcta
 - [Phase 46-01]: middleware.ts — /auth/ y /set-password añadidas como rutas públicas (sin esto en prod redirigen a /login)
+- [Phase 47-ajustes-cliente-desactivar-opciones-no-funcionales]: Mis revisiones conserva navegacion — solo se deshabilitan los 4 items sin funcionalidad implementada en v1
+- [Phase 47-ajustes-cliente-desactivar-opciones-no-funcionales]: MenuItem.disabled: true para marcar features planificadas — ocultar-no-borrar, facilita reactivacion futura
