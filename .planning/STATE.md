@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 - **Phase**: 44 (completed)
 - **Task**: All tasks complete
 - **Status**: Verified
-- **Last activity**: 2026-03-13 - Executed Phase 44: Modal ExercisePicker rediseño (bottom sheet mobile / modal desktop)
+- **Last activity**: 2026-03-13 - Executed Phase 44 (Plan 3): Unificado max-h a 75dvh en desktop para el modal ExercisePicker
 
 ## Last Session Summary
 Phase 44 executed successfully. 1 plan, 2 tasks completed. Rediseñado modal de `ExercisePicker` a bottom sheet en mobile.

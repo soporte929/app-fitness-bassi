@@ -647,10 +647,11 @@ Plans:
   2. En desktop (>430px), el modal se presenta centrado en pantalla.
   3. Los filtros y contenido del modal no se cortan ni quedan ocultos.
   4. El botón/gesto de cierre funciona de forma fiable en ambos breakpoints.
-**Plans**: 2 plans
+**Plans**: 3 plans
 Plans:
 - [x] 44-01-PLAN.md — Breakpoint 430px, bottom sheet mobile, modal centrado desktop, cierre fiable (Escape, backdrop, X, selección)
 - [x] 44-02-PLAN.md — Gap closure: Ajustar altura máxima (`max-h-[75dvh]`) en móvil para evitar corte de header en resoluciones pequeñas
+- [x] 44-03-PLAN.md — Gap closure: Unificar max-h-[75dvh] en desktop para evitar que se corte el header
 
 ### Phase 45: Ocultar nutrición en trainer panel vista cliente
 **Goal**: Eliminar toda referencia a nutrición en /clients/[id] y subrutas del trainer panel.
