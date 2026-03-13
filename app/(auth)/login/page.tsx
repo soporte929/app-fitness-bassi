@@ -19,6 +19,14 @@ export default function LoginPage() {
 
     const supabase = createClient();
 
+    // MOCK: Bypass de login para superadmin en desarrollo local
+    if (process.env.NODE_ENV === "development" && email.trim().toLowerCase() === "superadmin@bassi.com" && password === "123456") {
+      document.cookie = "sb-mock-session=true; path=/; max-age=3600";
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      window.location.href = "/dashboard";
+      return;
+    }
+
     const { data, error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim().toLowerCase(),
       password,
@@ -41,6 +49,7 @@ export default function LoginPage() {
     const destination = profile?.role === "trainer" ? "/dashboard" : "/today";
     window.location.href = destination;
   };
+
 
   return (
     <main

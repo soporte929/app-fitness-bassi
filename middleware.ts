@@ -3,9 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   // Bypass en desarrollo — quitar antes de producción
-  if (process.env.NODE_ENV === "development") {
+  if ((process.env.NODE_ENV as string) === "development") {
     return NextResponse.next({ request });
   }
+
 
   let supabaseResponse = NextResponse.next({ request });
 
@@ -28,7 +29,35 @@ export async function middleware(request: NextRequest) {
     }
   );
 
+  // MOCK: Bypass de autenticación para desarrollo local
+  if (process.env.NODE_ENV === "development") {
+    const mockSession = request.cookies.get("sb-mock-session");
+    if (mockSession?.value === "true") {
+      const originalGetUser = supabase.auth.getUser.bind(supabase.auth);
+      supabase.auth.getUser = async (token?: string) => {
+        const result = await originalGetUser(token);
+        if (!result.data.user) {
+          return {
+            data: {
+              user: {
+                id: "cba64b1a-f929-465c-aa78-d6e099a00dc6", // Superadmin ID
+                email: "superadmin@bassi.com",
+                aud: "authenticated",
+                role: "authenticated",
+                app_metadata: {},
+                user_metadata: { full_name: "Super Admin", role: "trainer" },
+              } as any
+            },
+            error: null
+          };
+        }
+        return result;
+      };
+    }
+  }
+
   const { data: { user } } = await supabase.auth.getUser();
+
 
   const { pathname } = request.nextUrl;
 
