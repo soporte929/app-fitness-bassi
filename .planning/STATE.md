@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-13T13:20:41.873Z"
+last_updated: "2026-03-13T13:52:50.324Z"
 progress:
   total_phases: 43
-  completed_phases: 20
-  total_plans: 43
-  completed_plans: 43
+  completed_phases: 21
+  total_plans: 44
+  completed_plans: 44
 ---
 
 # State
@@ -114,6 +114,7 @@ Phase 19: [x] Trainer Settings & Modals
 | 4 | Corregir ExercisePicker: bottom-sheet en mobile, modal centrado en tablet/desktop | 2026-03-13 | 0f3a626 | [4-fix-exercise-picker-modal-centrado-en-ta](./quick/4-fix-exercise-picker-modal-centrado-en-ta/) |
 | 5 | Rewrite ExercisePicker as simple centered modal for all viewports | 2026-03-13 | 6fa5b73 | [5-rewrite-exercisepicker-as-simple-centere](./quick/5-rewrite-exercisepicker-as-simple-centere/) |
 | Phase 045-ocultar-nutricion-en-trainer-panel-vista-cliente P01 | 10 | 2 tasks | 1 files |
+| Phase 46-logica-creacion-cliente-con-auth P01 | 8 | 2 tasks | 2 files |
 
 ## Decisions
 
@@ -172,3 +173,5 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 31-ux-forms]: Type selector "Template global" renamed to "Plantilla rutina"; "Plan para cliente" button removed; form step order rearranged to Info básica -> Ejercicios -> Días to prevent assigning routines directly.
 - [Phase 045-01]: Ficheros auxiliares de nutrición conservados en disco (assign-nutrition-plan-modal, edit-nutrition-plan-modal, nutrition-actions) — patrón ocultar-no-borrar
 - [Phase 045-01]: calculateNutrition() y StatCard FFM conservados — calculan Masa libre grasa, no son UI de planes nutricionales
+- [Phase 46-01]: inviteUserByEmail en lugar de createUser+password-aleatorio — cliente recibe email de Supabase con enlace para establecer contraseña
+- [Phase 46-01]: origin dinámico en callback/route.ts — funciona en local y producción sin hardcodear URLs
