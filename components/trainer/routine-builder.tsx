@@ -696,8 +696,7 @@ export function RoutineBuilder({ initial, planId, structureLocked = false }: Pro
         {/* Step content */}
         <div className="px-6 py-5 space-y-4">
           {/* ── STEP 1 ──────────────────────────────────────────── */}
-          {currentStep === 1 && (
-            <>
+          <div className={currentStep === 1 ? "space-y-4 block" : "hidden"}>
               <div>
                 <label className="text-xs font-medium text-[var(--text-secondary)] block mb-1">
                   Nombre del plan *
@@ -746,12 +745,10 @@ export function RoutineBuilder({ initial, planId, structureLocked = false }: Pro
               </div>
 
 
-            </>
-          )}
+          </div>
 
           {/* ── STEP 2 ──────────────────────────────────────────── */}
-          {currentStep === 2 && !structureLocked && (
-            <div className="space-y-4">
+          <div className={currentStep === 2 && !structureLocked ? "space-y-4 block" : "hidden"}>
               {/* Scrollable day tabs */}
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                 {state.days.map((day, index) => (
@@ -817,12 +814,10 @@ export function RoutineBuilder({ initial, planId, structureLocked = false }: Pro
                   )}
                 </div>
               )}
-            </div>
-          )}
+          </div>
 
           {/* ── STEP 3 ──────────────────────────────────────────── */}
-          {currentStep === 3 && !structureLocked && (
-            <div className="space-y-4">
+          <div className={currentStep === 3 && !structureLocked ? "space-y-4 block" : "hidden"}>
               <div className="space-y-2">
                 {state.days.map((day, index) => (
                   <div
@@ -901,7 +896,6 @@ export function RoutineBuilder({ initial, planId, structureLocked = false }: Pro
                 </button>
               </div>
             </div>
-          )}
         </div>
 
         {/* Footer — navigation only */}

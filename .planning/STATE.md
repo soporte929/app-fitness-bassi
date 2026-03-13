@@ -23,12 +23,12 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 ## Current Position
 - **Milestone**: v5.4 Trainer UX & Routine Logic (ampliado)
 - **Phase**: 39
-- **Task**: Up next
-- **Status**: Not started
-- **Last activity**: 2026-03-13 - Completed Phase 38 Lógica Crítica Rutinas
+- **Task**: Planning complete
+- **Status**: Ready for execution
+- **Last activity**: 2026-03-13 - Planned Phase 39 (Routine Builder form state loss)
 
 ## Next Steps
-1. /plan 39 — Form nueva rutina bugs
+1. /execute 39
 
 ## Progress Bar
 
