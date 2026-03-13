@@ -13,6 +13,7 @@
 - 📋 **v5.2 Trainer UX & Logic Fixes** — Phases 30-32 (planned 2026-03-11)
 - 📋 **v5.3 Nutrition & Data Fixes** — Phases 33-37 (planned 2026-03-11)
 - 📋 **v5.4 Trainer UX & Routine Logic (ampliado)** — Phases 38-43 (planned 2026-03-11)
+- 📋 **v5.5 Bassi v1 Polish** — Phases 44-49 (planned 2026-03-13)
 
 ## Phases
 
@@ -135,6 +136,18 @@
 - [ ] **Phase 41: Gestión de planes** — 🟡 FEAT: Quitar planes de cliente, elegir rutina de un plan activo en app.
 - [ ] **Phase 42: Visual** — 🟢 VISUAL: Márgenes alertas activas, tooltip recharts de modo oscuro.
 - [ ] **Phase 43: Stats y notificaciones en cliente** — 🟢 FEAT: % muscular en plan actual, resumen de rutinas, alertas.
+
+</details>
+
+<details open>
+<summary>📋 v5.5 Bassi v1 Polish (Phases 44-49) — NOT STARTED</summary>
+
+- [ ] **Phase 44: Modal "Añadir ejercicio" rediseño** — 🔴 CRÍTICO: Bottom sheet en móvil (max-w-[430px]), modal centrado en desktop. Sin overflow ni cortes. Cierre fiable.
+- [ ] **Phase 45: Ocultar nutrición en trainer panel vista cliente** — 🔴 CRÍTICO: Eliminar toda referencia a nutrición en /clients/[id] y subrutas del trainer panel.
+- [ ] **Phase 46: Lógica creación de cliente con Auth** — 🟡 IMPORTANTE: Trainer crea cliente → Supabase Auth crea el usuario → cliente recibe email automático para setear su password.
+- [ ] **Phase 47: Ajustes cliente — desactivar opciones no funcionales** — 🟡 IMPORTANTE: En /profile del cliente, ocultar o desactivar todo lo que no funciona aún en v1.
+- [ ] **Phase 48: Logo sidebar trainer — tipografía bold** — 🟢 VISUAL: Mejorar visualmente el logo/título del sidebar trainer con tipografía más bold/profesional.
+- [ ] **Phase 49: Ajustes trainer — contenido mínimo v1** — 🟢 VISUAL: Definir e implementar qué mostrar en /settings del trainer para v1.
 
 </details>
 
@@ -623,6 +636,71 @@ Plans:
   3. App cliente recibe y pinta notificaciones con listados de links a los eventos de asignaciones de plantilla con la debida verbosidad.
 **Plans**: TBD
 
+### Phase 44: Modal "Añadir ejercicio" rediseño
+**Goal**: Bottom sheet en móvil (max-w-[430px]), modal centrado en desktop. Sin overflow ni cortes. Cierre fiable.
+**Depends on**: None
+**Priority**: 🔴 CRÍTICO
+**Milestone**: v5.5
+**Success Criteria** (what must be TRUE):
+  1. En móvil (≤430px), el modal se presenta como bottom sheet sin overflow vertical ni horizontal.
+  2. En desktop (>430px), el modal se presenta centrado en pantalla.
+  3. Los filtros y contenido del modal no se cortan ni quedan ocultos.
+  4. El botón/gesto de cierre funciona de forma fiable en ambos breakpoints.
+**Plans**: 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Breakpoint 430px, bottom sheet mobile, modal centrado desktop, cierre fiable (Escape, backdrop, X, selección)
+
+### Phase 45: Ocultar nutrición en trainer panel vista cliente
+**Goal**: Eliminar toda referencia a nutrición en /clients/[id] y subrutas del trainer panel.
+**Depends on**: None
+**Priority**: 🔴 CRÍTICO
+**Milestone**: v5.5
+**Success Criteria** (what must be TRUE):
+  1. En /clients/[id] no aparece ningún enlace, botón ni sección relacionada con nutrición.
+  2. Las subrutas de nutrición dentro del trainer panel (vista cliente) no son accesibles ni visibles.
+**Plans**: TBD
+
+### Phase 46: Lógica creación de cliente con Auth
+**Goal**: Trainer crea cliente → Supabase Auth crea el usuario → cliente recibe email automático para setear su password.
+**Depends on**: None
+**Priority**: 🟡 IMPORTANTE
+**Milestone**: v5.5
+**Success Criteria** (what must be TRUE):
+  1. Al crear un cliente desde el trainer panel, se crea un usuario en Supabase Auth.
+  2. El cliente recibe automáticamente un email para establecer su contraseña.
+  3. Una vez el cliente establece su password, puede hacer login en la app cliente.
+**Plans**: TBD
+
+### Phase 47: Ajustes cliente — desactivar opciones no funcionales
+**Goal**: En /profile del cliente, ocultar o desactivar todo lo que no funciona aún en v1.
+**Depends on**: None
+**Priority**: 🟡 IMPORTANTE
+**Milestone**: v5.5
+**Success Criteria** (what must be TRUE):
+  1. Cualquier opción/botón en /profile que no tenga funcionalidad implementada en v1 está oculto o deshabilitado con indicador visual.
+  2. No se eliminan las opciones del código, solo se ocultan/deshabilitan para poder reactivarlas en versiones futuras.
+**Plans**: TBD
+
+### Phase 48: Logo sidebar trainer — tipografía bold
+**Goal**: Mejorar visualmente el logo/título del sidebar trainer con tipografía más bold/profesional.
+**Depends on**: None
+**Priority**: 🟢 VISUAL
+**Milestone**: v5.5
+**Success Criteria** (what must be TRUE):
+  1. El logo/título en el sidebar del trainer usa una tipografía más bold y profesional que la actual.
+  2. El cambio es consistente en desktop y móvil.
+**Plans**: TBD
+
+### Phase 49: Ajustes trainer — contenido mínimo v1
+**Goal**: Definir e implementar qué mostrar en /settings del trainer para v1.
+**Depends on**: None
+**Priority**: 🟢 VISUAL
+**Milestone**: v5.5
+**Success Criteria** (what must be TRUE):
+  1. La página /settings del trainer muestra un contenido mínimo funcional para v1.
+  2. Las secciones no implementadas están claramente marcadas como "próximamente" o equivalente.
+**Plans**: TBD
+
 ## Progress
 
 **v4.0 Execution Order:** 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15
@@ -673,3 +751,9 @@ Plans:
 | 41. Gestión planes asignados | v5.4 | 0/? | Not started | - |
 | 42. Visual Fixes | v5.4 | 0/? | Not started | - |
 | 43. Stats & Notif. Cliente | v5.4 | 0/? | Not started | - |
+| 44. Modal "Añadir ejercicio" rediseño | v5.5 | 0/1 | Planned | - |
+| 45. Ocultar nutrición trainer | v5.5 | 0/? | Not started | - |
+| 46. Lógica creación cliente Auth | v5.5 | 0/? | Not started | - |
+| 47. Ajustes cliente v1 | v5.5 | 0/? | Not started | - |
+| 48. Logo sidebar tipografía | v5.5 | 0/? | Not started | - |
+| 49. Ajustes trainer v1 | v5.5 | 0/? | Not started | - |

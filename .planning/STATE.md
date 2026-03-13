@@ -21,14 +21,14 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** 🚨 v5.0 Emergency Hotfix — Production bugs
 
 ## Current Position
-- **Milestone**: v5.4 Trainer UX & Routine Logic (ampliado)
-- **Phase**: 39 (completed)
-- **Task**: Execution complete
-- **Status**: Verified
-- **Last activity**: 2026-03-13 - Executed Phase 39: Fixed modal layout, close behavior, and Select label persistence.
+- **Milestone**: v5.5 Bassi v1 Polish
+- **Phase**: 44 (planned)
+- **Task**: Planning complete
+- **Status**: Ready for execution
+- **Last activity**: 2026-03-13 - Planned Phase 44: Modal ExercisePicker rediseño (bottom sheet mobile / modal desktop)
 
 ## Next Steps
-1. Proceed to Phase 40 or /progress
+1. /execute 44
 
 ## Progress Bar
 

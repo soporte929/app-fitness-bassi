@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -100,6 +100,15 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<string | null>(null)
 
+  useEffect(() => {
+    if (!open) return
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [open, onClose])
+
   const muscles = Object.keys(LIBRARY)
 
   const filtered = useMemo(() => {
@@ -125,7 +134,7 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
       {/* Backdrop & Modal Container */}
       <div
         className={cn(
-          'fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4',
+          'fixed inset-0 z-50 flex items-end min-[431px]:items-center justify-center p-0 min-[431px]:p-4',
           'transition-colors duration-200',
           open ? 'pointer-events-auto bg-black/40' : 'pointer-events-none bg-transparent'
         )}
@@ -133,17 +142,19 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
       >
         <div
           className={cn(
-            'w-full md:max-w-md',
+            'w-full min-[431px]:max-w-md',
             'bg-[var(--bg-surface)] border border-[var(--border)]',
-            'rounded-t-xl md:rounded-xl shadow-2xl',
-            'max-h-[82vh] flex flex-col',
+            'rounded-t-xl min-[431px]:rounded-xl shadow-2xl',
+            'max-h-[85vh] flex flex-col min-h-0 pb-[env(safe-area-inset-bottom,0px)]',
             'transition-all duration-300 ease-out',
-            open ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            open 
+              ? 'translate-y-0 min-[431px]:scale-100 opacity-100' 
+              : 'translate-y-full min-[431px]:translate-y-0 opacity-0 min-[431px]:scale-95'
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Handle (mobile only) */}
-          <div className="flex justify-center pt-3 pb-1 md:hidden">
+          <div className="flex justify-center flex-shrink-0 pt-3 pb-1 min-[431px]:hidden">
             <div className="w-10 h-1 rounded-full bg-[var(--border-hover)]" />
           </div>
 
