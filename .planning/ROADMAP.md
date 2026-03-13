@@ -637,6 +637,7 @@ Plans:
 **Plans**: TBD
 
 ### Phase 44: Modal "Añadir ejercicio" rediseño
+**Status**: ✅ Complete
 **Goal**: Bottom sheet en móvil (max-w-[430px]), modal centrado en desktop. Sin overflow ni cortes. Cierre fiable.
 **Depends on**: None
 **Priority**: 🔴 CRÍTICO
@@ -648,7 +649,7 @@ Plans:
   4. El botón/gesto de cierre funciona de forma fiable en ambos breakpoints.
 **Plans**: 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Breakpoint 430px, bottom sheet mobile, modal centrado desktop, cierre fiable (Escape, backdrop, X, selección)
+- [x] 44-01-PLAN.md — Breakpoint 430px, bottom sheet mobile, modal centrado desktop, cierre fiable (Escape, backdrop, X, selección)
 
 ### Phase 45: Ocultar nutrición en trainer panel vista cliente
 **Goal**: Eliminar toda referencia a nutrición en /clients/[id] y subrutas del trainer panel.
@@ -751,7 +752,7 @@ Plans:
 | 41. Gestión planes asignados | v5.4 | 0/? | Not started | - |
 | 42. Visual Fixes | v5.4 | 0/? | Not started | - |
 | 43. Stats & Notif. Cliente | v5.4 | 0/? | Not started | - |
-| 44. Modal "Añadir ejercicio" rediseño | v5.5 | 0/1 | Planned | - |
+| 44. Modal "Añadir ejercicio" rediseño | v5.5 | 1/1 | Complete | 2026-03-13 |
 | 45. Ocultar nutrición trainer | v5.5 | 0/? | Not started | - |
 | 46. Lógica creación cliente Auth | v5.5 | 0/? | Not started | - |
 | 47. Ajustes cliente v1 | v5.5 | 0/? | Not started | - |
