@@ -687,7 +687,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Cualquier opción/botón en /profile que no tenga funcionalidad implementada en v1 está oculto o deshabilitado con indicador visual.
   2. No se eliminan las opciones del código, solo se ocultan/deshabilitan para poder reactivarlas en versiones futuras.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 47-01-PLAN.md — Deshabilitar visualmente los 5 items de settings no funcionales en /profile
 
 ### Phase 48: Logo sidebar trainer — tipografía bold
 **Goal**: Mejorar visualmente el logo/título del sidebar trainer con tipografía más bold/profesional.

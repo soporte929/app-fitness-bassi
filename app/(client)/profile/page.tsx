@@ -48,6 +48,7 @@ type MenuItem = {
   label: string
   icon: React.ElementType
   href?: string
+  disabled?: boolean  // v1: items sin funcionalidad implementada
 }
 
 type SettingsSection = {
@@ -59,16 +60,16 @@ const settingsSections: SettingsSection[] = [
   {
     title: "Cuenta",
     items: [
-      { label: "Datos personales", icon: User },
-      { label: "Notificaciones", icon: Bell },
-      { label: "Unidades de medida", icon: Ruler },
+      { label: "Datos personales", icon: User, disabled: true },
+      { label: "Notificaciones", icon: Bell, disabled: true },
+      { label: "Unidades de medida", icon: Ruler, disabled: true },
     ],
   },
   {
     title: "App",
     items: [
       { label: "Mis revisiones", icon: ClipboardList, href: "/revisions" },
-      { label: "Privacidad", icon: Shield, href: undefined },
+      { label: "Privacidad", icon: Shield, href: undefined, disabled: true },
     ],
   },
 ];
@@ -218,6 +219,23 @@ export default async function ProfilePage() {
               <CardContent className="p-0">
                 {section.items.map((item, i) => {
                   const Icon = item.icon;
+                  const rowClass = `flex items-center gap-3 px-5 min-h-[52px] ${i < section.items.length - 1 ? "border-b border-[var(--border)]" : ""}`;
+
+                  // Items sin funcionalidad en v1: visible pero no interactivo
+                  if (item.disabled) {
+                    return (
+                      <div key={item.label} className={`${rowClass} opacity-40 cursor-default`}>
+                        <div className="w-8 h-8 rounded-xl bg-[var(--bg-elevated)] flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-4 h-4 text-[var(--text-secondary)]" />
+                        </div>
+                        <span className="flex-1 text-sm font-medium text-[var(--text-primary)]">
+                          {item.label}
+                        </span>
+                        {/* Sin ChevronRight — ausencia del chevron indica que no es navegable */}
+                      </div>
+                    );
+                  }
+
                   const inner = (
                     <>
                       <div className="w-8 h-8 rounded-xl bg-[var(--bg-elevated)] flex items-center justify-center flex-shrink-0">
@@ -229,7 +247,6 @@ export default async function ProfilePage() {
                       <ChevronRight className="w-4 h-4 text-[var(--text-muted)]" />
                     </>
                   );
-                  const rowClass = `flex items-center gap-3 px-5 min-h-[52px] ${i < section.items.length - 1 ? "border-b border-[var(--border)]" : ""}`;
                   return item.href ? (
                     <Link
                       key={item.label}
