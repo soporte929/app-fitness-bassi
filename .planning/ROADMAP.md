@@ -130,7 +130,7 @@
 <summary>📋 v5.4 Trainer UX & Routine Logic (ampliado) (Phases 38-43) — NOT STARTED</summary>
 
 - [ ] **Phase 38: Lógica CRÍTICA Rutinas** — 🔴 CRÍTICO: Eliminar asignación directa; forzar flujo Rutina → Plan → Cliente.
-- [ ] **Phase 39: Formulario nueva rutina** — 🔴 CRÍTICO: Corregir pérdida de estado en wizard inter-pasos.
+- [x] **Phase 39: Formulario nueva rutina** — 🔴 CRÍTICO: Corregir pérdida de estado en wizard inter-pasos.
 - [ ] **Phase 40: UX formulario nueva rutina** — 🟡 UX: Limpieza UI, rename de plan, popup refactor.
 - [ ] **Phase 41: Gestión de planes** — 🟡 FEAT: Quitar planes de cliente, elegir rutina de un plan activo en app.
 - [ ] **Phase 42: Visual** — 🟢 VISUAL: Márgenes alertas activas, tooltip recharts de modo oscuro.
@@ -574,7 +574,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Identificar la causa raíz en inter-mounts, persistiendo el field array y context root entre vistas.
   2. El form state sobrevive enteramente al avanzar o retroceder de info básica / ejercicios / días. Ningún drop.
-**Plans**: TBD
+**Status**: ✅ Complete
+**Plans**: 1 plan
+Plans:
+- [x] 39-01-PLAN.md — Change conditional rendering to CSS display
 
 ### Phase 40: UX Formulario Nueva Rutina
 **Goal**: Limpiar overhead confuso y fallos de styling menores alrededor del template de rutinas.
@@ -661,7 +664,7 @@ Plans:
 | 36. Ingredientes app cliente | v5.3 | 0/? | Not started | - |
 | 37. Crear ejercicios | v5.3 | 0/? | Not started | - |
 | 38. Lógica Rutinas → Plan | v5.4 | 1/1 | Complete | 2026-03-13 |
-| 39. Form nueva rutina bugs | v5.4 | 0/? | Not started | - |
+| 39. Form nueva rutina bugs | v5.4 | 1/1 | Complete | 2026-03-13 |
 | 40. UX form nueva rutina | v5.4 | 0/? | Not started | - |
 | 41. Gestión planes asignados | v5.4 | 0/? | Not started | - |
 | 42. Visual Fixes | v5.4 | 0/? | Not started | - |

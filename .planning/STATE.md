@@ -22,13 +22,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v5.4 Trainer UX & Routine Logic (ampliado)
-- **Phase**: 39
-- **Task**: Planning complete
-- **Status**: Ready for execution
-- **Last activity**: 2026-03-13 - Planned Phase 39 (Routine Builder form state loss)
+- **Phase**: 39 (completed)
+- **Task**: Execution complete
+- **Status**: Verified
+- **Last activity**: 2026-03-13 - Executed Phase 39 (Changed conditional rendering to CSS display in RoutineBuilder)
 
 ## Next Steps
-1. /execute 39
+1. Proceed to Phase 40 or /progress
 
 ## Progress Bar
 
