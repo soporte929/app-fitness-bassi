@@ -112,7 +112,7 @@ Phase 19: [x] Trainer Settings & Modals
 | 2 | Performance optimization: React.memo ExerciseCard, 4 loading.tsx skeletons, WebP/AVIF image formats | 2026-03-12 | 9810669 | [2-performance-optimization-fix-re-renders-](./quick/2-performance-optimization-fix-re-renders-/) |
 | 3 | Ocultar item Nutrición del sidebar del trainer (enlace /nutrition-plans) | 2026-03-13 | 588afa7 | [3-ocultar-nutrition-plans-en-la-app-traine](./quick/3-ocultar-nutrition-plans-en-la-app-traine/) |
 | 4 | Corregir ExercisePicker: bottom-sheet en mobile, modal centrado en tablet/desktop | 2026-03-13 | 0f3a626 | [4-fix-exercise-picker-modal-centrado-en-ta](./quick/4-fix-exercise-picker-modal-centrado-en-ta/) |
-| 5 | Rewrite ExercisePicker as simple centered modal for all viewports | 2026-03-13 | TBD | [5-rewrite-exercisepicker-as-simple-centere](./quick/5-rewrite-exercisepicker-as-simple-centere/) |
+| 5 | Rewrite ExercisePicker as simple centered modal for all viewports | 2026-03-13 | 6fa5b73 | [5-rewrite-exercisepicker-as-simple-centere](./quick/5-rewrite-exercisepicker-as-simple-centere/) |
 
 ## Decisions
 

@@ -661,7 +661,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. En /clients/[id] no aparece ningún enlace, botón ni sección relacionada con nutrición.
   2. Las subrutas de nutrición dentro del trainer panel (vista cliente) no son accesibles ni visibles.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 045-01-PLAN.md — Eliminar imports, queries, variables y JSX de nutrición de page.tsx en /clients/[id]
 
 ### Phase 46: Lógica creación de cliente con Auth
 **Goal**: Trainer crea cliente → Supabase Auth crea el usuario → cliente recibe email automático para setear su password.

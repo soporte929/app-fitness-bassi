@@ -11,11 +11,8 @@ import { PageTransition } from '@/components/ui/page-transition'
 import { calculateNutrition } from '@/lib/calculations/nutrition'
 import { computeAlerts } from '@/lib/alerts'
 import { EditClientPanel } from './edit-panel'
-import { EditNutritionPlanModal } from './edit-nutrition-plan-modal'
 import { AssignPlanButton } from './assign-plan-button'
-import { AssignNutritionPlanModal } from './assign-nutrition-plan-modal'
-import type { NutritionTemplate } from './nutrition-actions'
-import { ArrowLeft, Flame, ChevronRight, ClipboardList } from 'lucide-react'
+import { ArrowLeft, ChevronRight, ClipboardList } from 'lucide-react'
 
 export default async function ClientDetailPage({
   params,
@@ -43,7 +40,7 @@ export default async function ClientDetailPage({
 
   if (!rawClient) notFound()
 
-  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, plansRes, activeNutritionPlanRaw, nutritionTemplatesRes] = await Promise.all([
+  const [weightLogsRes, measurementsRes, sessionsRes, activePlanRes, plansRes] = await Promise.all([
     supabase
       .from('weight_logs')
       .select('weight_kg, logged_at')
@@ -81,18 +78,6 @@ export default async function ClientDetailPage({
       .eq('trainer_id', user.id)
       .eq('active', true)
       .order('created_at', { ascending: false }),
-    supabase
-      .from('nutrition_plans' as any)
-      .select('*, meals:nutrition_plan_meals(*)')
-      .eq('client_id', id)
-      .eq('active', true)
-      .maybeSingle(),
-    supabase
-      .from('nutrition_plans' as any)
-      .select('id, name, kcal_target, protein_target_g, carbs_target_g, fat_target_g, meals_count, diet_type')
-      .eq('trainer_id', user.id)
-      .eq('is_template', true)
-      .order('created_at', { ascending: false }),
   ])
 
   const weightLogs = weightLogsRes.data ?? []
@@ -107,13 +92,6 @@ export default async function ClientDetailPage({
   } | null
   type PlanOption = { id: string; name: string; description: string | null; phase: string | null; level: string | null }
   const trainerPlans = (plansRes.data ?? []) as PlanOption[]
-  const nutritionTemplates = (nutritionTemplatesRes.data ?? []) as unknown as NutritionTemplate[]
-
-  const activeNutritionPlanData = activeNutritionPlanRaw.data
-  const activeNutritionPlan = activeNutritionPlanData ? {
-    ...(activeNutritionPlanData as any),
-    meals: ((activeNutritionPlanData as any).meals || []).sort((a: any, b: any) => a.order_index - b.order_index)
-  } : null
 
   const now = new Date()
 
@@ -253,11 +231,6 @@ export default async function ClientDetailPage({
               <ClipboardList className="w-4 h-4" />
               Revisiones
             </Link>
-            <AssignNutritionPlanModal
-              clientId={rawClient.id}
-              clientName={clientName}
-              templates={nutritionTemplates}
-            />
             <AssignPlanButton clientId={rawClient.id} plans={trainerPlans} />
           </div>
         </div>
@@ -433,85 +406,8 @@ export default async function ClientDetailPage({
             />
           </div>
 
-          {/* Columna lateral — nutrición */}
+          {/* Columna lateral */}
           <div className="xl:w-72 space-y-4 flex-shrink-0">
-            <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Flame className="w-4 h-4 text-[var(--warning)]" />
-                    <p className="text-sm font-semibold text-[var(--text-primary)]">Plan nutricional</p>
-                  </div>
-                  <EditNutritionPlanModal
-                    clientId={id}
-                    plan={activeNutritionPlan}
-                    trigger={
-                      <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-                        {activeNutritionPlan ? 'Editar plan' : 'Crear plan'}
-                      </Button>
-                    }
-                  />
-                </div>
-              </CardHeader>
-              <CardContent>
-                {activeNutritionPlan ? (
-                  <div className="space-y-4">
-                    <div className="text-center py-1">
-                      <p className="text-3xl font-bold text-[var(--text-primary)] tracking-tight font-[family-name:var(--font-geist-mono)]">
-                        {activeNutritionPlan.kcal_target}
-                      </p>
-                      <p className="text-[10px] text-[var(--text-secondary)] mt-1 uppercase tracking-wider">Kcal objetivo</p>
-                    </div>
-
-                    <div className="flex justify-between divide-x divide-[var(--border)] border border-[var(--border)] rounded-lg p-2 bg-[var(--bg-base)]">
-                      <div className="flex-1 text-center">
-                        <p className="text-xs font-semibold text-[var(--text-primary)]">{activeNutritionPlan.protein_target_g}g</p>
-                        <p className="text-[10px] text-[var(--text-secondary)]">Prot</p>
-                      </div>
-                      <div className="flex-1 text-center">
-                        <p className="text-xs font-semibold text-[var(--text-primary)]">{activeNutritionPlan.carbs_target_g}g</p>
-                        <p className="text-[10px] text-[var(--text-secondary)]">Carb</p>
-                      </div>
-                      <div className="flex-1 text-center">
-                        <p className="text-xs font-semibold text-[var(--text-primary)]">{activeNutritionPlan.fat_target_g}g</p>
-                        <p className="text-[10px] text-[var(--text-secondary)]">Grasa</p>
-                      </div>
-                    </div>
-
-                    {activeNutritionPlan.meals && activeNutritionPlan.meals.length > 0 && (
-                      <div className="space-y-2 mt-4">
-                        <p className="text-[10px] uppercase text-[var(--text-muted)] font-medium mb-1">Comidas del plan</p>
-                        {activeNutritionPlan.meals.map((meal: any) => (
-                          <div key={meal.id} className="flex items-center justify-between bg-[var(--bg-base)] border border-[var(--border)] p-2 rounded-md">
-                            <div>
-                              <p className="text-xs font-medium text-[var(--text-primary)]">{meal.name}</p>
-                              <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">
-                                {Math.round((meal.kcal_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)} kcal · {Math.round((meal.protein_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)}p {Math.round((meal.carbs_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)}c {Math.round((meal.fat_per_100g ?? 0) * (meal.default_grams ?? 100) / 100)}f
-                              </p>
-                            </div>
-                            {meal.meal_time && (
-                              <span className="text-[10px] text-[var(--text-muted)]">{meal.meal_time}</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center py-6">
-                    <p className="text-sm text-[var(--text-muted)] mb-3">Este cliente aún no tiene un plan nutricional configurado.</p>
-                    <EditNutritionPlanModal
-                      clientId={id}
-                      trigger={
-                        <Button size="sm" className="w-full bg-[var(--accent)] text-white hover:bg-[var(--accent)]/90">
-                          Crear plan nutricional
-                        </Button>
-                      }
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
             {/* Plan activo */}
             <Card>
               <CardContent className="py-4">
