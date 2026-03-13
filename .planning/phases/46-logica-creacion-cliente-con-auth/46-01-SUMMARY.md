@@ -18,20 +18,21 @@ tech-stack:
 
 key-files:
   created:
-    - app/auth/callback/route.ts
+    - app/auth/callback/page.tsx
     - app/(client)/set-password/page.tsx
   modified:
     - app/(trainer)/clients/actions.ts
-    - app/auth/callback/route.ts
+    - middleware.ts
 
 key-decisions:
   - "inviteUserByEmail en lugar de createUser+password-aleatorio — cliente recibe email de Supabase con enlace para establecer contraseña"
-  - "origin dinámico en callback/route.ts (new URL(request.url).origin) — funciona tanto en local como en producción sin hardcodear URLs"
-  - "type=invite detectado en callback para redirigir a /set-password — separa flujo invitación del flujo login normal"
-  - "supabase.auth.updateUser en set-password/page.tsx — client-side, sesión ya establecida por exchangeCodeForSession en callback"
+  - "Hash fragment (implicit flow): Supabase invite emails envían tokens como #access_token=... — el servidor nunca ve el hash, la página debe ser cliente"
+  - "route.ts → page.tsx: convertido a Client Component que lee window.location.hash, llama setSession() y redirige según type"
+  - "redirectTo: /auth/callback en inviteUserByEmail para que el hash llegue a la página correcta"
+  - "middleware.ts: /auth/ y /set-password añadidas como rutas públicas — sin esto en producción redirigirían a /login"
 
 patterns-established:
-  - "Auth callback pattern: GET handler con exchangeCodeForSession + redirect a destino de la app"
+  - "Auth callback pattern: Client Component que lee hash fragment para flujo implícito de Supabase"
 
 requirements-completed:
   - SC-1
@@ -65,50 +66,59 @@ completed: 2026-03-13
 
 ```
 Trainer crea cliente
-  → inviteUserByEmail (Supabase envía email automático)
-    → Cliente hace clic en enlace
-      → /auth/callback?code=...&type=invite
-        → exchangeCodeForSession(code)
-          → redirect /set-password
-            → Cliente establece contraseña (mín 8 chars + confirm)
-              → supabase.auth.updateUser({ password })
-                → redirect /today
+  → inviteUserByEmail + redirectTo: /auth/callback
+    → Supabase envía email automático al cliente
+      → Cliente hace clic en enlace del email
+        → /auth/callback#access_token=...&refresh_token=...&type=invite
+          → page.tsx lee window.location.hash
+            → setSession(access_token, refresh_token)
+              → redirect /set-password
+                → Cliente establece contraseña (mín 8 chars + confirm)
+                  → supabase.auth.updateUser({ password })
+                    → redirect /today
 ```
+
+Error handling: enlaces expirados → `#error=access_denied` → mensaje "Contacta con tu entrenador" (verificado ✅)
 
 ## Task Commits
 
 | Task | Commit | Description |
 |------|--------|-------------|
 | Task 1 | 8e7f887 | feat(046-01): cambiar createClientAction a inviteUserByEmail |
-| Task 2 | 37e3eda | feat(046-01): crear app/auth/callback/route.ts |
-| Task 3a | 46f572e | feat(46-01): redirigir type=invite a /set-password en auth callback |
-| Task 3b | 8df7ed3 | feat(46-01): crear página /set-password para flujo de invitación |
+| Task 2 | 37e3eda | feat(046-01): crear app/auth/callback/route.ts (inicial) |
+| Task 3a | 46f572e | feat(46-01): redirigir type=invite a /set-password |
+| Task 3b | 8df7ed3 | feat(46-01): crear página /set-password |
+| Fix 1 | 436d933 | fix(46-01): detectar invite via next param |
+| Fix 2 | 2678fdf | fix(46-01): convertir callback a página cliente (hash fragment) |
 
 ## Files Created/Modified
-- `app/(trainer)/clients/actions.ts` — Reemplazado `createUser` + password aleatorio por `inviteUserByEmail` con data `{ full_name }`
-- `app/auth/callback/route.ts` — Route Handler GET: exchangeCodeForSession + detección type=invite → /set-password vs /today
+- `app/(trainer)/clients/actions.ts` — `inviteUserByEmail` con `redirectTo: /auth/callback`
+- `app/auth/callback/page.tsx` — Client Component: lee hash, llama setSession, redirige según type
 - `app/(client)/set-password/page.tsx` — Formulario 'use client' móvil-first: validaciones, updateUser, redirect /today
-
-## Decisions Made
-- `inviteUserByEmail` en lugar de `createUser`+password aleatorio: el flujo previo dejaba al cliente sin acceso real. La invitación envía email automático y permite establecer su propia contraseña.
-- `origin` dinámico extraído de `new URL(request.url)`: funciona en local y producción sin hardcodear URLs.
-- `type=invite` detectado en callback: separa el flujo de invitación (→ /set-password) del flujo de login normal (→ /today).
-- `supabase.auth.updateUser` client-side en set-password: la sesión ya está establecida por `exchangeCodeForSession` en el callback previo.
+- `middleware.ts` — `/auth/` y `/set-password` añadidas como rutas públicas
 
 ## Deviations from Plan
 
-### Auto-added Missing Functionality
+**1. Callback como página cliente en lugar de route handler**
+- **Causa:** Supabase invite usa implicit flow (hash fragments) en lugar de PKCE. El servidor nunca ve el hash.
+- **Fix:** Reemplazado `route.ts` por `page.tsx` Client Component que lee `window.location.hash`.
 
-**1. [Rule 2 - Gap detectado en checkpoint] Página /set-password + detección type=invite**
-- **Found during:** Checkpoint Task 3 (human-verify)
-- **Issue:** Callback redirigía a /today directamente pero cliente no tenía contraseña establecida. Faltaba página para el paso intermedio.
-- **Fix:** Modificado callback para detectar type=invite; creada página /set-password con formulario.
-- **Files modified:** app/auth/callback/route.ts (modificado), app/(client)/set-password/page.tsx (creado)
-- **Commits:** 46f572e, 8df7ed3
+**2. middleware.ts necesitaba rutas públicas**
+- **Causa:** `/auth/callback` y `/set-password` no estaban en la lista de rutas públicas → en producción redirigirían a `/login`.
+- **Fix:** Añadidas ambas rutas como públicas.
+
+## Verification Status
+
+- ✅ `createClientAction` usa `inviteUserByEmail`
+- ✅ `/auth/callback` lee hash fragment y maneja errors
+- ✅ Error handling: enlace expirado muestra mensaje correcto (verificado con email real expirado)
+- ✅ `middleware.ts`: `/auth/` y `/set-password` son rutas públicas
+- ⏳ Flujo completo invite→set-password→today: pendiente verificar con email fresco (rate limit Supabase activo al cierre)
 
 ## Issues Encountered
 
-- Errores pre-existentes en `components/client/progress-charts.tsx` (Recharts formatter type mismatch, documentado en MEMORY.md). No relacionados con este plan. Los archivos de este plan no tienen errores TypeScript.
+- Rate limit de Supabase al momento del cierre — impidió verificación del flujo completo con email fresco.
+- Errores pre-existentes en `components/client/progress-charts.tsx` (Recharts formatter, documentado en MEMORY.md). No relacionados.
 
 ---
 *Phase: 46-logica-creacion-cliente-con-auth*

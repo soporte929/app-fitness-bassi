@@ -22,13 +22,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v5.5 Bassi v1 Polish
-- **Phase**: 45 (completed)
+- **Phase**: 46 (funcional, pendiente verificación final)
 - **Task**: All tasks complete
-- **Status**: Verified — verificación visual aprobada por usuario
-- **Last activity**: 2026-03-13 - Completed Phase 045-01: Ocultar nutrición en trainer panel vista cliente
+- **Status**: Funcional — error handling verificado; flujo completo pendiente por rate limit Supabase
+- **Last activity**: 2026-03-13 - Completed Phase 46-01: Lógica creación cliente con Auth (invite flow)
 
 ## Last Session Summary
-Phase 045 ejecutada exitosamente. 1 plan, 3 tasks (2 auto + 1 checkpoint:human-verify aprobado). Eliminada toda la UI y lógica de nutrición de /clients/[id] del panel del entrenador. Build limpio, verificación visual confirmada.
+Phase 46 ejecutada. 1 plan, múltiples tareas + fixes iterativos. Flujo de invitación Supabase completo implementado: inviteUserByEmail → email automático → /auth/callback (Client Component lee hash fragment) → setSession → /set-password → updateUser → /today. Error handling verificado con enlace expirado real. Pendiente: verificar flujo completo con email fresco cuando se resetee el rate limit.
 
 ## Next Steps
 (pendiente — definir siguiente fase)
@@ -173,6 +173,8 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 31-ux-forms]: Type selector "Template global" renamed to "Plantilla rutina"; "Plan para cliente" button removed; form step order rearranged to Info básica -> Ejercicios -> Días to prevent assigning routines directly.
 - [Phase 045-01]: Ficheros auxiliares de nutrición conservados en disco (assign-nutrition-plan-modal, edit-nutrition-plan-modal, nutrition-actions) — patrón ocultar-no-borrar
 - [Phase 045-01]: calculateNutrition() y StatCard FFM conservados — calculan Masa libre grasa, no son UI de planes nutricionales
-- [Phase 46-01]: inviteUserByEmail en lugar de createUser+password-aleatorio — cliente recibe email de Supabase con enlace para establecer contraseña
-- [Phase 46-01]: origin dinámico en callback/route.ts — funciona en local y producción sin hardcodear URLs
-- [Phase 46]: type=invite detectado en callback para redirigir a /set-password — separa flujo invitación del flujo login normal
+- [Phase 46-01]: inviteUserByEmail en lugar de createUser+password-aleatorio — cliente recibe email de Supabase automático
+- [Phase 46-01]: Hash fragment (implicit flow): Supabase invite envía tokens como #access_token=... — route.ts nunca lo ve, necesita Client Component
+- [Phase 46-01]: /auth/callback convertido a page.tsx (Client Component): lee window.location.hash, llama setSession(), redirige según type
+- [Phase 46-01]: redirectTo: /auth/callback en inviteUserByEmail para que el hash llegue a la página correcta
+- [Phase 46-01]: middleware.ts — /auth/ y /set-password añadidas como rutas públicas (sin esto en prod redirigen a /login)
