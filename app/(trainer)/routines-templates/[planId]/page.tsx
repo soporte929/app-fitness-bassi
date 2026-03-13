@@ -4,17 +4,10 @@ import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PageTransition } from '@/components/ui/page-transition'
 import { RoutineBuilder } from '@/components/trainer/routine-builder'
-import type { RoutineBuilderInitial, RoutineClientOption } from '../types'
+import type { RoutineBuilderInitial } from '../types'
 
 type PlanParams = {
   planId: string
-}
-
-type RawClientRow = {
-  id: string
-  profile: {
-    full_name: string
-  } | null
 }
 
 type RawPlanRow = {
@@ -22,14 +15,6 @@ type RawPlanRow = {
   name: string
   description: string | null
   days_per_week: number
-  is_template: boolean
-  client_id: string | null
-  client: {
-    id: string
-    profile: {
-      full_name: string
-    } | null
-  } | null
   workout_days: Array<{
     id: string
     name: string
@@ -61,15 +46,10 @@ export default async function RoutineTemplateDetailPage({
 
   if (!user) redirect('/login')
 
-  const [{ data: rawPlan }, { data: rawClients }] = await Promise.all([
-    supabase
+  const { data: rawPlan } = await supabase
       .from('workout_plans')
       .select(
-        `id, name, description, days_per_week, is_template, client_id,
-        client:clients!workout_plans_client_id_fkey (
-          id,
-          profile:profiles!clients_profile_id_fkey(full_name)
-        ),
+        `id, name, description, days_per_week, is_template,
         workout_days (
           id, name, order_index,
           exercises (
@@ -79,21 +59,11 @@ export default async function RoutineTemplateDetailPage({
       )
       .eq('id', planId)
       .eq('trainer_id', user.id)
-      .maybeSingle(),
-    supabase
-      .from('clients')
-      .select('id, profile:profiles!clients_profile_id_fkey(full_name)')
-      .eq('trainer_id', user.id)
-      .eq('active', true)
-      .order('joined_date', { ascending: false }),
-  ])
+      .maybeSingle()
 
   if (!rawPlan) notFound()
 
-  const clients: RoutineClientOption[] = ((rawClients ?? []) as unknown as RawClientRow[]).map((client) => ({
-    id: client.id,
-    name: client.profile?.full_name ?? 'Sin nombre',
-  }))
+
 
   const plan = rawPlan as unknown as RawPlanRow
 
@@ -108,8 +78,6 @@ export default async function RoutineTemplateDetailPage({
     name: plan.name,
     description: plan.description ?? '',
     days_per_week: plan.days_per_week,
-    mode: plan.is_template ? 'template' : 'client',
-    client_id: plan.client_id,
     days: sortedDays.map((day) => ({
       name: day.name,
       exercises: day.exercises.map((exercise) => ({
@@ -123,18 +91,9 @@ export default async function RoutineTemplateDetailPage({
     })),
   }
 
-  const dayIds = sortedDays.map((day) => day.id)
+  const structureLocked = false
 
-  const { data: sessionCheck } =
-    !plan.is_template && dayIds.length > 0
-      ? await supabase.from('workout_sessions').select('id').in('day_id', dayIds).limit(1)
-      : { data: [] as { id: string }[] }
-
-  const structureLocked = !plan.is_template && (sessionCheck?.length ?? 0) > 0
-
-  const subtitle = plan.is_template
-    ? 'Template global'
-    : `Asignado a ${plan.client?.profile?.full_name ?? 'cliente'}`
+  const subtitle = 'Plantilla de rutina'
 
   return (
     <PageTransition>
@@ -157,7 +116,6 @@ export default async function RoutineTemplateDetailPage({
         </div>
 
         <RoutineBuilder
-          clients={clients}
           initial={initial}
           planId={plan.id}
           structureLocked={structureLocked}

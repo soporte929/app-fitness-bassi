@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, Trash2, UserRound } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { deletePlanAction } from '@/app/(trainer)/routines-templates/actions'
@@ -13,9 +13,7 @@ export type RoutineTemplateCardItem = {
   name: string
   description: string | null
   days_per_week: number
-  is_template: boolean
-  client_id: string | null
-  client_name: string | null
+
   total_exercises: number
 }
 
@@ -56,19 +54,9 @@ export function TemplateCard({ plan }: Props) {
               )}
             </div>
             <span
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${
-                plan.is_template
-                  ? 'text-[var(--accent)] bg-[var(--accent)]/10 border border-[var(--accent)]/20'
-                  : 'text-[var(--success)] bg-[var(--success)]/10 border border-[var(--success)]/20'
-              }`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap text-[var(--accent)] bg-[var(--accent)]/10 border border-[var(--accent)]/20`}
             >
-              {plan.is_template ? (
-                'Template'
-              ) : (
-                <>
-                  <UserRound className="w-3 h-3" /> Asignado a {plan.client_name ?? 'cliente'}
-                </>
-              )}
+              Plantilla
             </span>
           </div>
 

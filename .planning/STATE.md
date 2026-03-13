@@ -6,9 +6,9 @@ status: unknown
 last_updated: "2026-03-11T22:52:51.000Z"
 progress:
   total_phases: 19
-  completed_phases: 13
-  total_plans: 32
-  completed_plans: 32
+  completed_phases: 14
+  total_plans: 33
+  completed_plans: 33
 ---
 
 # State
@@ -21,14 +21,14 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 **Current focus:** 🚨 v5.0 Emergency Hotfix — Production bugs
 
 ## Current Position
-- **Milestone**: v5.2 Trainer UX & Logic Fixes
-- **Phase**: 31 (completed)
-- **Task**: All tasks complete
-- **Status**: Verified
-- **Last activity**: 2026-03-13 - Completed Phase 31 UX & Forms
+- **Milestone**: v5.4 Trainer UX & Routine Logic (ampliado)
+- **Phase**: 39
+- **Task**: Up next
+- **Status**: Not started
+- **Last activity**: 2026-03-13 - Completed Phase 38 Lógica Crítica Rutinas
 
 ## Next Steps
-1. Proceed to Phase 32: Visual Fixes 🟢 IMPROVEMENT
+1. /plan 39 — Form nueva rutina bugs
 
 ## Progress Bar
 

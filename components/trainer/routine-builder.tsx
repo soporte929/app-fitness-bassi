@@ -24,8 +24,6 @@ import { ExercisePicker, type PickedExercise } from '@/components/trainer/exerci
 import {
   MUSCLE_GROUP_OPTIONS,
   type RoutineBuilderInitial,
-  type RoutineClientOption,
-  type RoutineMode,
   type RoutinePlanInput,
 } from '@/app/(trainer)/routines-templates/types'
 import { createPlanAction, updatePlanAction } from '@/app/(trainer)/routines-templates/actions'
@@ -47,7 +45,6 @@ type DayDraft = {
 }
 
 type Props = {
-  clients: RoutineClientOption[]
   initial?: RoutineBuilderInitial
   planId?: string
   structureLocked?: boolean
@@ -116,8 +113,6 @@ function buildInitialState(initial?: RoutineBuilderInitial) {
   return {
     name: initial?.name ?? '',
     description: initial?.description ?? '',
-    mode: initial?.mode ?? ('template' as RoutineMode),
-    clientId: initial?.client_id ?? null,
     daysPerWeek,
     days,
     activeDayId: days[0]?.local_id ?? null,
@@ -438,7 +433,7 @@ function ExerciseRow({
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
-export function RoutineBuilder({ clients, initial, planId, structureLocked = false }: Props) {
+export function RoutineBuilder({ initial, planId, structureLocked = false }: Props) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
@@ -468,19 +463,7 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
     setState((prev) => ({ ...prev, description }))
   }
 
-  function setMode(mode: RoutineMode) {
-    if (isEditing) return
-    setState((prev) => ({
-      ...prev,
-      mode,
-      clientId: mode === 'client' ? prev.clientId ?? clients[0]?.id ?? null : null,
-    }))
-  }
 
-  function setClientId(clientId: string) {
-    if (isEditing) return
-    setState((prev) => ({ ...prev, clientId }))
-  }
 
   function setDaysPerWeek(nextDaysPerWeek: number) {
     setState((prev) => {
@@ -598,8 +581,6 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
       name: state.name.trim(),
       description: state.description.trim() || null,
       days_per_week: state.daysPerWeek,
-      mode: state.mode,
-      client_id: state.mode === 'client' ? state.clientId : null,
       replace_structure: !structureLocked,
       days: state.days.map((d, di) => ({
         name: d.name.trim(),
@@ -620,7 +601,6 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
   function validateBeforeSubmit(payload: RoutinePlanInput): string | null {
     if (payload.name.length === 0) return 'El nombre del plan es obligatorio'
     if (payload.days_per_week < 1 || payload.days_per_week > 7) return 'Días por semana inválido'
-    if (payload.mode === 'client' && !payload.client_id) return 'Debes seleccionar un cliente'
     if (structureLocked) return null
     if (payload.days.length !== payload.days_per_week)
       return 'El número de días debe coincidir con días por semana'
@@ -743,80 +723,29 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-medium text-[var(--text-secondary)] block mb-1">
-                    Días por semana
-                  </label>
-                  <Select
-                    value={String(state.daysPerWeek)}
-                    onValueChange={(v) => setDaysPerWeek(Number(v))}
-                    disabled={structureLocked}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 7 }, (_, i) => i + 1).map((v) => (
-                        <SelectItem key={v} value={String(v)}>
-                          {`${v} día${v > 1 ? 's' : ''}`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium text-[var(--text-secondary)] block mb-1">
-                    Tipo
-                  </label>
-                  <div className="grid grid-cols-1 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setMode('template')}
-                      disabled={isEditing}
-                      className={cn(
-                        'px-3 py-2 text-sm rounded-md border',
-                        state.mode === 'template'
-                          ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]'
-                          : 'border-[var(--border)] text-[var(--text-secondary)] bg-[var(--bg-base)]',
-                        isEditing && 'opacity-60 cursor-not-allowed'
-                      )}
-                    >
-                      Plantilla rutina
-                    </button>
-                  </div>
-                  {isEditing && (
-                    <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
-                      El tipo y cliente asignado no se pueden cambiar en edición.
-                    </p>
-                  )}
-                </div>
+              <div>
+                <label className="text-xs font-medium text-[var(--text-secondary)] block mb-1">
+                  Días por semana
+                </label>
+                <Select
+                  value={String(state.daysPerWeek)}
+                  onValueChange={(v) => setDaysPerWeek(Number(v))}
+                  disabled={structureLocked}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 7 }, (_, i) => i + 1).map((v) => (
+                      <SelectItem key={v} value={String(v)}>
+                        {`${v} día${v > 1 ? 's' : ''}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              {state.mode === 'client' && (
-                <div>
-                  <label className="text-xs font-medium text-[var(--text-secondary)] block mb-1">
-                    Cliente
-                  </label>
-                  <Select
-                    value={state.clientId ?? ''}
-                    onValueChange={setClientId}
-                    disabled={isEditing || clients.length === 0}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar cliente" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clients.map((client) => (
-                        <SelectItem key={client.id} value={client.id}>
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+
             </>
           )}
 

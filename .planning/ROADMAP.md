@@ -118,7 +118,7 @@
 <details open>
 <summary>📋 v5.3 Nutrition & Data Fixes (Phases 33-37) — NOT STARTED</summary>
 
-- [ ] **Phase 33: Supabase Schema Cache Fix** — 🔴 BUG CRÍTICO: La columna `diet_type` no existe en schema cache prod.
+- [x] **Phase 33: Supabase Schema Cache Fix** — 🔴 BUG CRÍTICO: La columna `diet_type` no existe en schema cache prod. (completed 2026-03-13)
 - [ ] **Phase 34: Rediseño formulario de comida** — 🟡 FEAT: Dividir form de comida en plantilla en Bloques Datos e Ingredientes.
 - [ ] **Phase 35: Datos demo reales** — 🟡 FEAT: Sustituir clientes mock por clientes demo representativos.
 - [ ] **Phase 36: Ingredientes en app cliente** — 🟡 FEAT: Registro/visualización de comidas por ingredientes detallados.
@@ -508,6 +508,7 @@ Plans:
 **Plans**: TBD
 
 ### Phase 33: Supabase Schema Cache Fix (/nutrition-plans roto)
+**Status**: ✅ Complete
 **Goal**: Resolver el error `Could not find the 'diet_type' column of 'nutrition_plans' en schema cache` en el entorno de producción.
 **Depends on**: None
 **Priority**: 🔴 CRITICAL
@@ -515,7 +516,9 @@ Plans:
   1. Verificar que la migración de Phase 10.1 se aplicó en el entorno de producción.
   2. Forzar reload de la caché de Supabase en producción.
   3. Carga correcta de `/nutrition-plans` y del modal "Crear plantilla" en producción.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [x] 33-01-PLAN.md — Verificar migración en prod, reload schema cache PostgREST, verificar /nutrition-plans
 
 ### Phase 34: Rediseño formulario de comida en plantilla nutricional
 **Goal**: Separar visualmente y organizar los campos en el "Crear plantilla" para comidas.
@@ -560,7 +563,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. No existe ningún botón o componente en todo el trainer panel que ofrezca "Asignar Rutina directa" al cliente.
   2. Auditar todo componente que hace dispatch al backend relacionado con asignaciones. El flujo rígido debe ser Rutina → se asigna a Plan → se asigna Plan a Cliente.
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 38-01-PLAN.md — Purgar mode=client de routines-templates, RoutineBuilder, types y actions
 
 ### Phase 39: Formulario nueva rutina — pérdida de datos
 **Goal**: Evitar flush de inputs nativos en el formulario wizard/multi-steps de creación de rutina.
@@ -650,12 +655,12 @@ Plans:
 | 30. Business Logic | v5.2 | 1/1 | Complete | 2026-03-11 |
 | 31. UX & Forms | v5.2 | 1/1 | Complete | 2026-03-13 |
 | 32. Visual Fixes | v5.2 | 0/? | Not started | - |
-| 33. Fix /nutrition-plans | v5.3 | 0/? | Not started | - |
+| 33. Fix /nutrition-plans | v5.3 | 1/1 | Complete | 2026-03-13 |
 | 34. Rediseño form comida | v5.3 | 0/? | Not started | - |
 | 35. Datos demo reales | v5.3 | 0/? | Not started | - |
 | 36. Ingredientes app cliente | v5.3 | 0/? | Not started | - |
 | 37. Crear ejercicios | v5.3 | 0/? | Not started | - |
-| 38. Lógica Rutinas → Plan | v5.4 | 0/? | Not started | - |
+| 38. Lógica Rutinas → Plan | v5.4 | 1/1 | Complete | 2026-03-13 |
 | 39. Form nueva rutina bugs | v5.4 | 0/? | Not started | - |
 | 40. UX form nueva rutina | v5.4 | 0/? | Not started | - |
 | 41. Gestión planes asignados | v5.4 | 0/? | Not started | - |

@@ -1,6 +1,5 @@
 import type { Json } from '@/lib/supabase/types'
 
-export type RoutineMode = 'template' | 'client'
 
 export interface RoutineExerciseInput {
   name: string
@@ -21,23 +20,17 @@ export interface RoutinePlanInput {
   name: string
   description: string | null
   days_per_week: number
-  mode: RoutineMode
-  client_id: string | null
+
   days: RoutineDayInput[]
   replace_structure?: boolean
 }
 
-export interface RoutineClientOption {
-  id: string
-  name: string
-}
 
 export interface RoutineBuilderInitial {
   name: string
   description: string
   days_per_week: number
-  mode: RoutineMode
-  client_id: string | null
+
   days: Array<{
     name: string
     exercises: Array<{

@@ -4,28 +4,14 @@ import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PageTransition } from '@/components/ui/page-transition'
 import { RoutineBuilder } from '@/components/trainer/routine-builder'
-import type { RoutineBuilderInitial, RoutineClientOption, RoutineMode } from '../types'
+import type { RoutineBuilderInitial } from '../types'
 
-type SearchParams = {
-  mode?: string
-  clientId?: string
-}
-
-type RawClientRow = {
-  id: string
-  profile: {
-    full_name: string
-  } | null
-}
-
-function buildDefaultInitial(mode: RoutineMode, clientId: string | null): RoutineBuilderInitial {
+function buildDefaultInitial(): RoutineBuilderInitial {
   const daysPerWeek = 3
   return {
     name: '',
     description: '',
     days_per_week: daysPerWeek,
-    mode,
-    client_id: mode === 'client' ? clientId : null,
     days: Array.from({ length: daysPerWeek }, (_, index) => ({
       name: `Día ${index + 1}`,
       exercises: [],
@@ -33,13 +19,7 @@ function buildDefaultInitial(mode: RoutineMode, clientId: string | null): Routin
   }
 }
 
-export default async function NewRoutineTemplatePage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>
-}) {
-  const params = await searchParams
-
+export default async function NewRoutineTemplatePage() {
   const supabase = await createClient()
   const {
     data: { user },
@@ -47,28 +27,7 @@ export default async function NewRoutineTemplatePage({
 
   if (!user) redirect('/login')
 
-  const { data: rawClients } = await supabase
-    .from('clients')
-    .select('id, profile:profiles!clients_profile_id_fkey(full_name)')
-    .eq('trainer_id', user.id)
-    .eq('active', true)
-    .order('joined_date', { ascending: false })
-
-  const clients: RoutineClientOption[] = ((rawClients ?? []) as unknown as RawClientRow[]).map((client) => ({
-    id: client.id,
-    name: client.profile?.full_name ?? 'Sin nombre',
-  }))
-
-  const requestedMode = params.mode === 'client' ? 'client' : 'template'
-  const requestedClientId = params.clientId ?? null
-  const hasRequestedClient = requestedClientId
-    ? clients.some((client) => client.id === requestedClientId)
-    : false
-
-  const mode: RoutineMode = requestedMode
-  const initialClientId = mode === 'client' ? (hasRequestedClient ? requestedClientId : clients[0]?.id ?? null) : null
-
-  const initial = buildDefaultInitial(mode, initialClientId)
+  const initial = buildDefaultInitial()
 
   return (
     <PageTransition>
@@ -88,7 +47,7 @@ export default async function NewRoutineTemplatePage({
           </div>
         </div>
 
-        <RoutineBuilder clients={clients} initial={initial} />
+        <RoutineBuilder initial={initial} />
       </div>
     </PageTransition>
   )

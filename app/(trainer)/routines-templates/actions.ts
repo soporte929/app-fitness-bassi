@@ -16,7 +16,6 @@ function normalizeInput(input: RoutinePlanInput): RoutinePlanInput {
     ...input,
     name: input.name.trim(),
     description: normalizeOptionalText(input.description),
-    client_id: input.mode === 'client' ? input.client_id : null,
     days: input.days.map((day, dayIndex) => ({
       ...day,
       name: day.name.trim(),
@@ -36,8 +35,6 @@ function normalizeInput(input: RoutinePlanInput): RoutinePlanInput {
 function validateInput(input: RoutinePlanInput, allowMetadataOnly: boolean): string | null {
   if (input.name.length === 0) return 'El nombre del plan es obligatorio'
   if (input.days_per_week < 1 || input.days_per_week > 7) return 'Días por semana debe estar entre 1 y 7'
-
-  if (input.mode === 'client' && !input.client_id) return 'Debes seleccionar un cliente'
 
   if (allowMetadataOnly) return null
 
@@ -96,15 +93,10 @@ async function validateClientOwnership(
   return Boolean(client)
 }
 
-function revalidateRoutinePaths(clientId: string | null, planId: string): void {
+function revalidateRoutinePaths(planId: string): void {
   revalidatePath('/routines-templates')
   revalidatePath(`/routines-templates/${planId}`)
   revalidatePath('/clients')
-
-  if (clientId) {
-    revalidatePath(`/clients/${clientId}`)
-    revalidatePath('/routines')
-  }
 }
 
 export async function createPlanAction(
@@ -117,20 +109,15 @@ export async function createPlanAction(
   const validationError = validateInput(normalized, false)
   if (validationError) return { success: false, error: validationError }
 
-  if (normalized.mode === 'client' && normalized.client_id) {
-    const isOwnedClient = await validateClientOwnership(supabase, trainerId, normalized.client_id)
-    if (!isOwnedClient) return { success: false, error: 'Cliente no válido para este entrenador' }
-  }
-
   const { data: plan, error: planError } = await supabase
     .from('workout_plans')
     .insert({
       name: normalized.name,
       description: normalized.description,
       days_per_week: normalized.days_per_week,
-      is_template: normalized.mode === 'template',
+      is_template: true,
       trainer_id: trainerId,
-      client_id: normalized.mode === 'client' ? normalized.client_id : null,
+      client_id: null,
       active: true,
     })
     .select('id')
@@ -171,7 +158,7 @@ export async function createPlanAction(
     }
   }
 
-  revalidateRoutinePaths(normalized.client_id, plan.id)
+  revalidateRoutinePaths(plan.id)
   redirect('/routines-templates')
 }
 
@@ -196,23 +183,8 @@ export async function updatePlanAction(
   const validationError = validateInput(normalized, !replaceStructure)
   if (validationError) return { success: false, error: validationError }
 
-  const expectedMode = plan.is_template ? 'template' : 'client'
-  if (normalized.mode !== expectedMode) {
-    return { success: false, error: 'No se puede cambiar el tipo del plan' }
-  }
-
-  if (expectedMode === 'template' && normalized.client_id !== null) {
-    return { success: false, error: 'Un template no puede tener cliente asignado' }
-  }
-
-  if (expectedMode === 'client') {
-    if (!plan.client_id) return { success: false, error: 'Plan de cliente inválido' }
-    if (normalized.client_id !== plan.client_id) {
-      return { success: false, error: 'No se puede cambiar el cliente asignado en edición' }
-    }
-
-    const isOwnedClient = await validateClientOwnership(supabase, trainerId, plan.client_id)
-    if (!isOwnedClient) return { success: false, error: 'Cliente no válido para este entrenador' }
+  if (!plan.is_template) {
+    return { success: false, error: 'No se puede editar un plan asignado a un cliente desde aquí' }
   }
 
   const { error: updateError } = await supabase
@@ -267,7 +239,7 @@ export async function updatePlanAction(
     }
   }
 
-  revalidateRoutinePaths(plan.client_id, planId)
+  revalidateRoutinePaths(planId)
   redirect('/routines-templates')
 }
 
@@ -294,7 +266,7 @@ export async function deletePlanAction(
 
   if (error) return { success: false, error: error.message }
 
-  revalidateRoutinePaths(plan.client_id, planId)
+  revalidateRoutinePaths(planId)
   return { success: true }
 }
 
