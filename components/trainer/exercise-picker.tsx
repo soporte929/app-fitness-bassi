@@ -145,7 +145,7 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
             'w-full min-[431px]:max-w-md',
             'bg-[var(--bg-surface)] border border-[var(--border)]',
             'rounded-t-xl min-[431px]:rounded-xl shadow-2xl',
-            'max-h-[85vh] flex flex-col min-h-0 pb-[env(safe-area-inset-bottom,0px)]',
+            'max-h-[75dvh] min-[431px]:max-h-[85vh] flex flex-col min-h-0 pb-[env(safe-area-inset-bottom,0px)]',
             'transition-all duration-300 ease-out',
             open 
               ? 'translate-y-0 min-[431px]:scale-100 opacity-100' 
