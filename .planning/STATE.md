@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 - **Phase**: 44 (completed)
 - **Task**: All tasks complete
 - **Status**: Verified
-- **Last activity**: 2026-03-13 - Executed Phase 44 (Plan 3): Unificado max-h a 75dvh en desktop para el modal ExercisePicker
+- **Last activity**: 2026-03-13 - Completed quick task 5: Rewrite ExercisePicker as simple centered modal for all viewports
 
 ## Last Session Summary
 Phase 44 executed successfully. 1 plan, 2 tasks completed. Rediseñado modal de `ExercisePicker` a bottom sheet en mobile.
@@ -112,6 +112,7 @@ Phase 19: [x] Trainer Settings & Modals
 | 2 | Performance optimization: React.memo ExerciseCard, 4 loading.tsx skeletons, WebP/AVIF image formats | 2026-03-12 | 9810669 | [2-performance-optimization-fix-re-renders-](./quick/2-performance-optimization-fix-re-renders-/) |
 | 3 | Ocultar item Nutrición del sidebar del trainer (enlace /nutrition-plans) | 2026-03-13 | 588afa7 | [3-ocultar-nutrition-plans-en-la-app-traine](./quick/3-ocultar-nutrition-plans-en-la-app-traine/) |
 | 4 | Corregir ExercisePicker: bottom-sheet en mobile, modal centrado en tablet/desktop | 2026-03-13 | 0f3a626 | [4-fix-exercise-picker-modal-centrado-en-ta](./quick/4-fix-exercise-picker-modal-centrado-en-ta/) |
+| 5 | Rewrite ExercisePicker as simple centered modal for all viewports | 2026-03-13 | TBD | [5-rewrite-exercisepicker-as-simple-centere](./quick/5-rewrite-exercisepicker-as-simple-centere/) |
 
 ## Decisions
 

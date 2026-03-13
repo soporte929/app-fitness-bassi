@@ -129,127 +129,103 @@ export function ExercisePicker({ open, onClose, onSelect }: Props) {
     onClose()
   }
 
+  if (!open) return null
+
   return (
-    <>
-      {/* Backdrop & Modal Container */}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
+      onClick={onClose}
+    >
       <div
-        className={cn(
-          'fixed inset-0 z-50 flex',
-          'items-end justify-center',
-          'min-[431px]:items-center min-[431px]:justify-center',
-          'min-[431px]:p-4',
-          'transition-colors duration-200',
-          open ? 'pointer-events-auto bg-black/40' : 'pointer-events-none bg-transparent'
-        )}
-        onClick={onClose}
+        className="w-full max-w-md max-h-[80vh] rounded-xl flex flex-col min-h-0 bg-[var(--bg-surface)] border border-[var(--border)] shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
       >
-        <div
-          className={cn(
-            'w-full min-[431px]:max-w-md',
-            'max-h-[75dvh]',
-            'rounded-t-xl min-[431px]:rounded-xl',
-            'bg-[var(--bg-surface)] border border-[var(--border)]',
-            'shadow-2xl flex flex-col min-h-0',
-            'pb-[env(safe-area-inset-bottom,0px)] min-[431px]:pb-0',
-            'transition-all duration-300 ease-out',
-            open
-              ? 'translate-y-0 min-[431px]:scale-100 opacity-100'
-              : 'translate-y-full min-[431px]:translate-y-0 opacity-0 min-[431px]:scale-95'
-          )}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Handle (mobile only) */}
-          <div className="flex justify-center flex-shrink-0 pt-3 pb-1 min-[431px]:hidden">
-            <div className="w-10 h-1 rounded-full bg-[var(--border-hover)]" />
-          </div>
+        {/* Header */}
+        <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">Añadir ejercicio</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
-          {/* Header */}
-          <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
-            <h3 className="text-base font-semibold text-[var(--text-primary)]">Añadir ejercicio</h3>
+        {/* Search */}
+        <div className="flex-shrink-0 px-4 py-3 border-b border-[var(--border)]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar ejercicio..."
+              className="w-full pl-9 pr-3 py-2 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-md text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+              autoFocus
+            />
+          </div>
+        </div>
+
+        {/* Muscle filter chips */}
+        <div className="flex-shrink-0 px-4 py-2 flex gap-1.5 overflow-x-auto border-b border-[var(--border)] scrollbar-none">
+          <button
+            type="button"
+            onClick={() => setFilter(null)}
+            className={cn(
+              'px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 border transition-colors',
+              filter === null
+                ? 'bg-[var(--text-primary)] text-[var(--bg-base)] border-transparent'
+                : 'bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]'
+            )}
+          >
+            Todos
+          </button>
+          {muscles.map((group) => (
             <button
+              key={group}
               type="button"
-              onClick={onClose}
-              className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Search */}
-          <div className="flex-shrink-0 px-4 py-3 border-b border-[var(--border)]">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar ejercicio..."
-                className="w-full pl-9 pr-3 py-2 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-md text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
-                autoFocus={open}
-              />
-            </div>
-          </div>
-
-          {/* Muscle filter chips */}
-          <div className="flex-shrink-0 px-4 py-2 flex gap-1.5 overflow-x-auto border-b border-[var(--border)] scrollbar-none">
-            <button
-              type="button"
-              onClick={() => setFilter(null)}
+              onClick={() => setFilter(filter === group ? null : group)}
               className={cn(
                 'px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 border transition-colors',
-                filter === null
+                filter === group
                   ? 'bg-[var(--text-primary)] text-[var(--bg-base)] border-transparent'
                   : 'bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]'
               )}
             >
-              Todos
+              {group}
             </button>
-            {muscles.map((group) => (
-              <button
-                key={group}
-                type="button"
-                onClick={() => setFilter(filter === group ? null : group)}
-                className={cn(
-                  'px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 border transition-colors',
-                  filter === group
-                    ? 'bg-[var(--text-primary)] text-[var(--bg-base)] border-transparent'
-                    : 'bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-hover)]'
-                )}
-              >
-                {group}
-              </button>
-            ))}
-          </div>
+          ))}
+        </div>
 
-          {/* Exercise list */}
-          <div className="flex-1 overflow-y-auto">
-            {filtered.length === 0 ? (
-              <div className="px-4 py-10 text-center">
-                <p className="text-sm text-[var(--text-muted)]">
-                  Sin resultados{query ? ` para "${query}"` : ''}
+        {/* Exercise list */}
+        <div className="flex-1 overflow-y-auto">
+          {filtered.length === 0 ? (
+            <div className="px-4 py-10 text-center">
+              <p className="text-sm text-[var(--text-muted)]">
+                Sin resultados{query ? ` para "${query}"` : ''}
+              </p>
+            </div>
+          ) : (
+            filtered.map(({ group, names }) => (
+              <div key={group}>
+                <p className="px-4 py-1.5 text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest bg-[var(--bg-elevated)] sticky top-0">
+                  {group}
                 </p>
+                {names.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    onClick={() => handleSelect(name, group)}
+                    className="w-full px-4 py-2.5 text-left text-sm text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] border-b border-[var(--border)] last:border-0 transition-colors"
+                  >
+                    {name}
+                  </button>
+                ))}
               </div>
-            ) : (
-              filtered.map(({ group, names }) => (
-                <div key={group}>
-                  <p className="px-4 py-1.5 text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest bg-[var(--bg-elevated)] sticky top-0">
-                    {group}
-                  </p>
-                  {names.map((name) => (
-                    <button
-                      key={name}
-                      type="button"
-                      onClick={() => handleSelect(name, group)}
-                      className="w-full px-4 py-2.5 text-left text-sm text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] border-b border-[var(--border)] last:border-0 transition-colors"
-                    >
-                      {name}
-                    </button>
-                  ))}
-                </div>
-              ))
-            )}
-          </div>
+            ))
+          )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
