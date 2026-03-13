@@ -110,9 +110,11 @@ export async function createClientAction(data: {
 
   // 1. Crear usuario en auth.users primero (admin client bypass RLS)
   const admin = createAdminClient()
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
   const { data: authData, error: authError } = await admin.auth.admin.inviteUserByEmail(
     data.email,
     {
+      redirectTo: `${siteUrl}/auth/callback?next=/set-password`,
       data: {
         full_name: data.full_name,
       },
