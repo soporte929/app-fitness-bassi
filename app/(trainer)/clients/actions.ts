@@ -114,7 +114,7 @@ export async function createClientAction(data: {
   const { data: authData, error: authError } = await admin.auth.admin.inviteUserByEmail(
     data.email,
     {
-      redirectTo: `${siteUrl}/auth/callback?next=/set-password`,
+      redirectTo: `${siteUrl}/auth/callback`,
       data: {
         full_name: data.full_name,
       },

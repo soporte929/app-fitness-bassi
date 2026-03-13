@@ -33,6 +33,10 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Rutas públicas — no requieren sesión
+  if (pathname.startsWith("/auth/") || pathname.startsWith("/set-password")) {
+    return supabaseResponse;
+  }
+
   if (pathname.startsWith("/login")) {
     if (user) {
       // Ya autenticado — redirigir según rol
