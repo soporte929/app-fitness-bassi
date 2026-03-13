@@ -4,7 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useRef,
+  useEffect,
   useState,
   type ReactNode,
 } from 'react'
@@ -41,13 +41,18 @@ export function Select({
   children: ReactNode
 }) {
   const [open, setOpen] = useState(false)
-  const labels = useRef(new Map<string, string>())
+  const [labels, setLabels] = useState(new Map<string, string>())
 
   const registerLabel = useCallback((v: string, label: string) => {
-    labels.current.set(v, label)
+    setLabels(prev => {
+      if (prev.get(v) === label) return prev
+      const next = new Map(prev)
+      next.set(v, label)
+      return next
+    })
   }, [])
 
-  const getLabel = useCallback((v: string) => labels.current.get(v), [])
+  const getLabel = useCallback((v: string) => labels.get(v), [labels])
 
   return (
     <Ctx.Provider value={{ value, onValueChange, open, setOpen, disabled, registerLabel, getLabel }}>
@@ -142,10 +147,11 @@ export function SelectItem({
 }) {
   const { value: selected, onValueChange, setOpen, registerLabel } = useCtx()
 
-  // Register label synchronously so SelectValue can read it
-  if (typeof children === 'string') {
-    registerLabel(value, children)
-  }
+  useEffect(() => {
+    if (typeof children === 'string') {
+      registerLabel(value, children)
+    }
+  }, [value, children, registerLabel])
 
   return (
     <button
