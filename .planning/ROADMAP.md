@@ -764,6 +764,6 @@ Plans:
 | 44. Modal "Añadir ejercicio" rediseño | v5.5 | 2/2 | Complete | 2026-03-13 |
 | 45. Ocultar nutrición trainer | v5.5 | 0/? | Not started | - |
 | 46. Lógica creación cliente Auth | 1/1 | Complete   | 2026-03-13 | - |
-| 47. Ajustes cliente v1 | 1/1 | Complete   | 2026-03-13 | - |
+| 47. Ajustes cliente v1 | 1/1 | Complete    | 2026-03-13 | - |
 | 48. Logo sidebar tipografía | v5.5 | 0/? | Not started | - |
 | 49. Ajustes trainer v1 | v5.5 | 0/? | Not started | - |

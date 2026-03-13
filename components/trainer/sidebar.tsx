@@ -101,7 +101,7 @@ export function TrainerSidebar({
         >
           <div className={cn("flex items-center gap-3 min-w-0", isMobile && collapsed && "justify-center")}>
             {(!isMobile || !collapsed) ? (
-              <div className="flex flex-col items-center w-full">
+              <div className="flex flex-col items-center w-full pb-2 border-b border-yellow-400/20 mb-2">
                 <Image
                   src="/2.png"
                   alt="Fitness Bassi"
@@ -110,7 +110,7 @@ export function TrainerSidebar({
                   className="object-contain"
                   priority
                 />
-                <span className="font-anton text-[#F5C518] text-xl tracking-wide mt-1 text-center w-full">
+                <span className="font-black text-xl tracking-widest mt-1 text-center w-full bg-gradient-to-r from-yellow-400 to-amber-300 bg-clip-text text-transparent uppercase">
                   FITNESS BASSI
                 </span>
               </div>
