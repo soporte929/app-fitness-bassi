@@ -694,8 +694,8 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
         <div className="px-6 py-5 border-b border-[var(--border)] space-y-3">
           <div className="flex flex-wrap gap-2">
             {stepButton(1, '1. Info básica')}
-            {stepButton(2, '2. Días')}
-            {stepButton(3, '3. Ejercicios')}
+            {stepButton(2, '2. Ejercicios')}
+            {stepButton(3, '3. Días')}
           </div>
 
           {structureLocked && (
@@ -770,7 +770,7 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
                   <label className="text-xs font-medium text-[var(--text-secondary)] block mb-1">
                     Tipo
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2">
                     <button
                       type="button"
                       onClick={() => setMode('template')}
@@ -783,21 +783,7 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
                         isEditing && 'opacity-60 cursor-not-allowed'
                       )}
                     >
-                      Template global
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMode('client')}
-                      disabled={isEditing}
-                      className={cn(
-                        'px-3 py-2 text-sm rounded-md border',
-                        state.mode === 'client'
-                          ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]'
-                          : 'border-[var(--border)] text-[var(--text-secondary)] bg-[var(--bg-base)]',
-                        isEditing && 'opacity-60 cursor-not-allowed'
-                      )}
-                    >
-                      Plan para cliente
+                      Plantilla rutina
                     </button>
                   </div>
                   {isEditing && (
@@ -836,68 +822,6 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
 
           {/* ── STEP 2 ──────────────────────────────────────────── */}
           {currentStep === 2 && !structureLocked && (
-            <>
-              <div className="space-y-2">
-                {state.days.map((day, index) => (
-                  <div
-                    key={day.local_id}
-                    className="rounded-md border border-[var(--border)] bg-[var(--bg-base)] px-3 py-2.5 flex items-center gap-2 min-w-0"
-                  >
-                    <span className="text-xs text-[var(--text-muted)] w-8 flex-shrink-0 text-center">
-                      #{index + 1}
-                    </span>
-                    <EditableDayName
-                      dayId={day.local_id}
-                      name={day.name}
-                      index={index}
-                      onUpdate={updateDayName}
-                    />
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => moveDay(day.local_id, -1)}
-                        disabled={index === 0}
-                        aria-label="Subir día"
-                        className="w-7 h-7 rounded-md border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] flex items-center justify-center disabled:opacity-30"
-                      >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveDay(day.local_id, 1)}
-                        disabled={index === state.days.length - 1}
-                        aria-label="Bajar día"
-                        className="w-7 h-7 rounded-md border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] flex items-center justify-center disabled:opacity-30"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeDay(day.local_id)}
-                        disabled={state.days.length <= 1}
-                        aria-label="Eliminar día"
-                        className="w-7 h-7 rounded-md border border-[var(--border)] text-[var(--danger)] hover:bg-[var(--danger)]/10 flex items-center justify-center disabled:opacity-30"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Button
-                onClick={addDay}
-                variant="secondary"
-                size="sm"
-                disabled={state.days.length >= state.daysPerWeek}
-              >
-                <Plus className="w-3.5 h-3.5" /> Añadir día
-              </Button>
-            </>
-          )}
-
-          {/* ── STEP 3 ──────────────────────────────────────────── */}
-          {currentStep === 3 && !structureLocked && (
             <div className="space-y-4">
               {/* Scrollable day tabs */}
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
@@ -964,6 +888,68 @@ export function RoutineBuilder({ clients, initial, planId, structureLocked = fal
                   )}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* ── STEP 3 ──────────────────────────────────────────── */}
+          {currentStep === 3 && !structureLocked && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                {state.days.map((day, index) => (
+                  <div
+                    key={day.local_id}
+                    className="rounded-md border border-[var(--border)] bg-[var(--bg-base)] px-3 py-2.5 flex items-center gap-2 min-w-0"
+                  >
+                    <span className="text-xs text-[var(--text-muted)] w-8 flex-shrink-0 text-center">
+                      #{index + 1}
+                    </span>
+                    <EditableDayName
+                      dayId={day.local_id}
+                      name={day.name}
+                      index={index}
+                      onUpdate={updateDayName}
+                    />
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => moveDay(day.local_id, -1)}
+                        disabled={index === 0}
+                        aria-label="Subir día"
+                        className="w-7 h-7 rounded-md border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] flex items-center justify-center disabled:opacity-30"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveDay(day.local_id, 1)}
+                        disabled={index === state.days.length - 1}
+                        aria-label="Bajar día"
+                        className="w-7 h-7 rounded-md border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] flex items-center justify-center disabled:opacity-30"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeDay(day.local_id)}
+                        disabled={state.days.length <= 1}
+                        aria-label="Eliminar día"
+                        className="w-7 h-7 rounded-md border border-[var(--border)] text-[var(--danger)] hover:bg-[var(--danger)]/10 flex items-center justify-center disabled:opacity-30"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                onClick={addDay}
+                variant="secondary"
+                size="sm"
+                disabled={state.days.length >= state.daysPerWeek}
+              >
+                <Plus className="w-3.5 h-3.5" /> Añadir día
+              </Button>
 
               {/* Save button — prominent at bottom of step 3 */}
               <div className="pt-2 border-t border-[var(--border)]">

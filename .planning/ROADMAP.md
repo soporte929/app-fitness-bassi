@@ -110,7 +110,7 @@
 <summary>📋 v5.2 Trainer UX & Logic Fixes (Phases 30-32) — IN PROGRESS</summary>
 
 - [x] **Phase 30: Business Logic** — 🔴 CRITICAL: Eliminate assigning routines to clients; enforce Routine → Plan → Client flow (completed 2026-03-11)
-- [ ] **Phase 31: UX & Forms** — 🟡 IMPORTANT: Remove "Plan para cliente" in routine templates, reorder form steps, update selector text
+- [x] **Phase 31: UX & Forms** — 🟡 IMPORTANT: Remove "Plan para cliente" in routine templates, reorder form steps, update selector text (completed 2026-03-13)
 - [ ] **Phase 32: Visual Fixes** — 🟢 IMPROVEMENT: Fix "Alertas activas" margin, correct Recharts tooltip contrast in dark mode
 
 </details>
@@ -486,6 +486,7 @@ Plans:
 - [x] 30-01-PLAN.md — Remove direct routine-to-client assignment flows (AssignRoutineButton, AssignTemplateModal, clonePlanToClientAction)
 
 ### Phase 31: UX & Forms
+**Status**: ✅ Complete
 **Goal**: Polish routine template forms and UX nomenclature to prevent confusion between global templates and client assignments.
 **Depends on**: None
 **Priority**: 🟡 IMPORTANT
@@ -495,7 +496,7 @@ Plans:
   3. Form steps in new routine are ordered: 1. Info básica → 2. Ejercicios → 3. Días.
 **Plans**: 1 plan
 Plans:
-- [ ] 31-01-PLAN.md — Renombrar selector, eliminar botón Plan para cliente, reordenar pasos
+- [x] 31-01-PLAN.md — Renombrar selector, eliminar botón "Plan para cliente", reordenar pasos
 
 ### Phase 32: Visual Fixes
 **Goal**: Correct layout issues in trainer dashboard and chart visibility issues in dark mode.
@@ -647,7 +648,7 @@ Plans:
 | 28. Progress Page Full Fix | 2/2 | Complete    | 2026-03-11 | - |
 | 29. Performance Optimization | 3/3 | Complete| 2026-03-11 | - |
 | 30. Business Logic | v5.2 | 1/1 | Complete | 2026-03-11 |
-| 31. UX & Forms | v5.2 | 0/? | Not started | - |
+| 31. UX & Forms | v5.2 | 1/1 | Complete | 2026-03-13 |
 | 32. Visual Fixes | v5.2 | 0/? | Not started | - |
 | 33. Fix /nutrition-plans | v5.3 | 0/? | Not started | - |
 | 34. Rediseño form comida | v5.3 | 0/? | Not started | - |

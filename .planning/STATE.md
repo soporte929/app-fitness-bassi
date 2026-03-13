@@ -22,13 +22,13 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 
 ## Current Position
 - **Milestone**: v5.2 Trainer UX & Logic Fixes
-- **Phase**: 30 (completed)
+- **Phase**: 31 (completed)
 - **Task**: All tasks complete
 - **Status**: Verified
-- **Last activity**: 2026-03-13 - Completed quick task 3: Ocultar Nutrición del sidebar del trainer
+- **Last activity**: 2026-03-13 - Completed Phase 31 UX & Forms
 
 ## Next Steps
-1. `/plan 31` — Plan Phase 31 (UX & Forms) 🟡 IMPORTANT
+1. Proceed to Phase 32: Visual Fixes 🟢 IMPROVEMENT
 
 ## Progress Bar
 
@@ -163,3 +163,4 @@ All key decisions documented in PROJECT.md Key Decisions table.
 - [Phase 29-01]: revalidateTag second arg passes empty CacheLifeConfig {} — required by Next.js 16 type signature for cache invalidation
 - [Phase 29-performance-optimization]: revalidateTag requires 2nd arg {} in Next.js 16 — same pattern as Phase 29-01 (trainer-dashboard)
 - [Phase 30-business-logic]: Direct routine-to-client assignment files deleted (assign-routine-button, assign-template-modal, assign-template-button); clonePlanToClientAction removed; TemplateCard no longer has "Asignar a cliente" button; routines-templates page no longer queries clients (perf win)
+- [Phase 31-ux-forms]: Type selector "Template global" renamed to "Plantilla rutina"; "Plan para cliente" button removed; form step order rearranged to Info básica -> Ejercicios -> Días to prevent assigning routines directly.
