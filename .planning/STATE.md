@@ -6,9 +6,9 @@ status: unknown
 last_updated: "2026-03-11T22:52:51.000Z"
 progress:
   total_phases: 19
-  completed_phases: 14
+  completed_phases: 15
   total_plans: 33
-  completed_plans: 33
+  completed_plans: 35
 ---
 
 # State
@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-09 after v4.0 milestone started)
 - **Phase**: 39 (completed)
 - **Task**: Execution complete
 - **Status**: Verified
-- **Last activity**: 2026-03-13 - Executed Phase 39 (Changed conditional rendering to CSS display in RoutineBuilder)
+- **Last activity**: 2026-03-13 - Executed Phase 39: Fixed modal layout, close behavior, and Select label persistence.
 
 ## Next Steps
 1. Proceed to Phase 40 or /progress

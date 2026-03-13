@@ -130,7 +130,7 @@
 <summary>📋 v5.4 Trainer UX & Routine Logic (ampliado) (Phases 38-43) — NOT STARTED</summary>
 
 - [ ] **Phase 38: Lógica CRÍTICA Rutinas** — 🔴 CRÍTICO: Eliminar asignación directa; forzar flujo Rutina → Plan → Cliente.
-- [x] **Phase 39: Formulario nueva rutina** — 🔴 CRÍTICO: Corregir pérdida de estado en wizard inter-pasos.
+- [x] **Phase 39: Formulario nueva rutina** — 🔴 CRÍTICO: Corregir pérdida de estado en wizard inter-pasos + bugs de modal y select.
 - [ ] **Phase 40: UX formulario nueva rutina** — 🟡 UX: Limpieza UI, rename de plan, popup refactor.
 - [ ] **Phase 41: Gestión de planes** — 🟡 FEAT: Quitar planes de cliente, elegir rutina de un plan activo en app.
 - [ ] **Phase 42: Visual** — 🟢 VISUAL: Márgenes alertas activas, tooltip recharts de modo oscuro.
@@ -568,16 +568,20 @@ Plans:
 - [ ] 38-01-PLAN.md — Purgar mode=client de routines-templates, RoutineBuilder, types y actions
 
 ### Phase 39: Formulario nueva rutina — pérdida de datos
-**Goal**: Evitar flush de inputs nativos en el formulario wizard/multi-steps de creación de rutina.
+**Goal**: Evitar flush de inputs nativos en el formulario wizard/multi-steps de creación de rutina. Corregir modal de ejercicios y select de días.
 **Depends on**: None
 **Priority**: 🔴 CRITICAL
 **Success Criteria** (what must be TRUE):
   1. Identificar la causa raíz en inter-mounts, persistiendo el field array y context root entre vistas.
   2. El form state sobrevive enteramente al avanzar o retroceder de info básica / ejercicios / días. Ningún drop.
+  3. El modal "Añadir ejercicio" aparece centrado, muestra filtros completos, y se cierra correctamente.
+  4. El select "Días por semana" mantiene su valor visible al navegar entre steps.
 **Status**: ✅ Complete
-**Plans**: 1 plan
+**Plans**: 3 plans
 Plans:
 - [x] 39-01-PLAN.md — Change conditional rendering to CSS display
+- [x] 39-02-PLAN.md — Fix modal "Añadir ejercicio": posición, filtros cortados, cierre
+- [x] 39-03-PLAN.md — Fix Select "Días por semana" pierde valor al volver a Step 1
 
 ### Phase 40: UX Formulario Nueva Rutina
 **Goal**: Limpiar overhead confuso y fallos de styling menores alrededor del template de rutinas.
@@ -664,7 +668,7 @@ Plans:
 | 36. Ingredientes app cliente | v5.3 | 0/? | Not started | - |
 | 37. Crear ejercicios | v5.3 | 0/? | Not started | - |
 | 38. Lógica Rutinas → Plan | v5.4 | 1/1 | Complete | 2026-03-13 |
-| 39. Form nueva rutina bugs | v5.4 | 1/1 | Complete | 2026-03-13 |
+| 39. Form nueva rutina bugs | v5.4 | 3/3 | Complete | 2026-03-13 |
 | 40. UX form nueva rutina | v5.4 | 0/? | Not started | - |
 | 41. Gestión planes asignados | v5.4 | 0/? | Not started | - |
 | 42. Visual Fixes | v5.4 | 0/? | Not started | - |
